@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORKBENCH — 開発ポータル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #eef1f0;
+    --bg-line: #c9d2d0;
+    --ink: #16232b;
+    --ink-soft: #4a5a60;
+    --teal: #1f7a7c;
+    --teal-deep: #14565a;
+    --amber: #e2a73e;
+    --card-bg: #ffffff;
+    --radius: 2px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--bg-line) 39px, var(--bg-line) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, var(--bg-line) 39px, var(--bg-line) 40px),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--amber); color: var(--ink); }
+
+  a{ color: inherit; }
+
+  .wrap{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 24px 100px;
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 20px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .title-block h1{
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    margin: 0 0 6px;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+  }
+  .title-block p{
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+  }
+  .counter{
+    font-family: 'JetBrains Mono', monospace;
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    white-space: nowrap;
+  }
+  .counter strong{
+    display: block;
+    font-size: 2rem;
+    color: var(--teal-deep);
+    font-weight: 700;
+  }
+
+  /* ---------- FILTER BAR ---------- */
+  .filters{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 40px;
+    align-items: center;
+  }
+  .filters .label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    margin-right: 6px;
+  }
+  .chip{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+    color: var(--ink);
+    transition: background .15s, color .15s;
+  }
+  .chip:hover{ background: var(--ink); color: var(--bg); }
+  .chip.active{ background: var(--teal); border-color: var(--teal); color: #fff; }
+
+  /* ---------- GRID ---------- */
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 22px;
+  }
+
+  .card{
+    background: var(--card-bg);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    position: relative;
+    padding: 20px 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{
+    transform: translateY(-4px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .card::before{
+    content: attr(data-id);
+    position: absolute;
+    top: -1px; right: -1px;
+    background: var(--ink);
+    color: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    letter-spacing: 0.05em;
+  }
+  .platform{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--teal-deep);
+  }
+  .platform::before{
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--teal);
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .card h2{
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 1.25rem;
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .card p{
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    flex-grow: 1;
+  }
+  .tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .tag{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    border: 1px solid var(--bg-line);
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .card .open{
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--ink);
+    padding-top: 10px;
+    border-top: 1px dashed var(--bg-line);
+  }
+  .card .open::after{ content: '→'; transition: transform .15s; }
+  .card .open:hover::after{ transform: translateX(4px); }
+  .card .open:hover{ color: var(--teal-deep); }
+
+  .empty{
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-soft);
+    padding: 60px 0;
+    text-align: center;
+    font-size: 0.9rem;
+    grid-column: 1 / -1;
+  }
+
+  footer{
+    margin-top: 70px;
+    padding-top: 20px;
+    border-top: 1px solid var(--bg-line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card, .card .open::after{ transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="title-block">
+      <h1>WORKBENCH</h1>
+      <p>個人開発Webアプリ・カタログ ─ 作ったものを、ここから開く。</p>
+    </div>
+    <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED</div>
+  </header>
+
+  <div class="filters" id="filters">
+    <span class="label">FILTER:</span>
+    <!-- タグボタンはJSで自動生成 -->
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <span>WORKBENCH v1.0</span>
+    <span>登録方法: このファイル内の APPS 配列に追記してください</span>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   ここにアプリを追加してください。
+   1件につき1オブジェクト。既存の2件を参考にコピペで増やせます。
+   platform: "WEB" or "ANDROID" など自由に文字列を追加可能
+   image: 省略可(省略時はプラットフォーム名のプレースホルダーを表示)
+   ============================================================ */
+const APPS = [
+  {
+    name: "天気比較アプリ",
+    url: "https://example.github.io/weather-compare/",
+    description: "Open-Meteo APIから過去の気温・降水量・湿度を取得し、年ごとの推移や平年差を折れ線グラフと比較カードで確認できるアプリ。",
+    platform: "WEB",
+    tags: ["データ可視化", "天気", "vanilla JS"]
+  },
+  {
+    name: "Bluetooth接続モニター",
+    url: "https://github.com/example/bluetooth-monitor",
+    description: "登録したBluetoothデバイスの接続・切断をバックグラウンドで監視し、通知でお知らせするAndroidアプリ。Material3 UI採用。",
+    platform: "ANDROID",
+    tags: ["Kotlin", "Bluetooth", "通知"]
+  }
+];
+/* ============================================================ */
+
+const grid = document.getElementById('grid');
+const filtersEl = document.getElementById('filters');
+const countNum = document.getElementById('countNum');
+let activeTag = null;
+
+function pad(n){ return String(n).padStart(3, '0'); }
+
+function allTags(){
+  const s = new Set();
+  APPS.forEach(a => (a.tags || []).forEach(t => s.add(t)));
+  return Array.from(s);
+}
+
+function render(){
+  countNum.textContent = pad(APPS.length);
+
+  // フィルターチップ生成(初回のみ)
+  if(!filtersEl.dataset.built){
+    allTags().forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.textContent = tag;
+      btn.onclick = () => {
+        activeTag = (activeTag === tag) ? null : tag;
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        if(activeTag) btn.classList.add('active');
+        render();
+      };
+      filtersEl.appendChild(btn);
+    });
+    filtersEl.dataset.built = "1";
+  }
+
+  const list = activeTag
+    ? APPS.filter(a => (a.tags || []).includes(activeTag))
+    : APPS;
+
+  grid.innerHTML = '';
+
+  if(list.length === 0){
+    grid.innerHTML = '<div class="empty">該当するアプリがありません</div>';
+    return;
+  }
+
+  list.forEach((app, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.setAttribute('data-id', '#' + pad(APPS.indexOf(app) + 1));
+
+    card.innerHTML = `
+      <span class="platform">${app.platform || 'WEB'}</span>
+      <h2>${app.name}</h2>
+      <p>${app.description || ''}</p>
+      <div class="tags">
+        ${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}
+      </div>
+      <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
