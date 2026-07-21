@@ -1,0 +1,18 @@
+[
+  {
+    "name": "天気比較アプリ",
+    "url": "https://example.github.io/weather-compare/",
+    "description": "Open-Meteo APIから過去の気温・降水量・湿度を取得し、年ごとの推移や平年差を折れ線グラフと比較カードで確認できるアプリ。",
+    "platform": "WEB",
+    "tags": ["データ可視化", "天気", "vanilla JS"],
+    "image": ""
+  },
+  {
+    "name": "Bluetooth接続モニター",
+    "url": "https://github.com/example/bluetooth-monitor",
+    "description": "登録したBluetoothデバイスの接続・切断をバックグラウンドで監視し、通知でお知らせするAndroidアプリ。Material3 UI採用。",
+    "platform": "ANDROID",
+    "tags": ["Kotlin", "Bluetooth", "通知"],
+    "image": ""
+  }
+]
