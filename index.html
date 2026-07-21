@@ -15,6 +15,7 @@
     --teal: #1f7a7c;
     --teal-deep: #14565a;
     --amber: #e2a73e;
+    --danger: #b3452f;
     --card-bg: #ffffff;
     --radius: 2px;
   }
@@ -32,204 +33,157 @@
     -webkit-font-smoothing: antialiased;
   }
   ::selection{ background: var(--amber); color: var(--ink); }
-
   a{ color: inherit; }
 
-  .wrap{
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 56px 24px 100px;
-  }
+  .wrap{ max-width: 1080px; margin: 0 auto; padding: 56px 24px 140px; }
 
-  /* ---------- HEADER ---------- */
   header{
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 24px;
-    border-bottom: 3px solid var(--ink);
-    padding-bottom: 20px;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 24px; border-bottom: 3px solid var(--ink);
+    padding-bottom: 20px; margin-bottom: 36px; flex-wrap: wrap;
   }
   .title-block h1{
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-weight: 900;
-    font-size: clamp(2.2rem, 5vw, 3.4rem);
-    margin: 0 0 6px;
-    letter-spacing: 0.02em;
-    line-height: 1.05;
+    font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+    font-size: clamp(2.2rem, 5vw, 3.4rem); margin: 0 0 6px;
+    letter-spacing: 0.02em; line-height: 1.05;
   }
-  .title-block p{
-    margin: 0;
-    color: var(--ink-soft);
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
-  }
+  .title-block p{ margin: 0; color: var(--ink-soft); font-size: 0.95rem; }
+  .header-right{ display: flex; align-items: flex-end; gap: 18px; }
   .counter{
-    font-family: 'JetBrains Mono', monospace;
-    text-align: right;
-    font-size: 0.8rem;
-    color: var(--ink-soft);
-    line-height: 1.6;
-    white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace; text-align: right;
+    font-size: 0.8rem; color: var(--ink-soft); line-height: 1.6; white-space: nowrap;
   }
-  .counter strong{
-    display: block;
-    font-size: 2rem;
-    color: var(--teal-deep);
-    font-weight: 700;
-  }
+  .counter strong{ display: block; font-size: 2rem; color: var(--teal-deep); font-weight: 700; }
 
-  /* ---------- FILTER BAR ---------- */
-  .filters{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 40px;
-    align-items: center;
+  .icon-btn{
+    width: 40px; height: 40px; border: 1.5px solid var(--ink); background: transparent;
+    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; color: var(--ink); transition: background .15s, color .15s;
   }
-  .filters .label{
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--ink-soft);
-    margin-right: 6px;
-  }
+  .icon-btn:hover{ background: var(--ink); color: var(--bg); }
+
+  .filters{ display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; align-items: center; }
+  .filters .label{ font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--ink-soft); margin-right: 6px; }
   .chip{
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    padding: 6px 14px;
-    border: 1.5px solid var(--ink);
-    border-radius: 999px;
-    background: transparent;
-    cursor: pointer;
-    color: var(--ink);
-    transition: background .15s, color .15s;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 6px 14px;
+    border: 1.5px solid var(--ink); border-radius: 999px; background: transparent;
+    cursor: pointer; color: var(--ink); transition: background .15s, color .15s;
   }
   .chip:hover{ background: var(--ink); color: var(--bg); }
   .chip.active{ background: var(--teal); border-color: var(--teal); color: #fff; }
 
-  /* ---------- GRID ---------- */
-  .grid{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 22px;
-  }
+  .grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
 
   .card{
-    background: var(--card-bg);
-    border: 1.5px solid var(--ink);
-    border-radius: var(--radius);
-    position: relative;
-    padding: 20px 20px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: transform .18s ease, box-shadow .18s ease;
+    background: var(--card-bg); border: 1.5px solid var(--ink); border-radius: var(--radius);
+    position: relative; padding: 0 0 18px; display: flex; flex-direction: column;
+    gap: 10px; transition: transform .18s ease, box-shadow .18s ease; overflow: hidden;
   }
-  .card:hover{
-    transform: translateY(-4px);
-    box-shadow: 6px 6px 0 var(--ink);
-  }
+  .card:hover{ transform: translateY(-4px); box-shadow: 6px 6px 0 var(--ink); }
   .card::before{
-    content: attr(data-id);
-    position: absolute;
-    top: -1px; right: -1px;
-    background: var(--ink);
-    color: var(--bg);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    padding: 3px 8px;
-    letter-spacing: 0.05em;
+    content: attr(data-id); position: absolute; top: -1px; right: -1px;
+    background: var(--ink); color: var(--bg); font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; padding: 3px 8px; letter-spacing: 0.05em; z-index: 2;
   }
+  .thumb{
+    width: 100%; aspect-ratio: 16/9; background: var(--bg);
+    border-bottom: 1.5px solid var(--ink); display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); font-size: 0.75rem; overflow: hidden;
+  }
+  .thumb img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-body{ padding: 16px 20px 0; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
   .platform{
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--teal-deep);
+    display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: var(--teal-deep);
   }
-  .platform::before{
-    content: '';
-    width: 8px; height: 8px;
-    background: var(--teal);
-    border-radius: 50%;
-    display: inline-block;
-  }
-  .card h2{
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: 1.25rem;
-    margin: 0;
-    font-weight: 700;
-    line-height: 1.3;
-  }
-  .card p{
-    margin: 0;
-    font-size: 0.88rem;
-    color: var(--ink-soft);
-    line-height: 1.6;
-    flex-grow: 1;
-  }
-  .tags{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
-  }
+  .platform::before{ content: ''; width: 8px; height: 8px; background: var(--teal); border-radius: 50%; display: inline-block; }
+  .card h2{ font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.25rem; margin: 0; font-weight: 700; line-height: 1.3; }
+  .card p{ margin: 0; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; flex-grow: 1; }
+  .tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
   .tag{
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--ink-soft);
-    border: 1px solid var(--bg-line);
-    background: var(--bg);
-    padding: 2px 8px;
-    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--ink-soft);
+    border: 1px solid var(--bg-line); background: var(--bg); padding: 2px 8px; border-radius: 999px;
   }
   .card .open{
-    margin-top: 8px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-decoration: none;
-    color: var(--ink);
-    padding-top: 10px;
-    border-top: 1px dashed var(--bg-line);
+    margin: 8px 20px 0; display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
+    text-decoration: none; color: var(--ink); padding-top: 10px; border-top: 1px dashed var(--bg-line);
   }
   .card .open::after{ content: '→'; transition: transform .15s; }
   .card .open:hover::after{ transform: translateX(4px); }
   .card .open:hover{ color: var(--teal-deep); }
 
-  .empty{
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--ink-soft);
-    padding: 60px 0;
-    text-align: center;
-    font-size: 0.9rem;
-    grid-column: 1 / -1;
-  }
+  .empty{ font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); padding: 60px 0; text-align: center; font-size: 0.9rem; grid-column: 1 / -1; }
 
   footer{
-    margin-top: 70px;
-    padding-top: 20px;
-    border-top: 1px solid var(--bg-line);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--ink-soft);
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
+    margin-top: 70px; padding-top: 20px; border-top: 1px solid var(--bg-line);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--ink-soft);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
   }
 
-  @media (prefers-reduced-motion: reduce){
-    .card, .card .open::after{ transition: none; }
+  .fab{
+    position: fixed; right: 28px; bottom: 28px; width: 58px; height: 58px;
+    border-radius: 50%; background: var(--ink); color: var(--bg); border: none;
+    font-size: 1.8rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    display: flex; align-items: center; justify-content: center; transition: transform .15s, background .15s;
+    z-index: 50;
   }
+  .fab:hover{ transform: scale(1.06); background: var(--teal-deep); }
+
+  .overlay{
+    position: fixed; inset: 0; background: rgba(22,35,43,0.55); display: none;
+    align-items: center; justify-content: center; z-index: 100; padding: 20px;
+  }
+  .overlay.show{ display: flex; }
+  .modal{
+    background: var(--card-bg); border: 1.5px solid var(--ink); max-width: 480px; width: 100%;
+    max-height: 90vh; overflow-y: auto; padding: 28px; position: relative;
+  }
+  .modal h3{ font-family: 'Zen Kaku Gothic New', sans-serif; margin: 0 0 4px; font-size: 1.3rem; }
+  .modal .sub{ font-size: 0.8rem; color: var(--ink-soft); margin: 0 0 18px; line-height: 1.6; }
+  .modal .close{
+    position: absolute; top: 20px; right: 20px; background: none; border: none;
+    font-size: 1.3rem; cursor: pointer; color: var(--ink-soft);
+  }
+  .field{ margin-bottom: 14px; }
+  .field label{
+    display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    color: var(--ink-soft); margin-bottom: 5px; letter-spacing: 0.03em;
+  }
+  .field input[type=text], .field input[type=url], .field textarea, .field select, .field input[type=password], .field input[type=file]{
+    width: 100%; border: 1.5px solid var(--bg-line); background: var(--bg); padding: 9px 10px;
+    font-family: 'Noto Sans JP', sans-serif; font-size: 0.9rem; color: var(--ink); border-radius: 2px;
+  }
+  .field textarea{ resize: vertical; min-height: 64px; font-family: 'Noto Sans JP', sans-serif; }
+  .field input:focus, .field textarea:focus, .field select:focus{ outline: 2px solid var(--teal); outline-offset: 1px; }
+  .field .hint{ font-size: 0.7rem; color: var(--ink-soft); margin-top: 4px; }
+
+  .btn-row{ display: flex; gap: 10px; margin-top: 20px; }
+  .btn{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
+    padding: 10px 18px; border: 1.5px solid var(--ink); background: transparent; cursor: pointer;
+    border-radius: 2px; color: var(--ink); transition: background .15s, color .15s;
+  }
+  .btn.primary{ background: var(--ink); color: var(--bg); }
+  .btn.primary:hover{ background: var(--teal-deep); border-color: var(--teal-deep); }
+  .btn:not(.primary):hover{ background: var(--bg-line); }
+  .btn:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+  .status{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; margin-top: 12px;
+    padding: 8px 10px; border-radius: 2px; display: none;
+  }
+  .status.show{ display: block; }
+  .status.ok{ background: #e3f0ea; color: #1f6b45; border: 1px solid #1f6b45; }
+  .status.err{ background: #f5e4df; color: var(--danger); border: 1px solid var(--danger); }
+  .status.loading{ background: var(--bg); color: var(--ink-soft); border: 1px solid var(--bg-line); }
+
+  .settings-note{
+    font-size: 0.72rem; color: var(--ink-soft); background: var(--bg); border: 1px solid var(--bg-line);
+    padding: 10px 12px; border-radius: 2px; line-height: 1.6; margin-bottom: 16px;
+  }
+
+  @media (prefers-reduced-motion: reduce){ .card, .card .open::after, .fab{ transition: none; } }
 </style>
 </head>
 <body>
@@ -240,54 +194,127 @@
       <h1>WORKBENCH</h1>
       <p>個人開発Webアプリ・カタログ ─ 作ったものを、ここから開く。</p>
     </div>
-    <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED</div>
+    <div class="header-right">
+      <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED</div>
+      <button class="icon-btn" id="settingsBtn" title="設定" aria-label="設定">⚙</button>
+    </div>
   </header>
 
   <div class="filters" id="filters">
     <span class="label">FILTER:</span>
-    <!-- タグボタンはJSで自動生成 -->
   </div>
 
   <div class="grid" id="grid"></div>
 
   <footer>
-    <span>WORKBENCH v1.0</span>
-    <span>登録方法: このファイル内の APPS 配列に追記してください</span>
+    <span>WORKBENCH v2.0</span>
+    <span>右下の + からアプリを追加できます</span>
   </footer>
 
 </div>
 
+<button class="fab" id="fabBtn" title="アプリを追加" aria-label="アプリを追加">＋</button>
+
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <button class="close" id="settingsClose">✕</button>
+    <h3>設定</h3>
+    <p class="sub">このリポジトリ情報とGitHubトークンを入力してください。入力内容はこのブラウザにのみ保存されます。</p>
+
+    <div class="settings-note">
+      トークンは Settings → Developer settings → Fine-grained tokens で発行し、対象リポジトリのみ / Contents: Read and write の権限にしてください。
+    </div>
+
+    <div class="field">
+      <label>GitHubユーザー名 / Organization名</label>
+      <input type="text" id="cfgOwner" placeholder="例: your-username">
+    </div>
+    <div class="field">
+      <label>リポジトリ名</label>
+      <input type="text" id="cfgRepo" placeholder="例: workbench">
+    </div>
+    <div class="field">
+      <label>ブランチ名</label>
+      <input type="text" id="cfgBranch" placeholder="main" value="main">
+    </div>
+    <div class="field">
+      <label>Personal Access Token</label>
+      <input type="password" id="cfgToken" placeholder="ghp_... または github_pat_...">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary" id="cfgSave">保存する</button>
+      <button class="btn" id="cfgClear">保存内容を削除</button>
+    </div>
+    <div class="status" id="cfgStatus"></div>
+  </div>
+</div>
+
+<div class="overlay" id="addOverlay">
+  <div class="modal">
+    <button class="close" id="addClose">✕</button>
+    <h3>アプリを追加</h3>
+    <p class="sub">入力すると、このリポジトリに直接コミットされます。</p>
+
+    <div class="field">
+      <label>アプリ名</label>
+      <input type="text" id="appName" placeholder="天気比較アプリ">
+    </div>
+    <div class="field">
+      <label>URL</label>
+      <input type="url" id="appUrl" placeholder="https://...">
+    </div>
+    <div class="field">
+      <label>説明文</label>
+      <textarea id="appDesc" placeholder="どんなアプリか、簡単に説明してください"></textarea>
+    </div>
+    <div class="field">
+      <label>プラットフォーム</label>
+      <select id="appPlatform">
+        <option value="WEB">WEB</option>
+        <option value="ANDROID">ANDROID</option>
+        <option value="OTHER">OTHER</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>タグ(カンマ区切り)</label>
+      <input type="text" id="appTags" placeholder="データ可視化, 天気, vanilla JS">
+    </div>
+    <div class="field">
+      <label>起動画面のスクリーンショット(任意)</label>
+      <input type="file" id="appImage" accept="image/*">
+      <div class="hint">画像は images/ フォルダに自動アップロードされます</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary" id="addSubmit">追加する</button>
+      <button class="btn" id="addCancel">キャンセル</button>
+    </div>
+    <div class="status" id="addStatus"></div>
+  </div>
+</div>
+
 <script>
-/* ============================================================
-   ここにアプリを追加してください。
-   1件につき1オブジェクト。既存の2件を参考にコピペで増やせます。
-   platform: "WEB" or "ANDROID" など自由に文字列を追加可能
-   image: 省略可(省略時はプラットフォーム名のプレースホルダーを表示)
-   ============================================================ */
-const APPS = [
-  {
-    name: "天気比較アプリ",
-    url: "https://example.github.io/weather-compare/",
-    description: "Open-Meteo APIから過去の気温・降水量・湿度を取得し、年ごとの推移や平年差を折れ線グラフと比較カードで確認できるアプリ。",
-    platform: "WEB",
-    tags: ["データ可視化", "天気", "vanilla JS"]
-  },
-  {
-    name: "Bluetooth接続モニター",
-    url: "https://github.com/example/bluetooth-monitor",
-    description: "登録したBluetoothデバイスの接続・切断をバックグラウンドで監視し、通知でお知らせするAndroidアプリ。Material3 UI採用。",
-    platform: "ANDROID",
-    tags: ["Kotlin", "Bluetooth", "通知"]
-  }
-];
-/* ============================================================ */
+let APPS = [];
+let activeTag = null;
 
 const grid = document.getElementById('grid');
 const filtersEl = document.getElementById('filters');
 const countNum = document.getElementById('countNum');
-let activeTag = null;
 
 function pad(n){ return String(n).padStart(3, '0'); }
+
+async function loadApps(){
+  try{
+    const res = await fetch('apps.json?t=' + Date.now());
+    APPS = await res.json();
+  }catch(e){
+    APPS = [];
+  }
+  filtersEl.dataset.built = "";
+  filtersEl.querySelectorAll('.chip').forEach(c => c.remove());
+  render();
+}
 
 function allTags(){
   const s = new Set();
@@ -298,7 +325,6 @@ function allTags(){
 function render(){
   countNum.textContent = pad(APPS.length);
 
-  // フィルターチップ生成(初回のみ)
   if(!filtersEl.dataset.built){
     allTags().forEach(tag => {
       const btn = document.createElement('button');
@@ -315,10 +341,7 @@ function render(){
     filtersEl.dataset.built = "1";
   }
 
-  const list = activeTag
-    ? APPS.filter(a => (a.tags || []).includes(activeTag))
-    : APPS;
-
+  const list = activeTag ? APPS.filter(a => (a.tags || []).includes(activeTag)) : APPS;
   grid.innerHTML = '';
 
   if(list.length === 0){
@@ -326,17 +349,22 @@ function render(){
     return;
   }
 
-  list.forEach((app, i) => {
+  list.forEach((app) => {
     const card = document.createElement('div');
     card.className = 'card';
     card.setAttribute('data-id', '#' + pad(APPS.indexOf(app) + 1));
 
+    const thumbContent = app.image
+      ? `<img src="${app.image}" alt="${app.name}">`
+      : (app.platform || 'WEB');
+
     card.innerHTML = `
-      <span class="platform">${app.platform || 'WEB'}</span>
-      <h2>${app.name}</h2>
-      <p>${app.description || ''}</p>
-      <div class="tags">
-        ${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}
+      <div class="thumb">${thumbContent}</div>
+      <div class="card-body">
+        <span class="platform">${app.platform || 'WEB'}</span>
+        <h2>${app.name}</h2>
+        <p>${app.description || ''}</p>
+        <div class="tags">${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
       </div>
       <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
     `;
@@ -344,7 +372,194 @@ function render(){
   });
 }
 
-render();
+const CFG_KEY = 'workbench_cfg';
+
+function getCfg(){
+  try{ return JSON.parse(localStorage.getItem(CFG_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function setCfg(cfg){ localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }
+
+const settingsOverlay = document.getElementById('settingsOverlay');
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsClose = document.getElementById('settingsClose');
+const cfgStatus = document.getElementById('cfgStatus');
+
+function openSettings(){
+  const cfg = getCfg();
+  document.getElementById('cfgOwner').value = cfg.owner || '';
+  document.getElementById('cfgRepo').value = cfg.repo || '';
+  document.getElementById('cfgBranch').value = cfg.branch || 'main';
+  document.getElementById('cfgToken').value = cfg.token || '';
+  cfgStatus.className = 'status';
+  settingsOverlay.classList.add('show');
+}
+settingsBtn.onclick = openSettings;
+settingsClose.onclick = () => settingsOverlay.classList.remove('show');
+settingsOverlay.onclick = (e) => { if(e.target === settingsOverlay) settingsOverlay.classList.remove('show'); };
+
+document.getElementById('cfgSave').onclick = () => {
+  const cfg = {
+    owner: document.getElementById('cfgOwner').value.trim(),
+    repo: document.getElementById('cfgRepo').value.trim(),
+    branch: document.getElementById('cfgBranch').value.trim() || 'main',
+    token: document.getElementById('cfgToken').value.trim()
+  };
+  setCfg(cfg);
+  cfgStatus.textContent = '保存しました。';
+  cfgStatus.className = 'status show ok';
+};
+document.getElementById('cfgClear').onclick = () => {
+  localStorage.removeItem(CFG_KEY);
+  document.getElementById('cfgOwner').value = '';
+  document.getElementById('cfgRepo').value = '';
+  document.getElementById('cfgBranch').value = 'main';
+  document.getElementById('cfgToken').value = '';
+  cfgStatus.textContent = '削除しました。';
+  cfgStatus.className = 'status show ok';
+};
+
+function utf8ToBase64(str){
+  return btoa(unescape(encodeURIComponent(str)));
+}
+function base64ToUtf8(b64){
+  return decodeURIComponent(escape(atob(b64)));
+}
+
+async function ghGetFile(cfg, path){
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}`;
+  const res = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${cfg.token}`, 'Accept': 'application/vnd.github+json' }
+  });
+  if(res.status === 404) return null;
+  if(!res.ok) throw new Error(`取得失敗 (${res.status})`);
+  return await res.json();
+}
+
+async function ghPutFile(cfg, path, base64Content, message, sha){
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+  const body = { message, content: base64Content, branch: cfg.branch };
+  if(sha) body.sha = sha;
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${cfg.token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.message || `保存失敗 (${res.status})`);
+  }
+  return await res.json();
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function slugify(str){
+  return str
+    .toLowerCase()
+    .replace(/[^\w\u3040-\u30ff\u3400-\u9fff]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'app';
+}
+
+const addOverlay = document.getElementById('addOverlay');
+const addClose = document.getElementById('addClose');
+const addCancel = document.getElementById('addCancel');
+const addStatus = document.getElementById('addStatus');
+const addSubmit = document.getElementById('addSubmit');
+const fabBtn = document.getElementById('fabBtn');
+
+function clearAddForm(){
+  document.getElementById('appName').value = '';
+  document.getElementById('appUrl').value = '';
+  document.getElementById('appDesc').value = '';
+  document.getElementById('appPlatform').value = 'WEB';
+  document.getElementById('appTags').value = '';
+  document.getElementById('appImage').value = '';
+  addStatus.className = 'status';
+}
+
+fabBtn.onclick = () => {
+  const cfg = getCfg();
+  if(!cfg.owner || !cfg.repo || !cfg.token){
+    openSettings();
+    cfgStatus.textContent = '先にリポジトリ情報とトークンを入力してください。';
+    cfgStatus.className = 'status show err';
+    return;
+  }
+  clearAddForm();
+  addOverlay.classList.add('show');
+};
+addClose.onclick = addCancel.onclick = () => addOverlay.classList.remove('show');
+addOverlay.onclick = (e) => { if(e.target === addOverlay) addOverlay.classList.remove('show'); };
+
+addSubmit.onclick = async () => {
+  const cfg = getCfg();
+  const name = document.getElementById('appName').value.trim();
+  const url = document.getElementById('appUrl').value.trim();
+  const description = document.getElementById('appDesc').value.trim();
+  const platform = document.getElementById('appPlatform').value;
+  const tags = document.getElementById('appTags').value.split(',').map(t => t.trim()).filter(Boolean);
+  const imageFile = document.getElementById('appImage').files[0];
+
+  if(!name || !url){
+    addStatus.textContent = 'アプリ名とURLは必須です。';
+    addStatus.className = 'status show err';
+    return;
+  }
+
+  addSubmit.disabled = true;
+  addStatus.textContent = '保存中...';
+  addStatus.className = 'status show loading';
+
+  try{
+    let imagePath = '';
+
+    if(imageFile){
+      const ext = (imageFile.name.split('.').pop() || 'jpg').toLowerCase();
+      imagePath = `images/${slugify(name)}-${Date.now()}.${ext}`;
+      const base64 = await fileToBase64(imageFile);
+      await ghPutFile(cfg, imagePath, base64, `Add screenshot for ${name}`, null);
+    }
+
+    const existing = await ghGetFile(cfg, 'apps.json');
+    let list = [];
+    let sha = null;
+    if(existing){
+      list = JSON.parse(base64ToUtf8(existing.content));
+      sha = existing.sha;
+    }
+
+    list.push({ name, url, description, platform, tags, image: imagePath });
+
+    const newContent = utf8ToBase64(JSON.stringify(list, null, 2) + '\n');
+    await ghPutFile(cfg, 'apps.json', newContent, `Add app: ${name}`, sha);
+
+    addStatus.textContent = '追加しました。反映まで数十秒かかる場合があります。';
+    addStatus.className = 'status show ok';
+
+    await loadApps();
+    setTimeout(() => { addOverlay.classList.remove('show'); }, 1200);
+
+  }catch(e){
+    addStatus.textContent = 'エラー: ' + e.message;
+    addStatus.className = 'status show err';
+  }finally{
+    addSubmit.disabled = false;
+  }
+};
+
+loadApps();
 </script>
 </body>
 </html>
