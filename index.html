@@ -104,14 +104,27 @@
     font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--ink-soft);
     border: 1px solid var(--bg-line); background: var(--bg); padding: 2px 8px; border-radius: 999px;
   }
+  .card-footer{
+    margin: 8px 20px 0; display: flex; align-items: center; justify-content: space-between;
+    padding-top: 10px; border-top: 1px dashed var(--bg-line);
+  }
   .card .open{
-    margin: 8px 20px 0; display: inline-flex; align-items: center; gap: 6px;
+    display: inline-flex; align-items: center; gap: 6px;
     font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
-    text-decoration: none; color: var(--ink); padding-top: 10px; border-top: 1px dashed var(--bg-line);
+    text-decoration: none; color: var(--ink);
   }
   .card .open::after{ content: '→'; transition: transform .15s; }
   .card .open:hover::after{ transform: translateX(4px); }
   .card .open:hover{ color: var(--teal-deep); }
+
+  .card-actions{ display: flex; gap: 4px; }
+  .card-actions button{
+    width: 30px; height: 30px; border: 1.5px solid var(--bg-line); background: transparent;
+    border-radius: 50%; cursor: pointer; font-size: 0.85rem; color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s, border-color .15s;
+  }
+  .card-actions .edit-btn:hover{ background: var(--teal); border-color: var(--teal); color: #fff; }
+  .card-actions .delete-btn:hover{ background: var(--danger); border-color: var(--danger); color: #fff; }
 
   .empty{ font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); padding: 60px 0; text-align: center; font-size: 0.9rem; grid-column: 1 / -1; }
 
@@ -253,8 +266,8 @@
 <div class="overlay" id="addOverlay">
   <div class="modal">
     <button class="close" id="addClose">✕</button>
-    <h3>アプリを追加</h3>
-    <p class="sub">入力すると、このリポジトリに直接コミットされます。</p>
+    <h3 id="addModalTitle">アプリを追加</h3>
+    <p class="sub" id="addModalSub">入力すると、このリポジトリに直接コミットされます。</p>
 
     <div class="field">
       <label>アプリ名</label>
@@ -289,6 +302,7 @@
     <div class="btn-row">
       <button class="btn primary" id="addSubmit">追加する</button>
       <button class="btn" id="addCancel">キャンセル</button>
+      <button class="btn" id="addDelete" style="display:none; border-color: var(--danger); color: var(--danger);">このアプリを削除</button>
     </div>
     <div class="status" id="addStatus"></div>
   </div>
@@ -366,8 +380,16 @@ function render(){
         <p>${app.description || ''}</p>
         <div class="tags">${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
       </div>
-      <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
+      <div class="card-footer">
+        <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
+        <div class="card-actions">
+          <button class="edit-btn" title="編集" aria-label="編集">✎</button>
+          <button class="delete-btn" title="削除" aria-label="削除">🗑</button>
+        </div>
+      </div>
     `;
+    card.querySelector('.edit-btn').onclick = () => openAddModal(APPS.indexOf(app));
+    card.querySelector('.delete-btn').onclick = () => deleteApp(APPS.indexOf(app));
     grid.appendChild(card);
   });
 }
@@ -477,7 +499,12 @@ const addClose = document.getElementById('addClose');
 const addCancel = document.getElementById('addCancel');
 const addStatus = document.getElementById('addStatus');
 const addSubmit = document.getElementById('addSubmit');
+const addDelete = document.getElementById('addDelete');
+const addModalTitle = document.getElementById('addModalTitle');
+const addModalSub = document.getElementById('addModalSub');
 const fabBtn = document.getElementById('fabBtn');
+
+let editingIndex = null; // null = 新規追加, 数値 = そのindexを編集中
 
 function clearAddForm(){
   document.getElementById('appName').value = '';
@@ -489,17 +516,45 @@ function clearAddForm(){
   addStatus.className = 'status';
 }
 
-fabBtn.onclick = () => {
+function requireCfgOrOpenSettings(){
   const cfg = getCfg();
   if(!cfg.owner || !cfg.repo || !cfg.token){
     openSettings();
     cfgStatus.textContent = '先にリポジトリ情報とトークンを入力してください。';
     cfgStatus.className = 'status show err';
-    return;
+    return null;
   }
+  return cfg;
+}
+
+function openAddModal(index){
+  if(!requireCfgOrOpenSettings()) return;
+
+  editingIndex = (typeof index === 'number') ? index : null;
   clearAddForm();
+
+  if(editingIndex !== null){
+    const app = APPS[editingIndex];
+    document.getElementById('appName').value = app.name || '';
+    document.getElementById('appUrl').value = app.url || '';
+    document.getElementById('appDesc').value = app.description || '';
+    document.getElementById('appPlatform').value = app.platform || 'WEB';
+    document.getElementById('appTags').value = (app.tags || []).join(', ');
+    addModalTitle.textContent = 'アプリを編集';
+    addModalSub.textContent = '内容を変更すると、このリポジトリに直接コミットされます。';
+    addSubmit.textContent = '更新する';
+    addDelete.style.display = 'inline-block';
+  }else{
+    addModalTitle.textContent = 'アプリを追加';
+    addModalSub.textContent = '入力すると、このリポジトリに直接コミットされます。';
+    addSubmit.textContent = '追加する';
+    addDelete.style.display = 'none';
+  }
+
   addOverlay.classList.add('show');
-};
+}
+
+fabBtn.onclick = () => openAddModal(null);
 addClose.onclick = addCancel.onclick = () => addOverlay.classList.remove('show');
 addOverlay.onclick = (e) => { if(e.target === addOverlay) addOverlay.classList.remove('show'); };
 
@@ -523,15 +578,6 @@ addSubmit.onclick = async () => {
   addStatus.className = 'status show loading';
 
   try{
-    let imagePath = '';
-
-    if(imageFile){
-      const ext = (imageFile.name.split('.').pop() || 'jpg').toLowerCase();
-      imagePath = `images/${slugify(name)}-${Date.now()}.${ext}`;
-      const base64 = await fileToBase64(imageFile);
-      await ghPutFile(cfg, imagePath, base64, `Add screenshot for ${name}`, null);
-    }
-
     const existing = await ghGetFile(cfg, 'apps.json');
     let list = [];
     let sha = null;
@@ -540,12 +586,28 @@ addSubmit.onclick = async () => {
       sha = existing.sha;
     }
 
-    list.push({ name, url, description, platform, tags, image: imagePath });
+    // 既存の画像パスを保持しつつ、新しい画像があれば差し替える
+    let imagePath = (editingIndex !== null) ? (list[editingIndex].image || '') : '';
+    if(imageFile){
+      const ext = (imageFile.name.split('.').pop() || 'jpg').toLowerCase();
+      imagePath = `images/${slugify(name)}-${Date.now()}.${ext}`;
+      const base64 = await fileToBase64(imageFile);
+      await ghPutFile(cfg, imagePath, base64, `Add screenshot for ${name}`, null);
+    }
+
+    const entry = { name, url, description, platform, tags, image: imagePath };
+
+    if(editingIndex !== null){
+      list[editingIndex] = entry;
+    }else{
+      list.push(entry);
+    }
 
     const newContent = utf8ToBase64(JSON.stringify(list, null, 2) + '\n');
-    await ghPutFile(cfg, 'apps.json', newContent, `Add app: ${name}`, sha);
+    const message = editingIndex !== null ? `Update app: ${name}` : `Add app: ${name}`;
+    await ghPutFile(cfg, 'apps.json', newContent, message, sha);
 
-    addStatus.textContent = '追加しました。反映まで数十秒かかる場合があります。';
+    addStatus.textContent = (editingIndex !== null ? '更新しました。' : '追加しました。') + ' 反映まで数十秒かかる場合があります。';
     addStatus.className = 'status show ok';
 
     await loadApps();
@@ -558,6 +620,64 @@ addSubmit.onclick = async () => {
     addSubmit.disabled = false;
   }
 };
+
+async function deleteApp(index){
+  const cfg = requireCfgOrOpenSettings();
+  if(!cfg) return;
+
+  const app = APPS[index];
+  if(!app) return;
+
+  const ok = confirm(`「${app.name}」を削除します。この操作は取り消せません。よろしいですか?`);
+  if(!ok) return;
+
+  addStatus.textContent = '削除中...';
+  addStatus.className = 'status show loading';
+  addSubmit.disabled = true;
+
+  try{
+    const existing = await ghGetFile(cfg, 'apps.json');
+    if(!existing) throw new Error('apps.json が見つかりません');
+
+    let list = JSON.parse(base64ToUtf8(existing.content));
+    const target = list[index];
+    list.splice(index, 1);
+
+    const newContent = utf8ToBase64(JSON.stringify(list, null, 2) + '\n');
+    await ghPutFile(cfg, 'apps.json', newContent, `Delete app: ${app.name}`, existing.sha);
+
+    // 関連するスクリーンショット画像も削除(失敗しても無視)
+    if(target && target.image){
+      try{
+        const imgFile = await ghGetFile(cfg, target.image);
+        if(imgFile){
+          await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${target.image}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${cfg.token}`,
+              'Accept': 'application/vnd.github+json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: `Delete screenshot for ${app.name}`, sha: imgFile.sha, branch: cfg.branch })
+          });
+        }
+      }catch(e){ /* 画像削除の失敗は無視 */ }
+    }
+
+    addStatus.textContent = '削除しました。';
+    addStatus.className = 'status show ok';
+    await loadApps();
+    setTimeout(() => { addOverlay.classList.remove('show'); }, 1000);
+
+  }catch(e){
+    addStatus.textContent = 'エラー: ' + e.message;
+    addStatus.className = 'status show err';
+  }finally{
+    addSubmit.disabled = false;
+  }
+}
+
+addDelete.onclick = () => { if(editingIndex !== null) deleteApp(editingIndex); };
 
 loadApps();
 </script>
