@@ -80,5 +80,15 @@
       "3D cad"
     ],
     "image": ""
+  },
+  {
+    "name": "BluetoothMonitor",
+    "url": "https://github.com/chinta44/BluetoothMonitor",
+    "description": "Bluetoothデバイスの接続/切断をログに記録し、切断時に通知するAndroidアプリの最小構成です。",
+    "platform": "ANDROID",
+    "tags": [
+      "スマホ Bluetooth"
+    ],
+    "image": "images/bluetoothmonitor-1784714548258.webp"
   }
 ]
