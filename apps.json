@@ -32,5 +32,15 @@
       "カメラ"
     ],
     "image": "images/雷撮影アプリ-1784681177125.png"
+  },
+  {
+    "name": "雷撮影用カメラ",
+    "url": "https://stalwart-sherbet-b53d75.netlify.app/",
+    "description": "grockによって作られた雷撮影用アプリ",
+    "platform": "WEB",
+    "tags": [
+      "カメラ"
+    ],
+    "image": "images/雷撮影用カメラ-1784681349310.png"
   }
 ]
