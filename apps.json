@@ -44,7 +44,7 @@
   {
     "name": "天気くらべ帳",
     "url": "https://chinta44.github.io/weather-almanac/",
-    "description": "過去の気温等を比べる",
+    "description": "気温くらべ帳 (Weather Almanac)\nカレンダーから日付をひとつ選ぶと、今年から過去5年・過去10年分の気温を比較できるシングルページのWebアプリです。ビルド不要・外部ライブラリ不要の1枚のHTMLファイルで動きます。",
     "platform": "WEB",
     "tags": [
       "天気"
