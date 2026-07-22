@@ -1,17 +1,5 @@
 [
   {
-    "name": "Bluetooth接続モニター",
-    "url": "https://github.com/example/bluetooth-monitor",
-    "description": "登録したBluetoothデバイスの接続・切断をバックグラウンドで監視し、通知でお知らせするAndroidアプリ。Material3 UI採用。",
-    "platform": "ANDROID",
-    "tags": [
-      "Kotlin",
-      "Bluetooth",
-      "通知"
-    ],
-    "image": ""
-  },
-  {
     "name": "雷撮影アプリ",
     "url": "https://neon-trifle-1ae7d8.netlify.app/",
     "description": "Claudeによる雷撮影アプリ",
