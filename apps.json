@@ -68,5 +68,15 @@
       "ペット"
     ],
     "image": "images/ペット健康管理手帳-1784690115145.png"
+  },
+  {
+    "name": "stl-catalog",
+    "url": "https://github.com/torao44/stl-catalog",
+    "description": "window用ソフト stlファイルを一覧表示（zip.rar対応)",
+    "platform": "OTHER",
+    "tags": [
+      "3D cad"
+    ],
+    "image": ""
   }
 ]
