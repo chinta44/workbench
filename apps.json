@@ -48,5 +48,15 @@
       "天気"
     ],
     "image": "images/天気くらべ帳-1784689584128.png"
+  },
+  {
+    "name": "ultimate_cad_viewer",
+    "url": "https://chinta44.github.io/ultimate-cad-viewer/",
+    "description": "3D CAD用 STLファイルを見るためのアプリ",
+    "platform": "WEB",
+    "tags": [
+      "3D cad"
+    ],
+    "image": "images/ultimate_cad_viewer-1784689969045.png"
   }
 ]
