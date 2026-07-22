@@ -38,5 +38,15 @@
     "platform": "WEB",
     "tags": [],
     "image": "images/ペット健康手帳-1784689445559.png"
+  },
+  {
+    "name": "天気くらべ帳",
+    "url": "https://chinta44.github.io/weather-almanac/",
+    "description": "過去の気温等を比べる",
+    "platform": "WEB",
+    "tags": [
+      "天気"
+    ],
+    "image": "images/天気くらべ帳-1784689584128.png"
   }
 ]
