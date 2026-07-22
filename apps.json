@@ -75,7 +75,7 @@
     "name": "stl-catalog",
     "url": "https://github.com/torao44/stl-catalog",
     "description": "window用ソフト stlファイルを一覧表示（zip.rar対応)",
-    "platform": "OTHER",
+    "platform": "WINDOWS",
     "tags": [
       "3D cad"
     ],
