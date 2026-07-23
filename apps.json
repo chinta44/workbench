@@ -32,7 +32,7 @@
   {
     "name": "ultimate_cad_viewer",
     "url": "https://chinta44.github.io/ultimate-cad-viewer/",
-    "description": "3D CAD用 STLファイルを見るためのアプリ",
+    "description": "3D CAD用 STL 3MF stepファイルを見るためのアプリ\nZIP圧縮ファイルも見れるようになったよ。",
     "platform": "WEB",
     "tags": [
       "3D cad"
