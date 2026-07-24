@@ -88,5 +88,16 @@
       "スマホ Bluetooth sim"
     ],
     "image": "images/つながりモニター-1784887260775.webp"
+  },
+  {
+    "name": "github Trend Claude",
+    "url": "https://chinta44.github.io/github-Trend-Claude/",
+    "description": "githubに公開されている android用アプリのトレンドランキング",
+    "platform": "WEB",
+    "tags": [
+      "アプリ"
+    ],
+    "image": "images/github-trend-claude-1784936499689.png",
+    "updatedAt": "2026-07-24T23:41:42.038Z"
   }
 ]
