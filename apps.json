@@ -78,5 +78,15 @@
       "カメラ"
     ],
     "image": "images/ピカッとコレクション-1784717908088.png"
+  },
+  {
+    "name": "つながりモニター",
+    "url": "https://github.com/chinta44/SimSwitcher",
+    "description": "物理SIM／eSIMのデータ通信回線と、Bluetoothデバイスの接続/切断を1つのアプリでまとめて監視します。 BluetoothMonitor（雛形プロジェクト）をSIM Switcherに統合したものです。",
+    "platform": "ANDROID",
+    "tags": [
+      "スマホ Bluetooth sim"
+    ],
+    "image": "images/つながりモニター-1784887260775.webp"
   }
 ]
