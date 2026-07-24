@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WORKBENCH — 開発ポータル</title>
-<link rel="icon" href="favicon.ico">
-<link rel="apple-touch-icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -56,6 +54,12 @@
     font-size: 0.8rem; color: var(--ink-soft); line-height: 1.6; white-space: nowrap;
   }
   .counter strong{ display: block; font-size: 2rem; color: var(--teal-deep); font-weight: 700; }
+  .last-updated{ display: block; font-size: 0.68rem; margin-top: 2px; color: var(--ink-soft); }
+
+  .card-updated{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--ink-soft);
+    margin: 0 20px;
+  }
 
   .icon-btn{
     width: 40px; height: 40px; border: 1.5px solid var(--ink); background: transparent;
@@ -210,7 +214,7 @@
       <p>個人開発Webアプリ・カタログ ─ 作ったものを、ここから開く。</p>
     </div>
     <div class="header-right">
-      <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED</div>
+      <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED<span class="last-updated" id="lastUpdated"></span></div>
       <button class="icon-btn" id="settingsBtn" title="設定" aria-label="設定">⚙</button>
     </div>
   </header>
@@ -222,7 +226,7 @@
   <div class="grid" id="grid"></div>
 
   <footer>
-    <span>WORKBENCH v2.1</span>
+    <span id="versionLabel">WORKBENCH</span>
     <span>右下の + からアプリを追加できます</span>
   </footer>
 
@@ -288,7 +292,6 @@
       <select id="appPlatform">
         <option value="WEB">WEB</option>
         <option value="ANDROID">ANDROID</option>
-        <option value="WINDOWS">WINDOWS</option>
         <option value="OTHER">OTHER</option>
       </select>
     </div>
@@ -312,14 +315,35 @@
 </div>
 
 <script>
+/* ============================================================
+   WORKBENCH自体のバージョン。番号を上げたい時はここだけ書き換える
+   ============================================================ */
+const WORKBENCH_VERSION = 'v2.2';
+
 let APPS = [];
 let activeTag = null;
 
 const grid = document.getElementById('grid');
 const filtersEl = document.getElementById('filters');
 const countNum = document.getElementById('countNum');
+const lastUpdatedEl = document.getElementById('lastUpdated');
+
+document.getElementById('versionLabel').textContent = `WORKBENCH ${WORKBENCH_VERSION}`;
 
 function pad(n){ return String(n).padStart(3, '0'); }
+
+function formatDate(iso){
+  if(!iso) return '-';
+  const d = new Date(iso);
+  if(isNaN(d)) return '-';
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+// 名前+URLでアプリを一意に識別する(並べ替えで順序が変わっても編集/削除がずれないように)
+function appKey(app){
+  return `${app.name}||${app.url}`;
+}
 
 async function loadApps(){
   try{
@@ -328,6 +352,15 @@ async function loadApps(){
   }catch(e){
     APPS = [];
   }
+  // 更新日時の新しい順に自動並べ替え(未設定のものは一番古い扱い)
+  APPS.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+
+  const latest = APPS.reduce((max, a) => {
+    const t = new Date(a.updatedAt || 0).getTime();
+    return t > max ? t : max;
+  }, 0);
+  lastUpdatedEl.textContent = latest > 0 ? `最終更新: ${formatDate(new Date(latest).toISOString())}` : '';
+
   filtersEl.dataset.built = "";
   filtersEl.querySelectorAll('.chip').forEach(c => c.remove());
   render();
@@ -369,6 +402,7 @@ function render(){
   list.forEach((app) => {
     const card = document.createElement('div');
     card.className = 'card';
+    const key = appKey(app);
     card.setAttribute('data-id', '#' + pad(APPS.indexOf(app) + 1));
 
     const thumbContent = app.image
@@ -383,6 +417,7 @@ function render(){
         <p>${app.description || ''}</p>
         <div class="tags">${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
       </div>
+      <div class="card-updated">更新: ${formatDate(app.updatedAt)}</div>
       <div class="card-footer">
         <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
         <div class="card-actions">
@@ -391,8 +426,8 @@ function render(){
         </div>
       </div>
     `;
-    card.querySelector('.edit-btn').onclick = () => openAddModal(APPS.indexOf(app));
-    card.querySelector('.delete-btn').onclick = () => deleteApp(APPS.indexOf(app));
+    card.querySelector('.edit-btn').onclick = () => openAddModal(key);
+    card.querySelector('.delete-btn').onclick = () => deleteApp(key);
     grid.appendChild(card);
   });
 }
@@ -507,7 +542,7 @@ const addModalTitle = document.getElementById('addModalTitle');
 const addModalSub = document.getElementById('addModalSub');
 const fabBtn = document.getElementById('fabBtn');
 
-let editingIndex = null; // null = 新規追加, 数値 = そのindexを編集中
+let editingKey = null; // null = 新規追加, 文字列 = そのキーのアプリを編集中
 
 function clearAddForm(){
   document.getElementById('appName').value = '';
@@ -530,14 +565,15 @@ function requireCfgOrOpenSettings(){
   return cfg;
 }
 
-function openAddModal(index){
+function openAddModal(key){
   if(!requireCfgOrOpenSettings()) return;
 
-  editingIndex = (typeof index === 'number') ? index : null;
+  editingKey = (typeof key === 'string') ? key : null;
   clearAddForm();
 
-  if(editingIndex !== null){
-    const app = APPS[editingIndex];
+  if(editingKey !== null){
+    const app = APPS.find(a => appKey(a) === editingKey);
+    if(!app){ editingKey = null; return; }
     document.getElementById('appName').value = app.name || '';
     document.getElementById('appUrl').value = app.url || '';
     document.getElementById('appDesc').value = app.description || '';
@@ -589,8 +625,10 @@ addSubmit.onclick = async () => {
       sha = existing.sha;
     }
 
+    const targetIdx = (editingKey !== null) ? list.findIndex(a => appKey(a) === editingKey) : -1;
+
     // 既存の画像パスを保持しつつ、新しい画像があれば差し替える
-    let imagePath = (editingIndex !== null) ? (list[editingIndex].image || '') : '';
+    let imagePath = (targetIdx !== -1) ? (list[targetIdx].image || '') : '';
     if(imageFile){
       const ext = (imageFile.name.split('.').pop() || 'jpg').toLowerCase();
       imagePath = `images/${slugify(name)}-${Date.now()}.${ext}`;
@@ -598,19 +636,19 @@ addSubmit.onclick = async () => {
       await ghPutFile(cfg, imagePath, base64, `Add screenshot for ${name}`, null);
     }
 
-    const entry = { name, url, description, platform, tags, image: imagePath };
+    const entry = { name, url, description, platform, tags, image: imagePath, updatedAt: new Date().toISOString() };
 
-    if(editingIndex !== null){
-      list[editingIndex] = entry;
+    if(targetIdx !== -1){
+      list[targetIdx] = entry;
     }else{
       list.push(entry);
     }
 
     const newContent = utf8ToBase64(JSON.stringify(list, null, 2) + '\n');
-    const message = editingIndex !== null ? `Update app: ${name}` : `Add app: ${name}`;
+    const message = (targetIdx !== -1) ? `Update app: ${name}` : `Add app: ${name}`;
     await ghPutFile(cfg, 'apps.json', newContent, message, sha);
 
-    addStatus.textContent = (editingIndex !== null ? '更新しました。' : '追加しました。') + ' 反映まで数十秒かかる場合があります。';
+    addStatus.textContent = (targetIdx !== -1 ? '更新しました。' : '追加しました。') + ' 反映まで数十秒かかる場合があります。';
     addStatus.className = 'status show ok';
 
     await loadApps();
@@ -624,11 +662,11 @@ addSubmit.onclick = async () => {
   }
 };
 
-async function deleteApp(index){
+async function deleteApp(key){
   const cfg = requireCfgOrOpenSettings();
   if(!cfg) return;
 
-  const app = APPS[index];
+  const app = APPS.find(a => appKey(a) === key);
   if(!app) return;
 
   const ok = confirm(`「${app.name}」を削除します。この操作は取り消せません。よろしいですか?`);
@@ -643,8 +681,10 @@ async function deleteApp(index){
     if(!existing) throw new Error('apps.json が見つかりません');
 
     let list = JSON.parse(base64ToUtf8(existing.content));
-    const target = list[index];
-    list.splice(index, 1);
+    const idx = list.findIndex(a => appKey(a) === key);
+    if(idx === -1) throw new Error('対象のアプリが見つかりませんでした');
+    const target = list[idx];
+    list.splice(idx, 1);
 
     const newContent = utf8ToBase64(JSON.stringify(list, null, 2) + '\n');
     await ghPutFile(cfg, 'apps.json', newContent, `Delete app: ${app.name}`, existing.sha);
@@ -680,7 +720,7 @@ async function deleteApp(index){
   }
 }
 
-addDelete.onclick = () => { if(editingIndex !== null) deleteApp(editingIndex); };
+addDelete.onclick = () => { if(editingKey !== null) deleteApp(editingKey); };
 
 loadApps();
 </script>
