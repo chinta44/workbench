@@ -72,12 +72,13 @@
   {
     "name": "ピカッとコレクション",
     "url": "https://neon-trifle-1ae7d8.netlify.app/",
-    "description": "Claudeによる雷撮影用アプリ",
+    "description": "Claudeによる雷撮影用アプリ 撮った写真のプレビュー機能を追加した",
     "platform": "WEB",
     "tags": [
       "カメラ"
     ],
-    "image": "images/ピカッとコレクション-1784717908088.png"
+    "image": "images/ピカッとコレクション-1784717908088.png",
+    "updatedAt": "2026-07-28T07:02:32.808Z"
   },
   {
     "name": "つながりモニター",
