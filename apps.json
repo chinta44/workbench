@@ -32,12 +32,13 @@
   {
     "name": "ultimate_cad_viewer",
     "url": "https://chinta44.github.io/ultimate-cad-viewer/",
-    "description": "3D CAD用 (STEP/STL/3MF/OBJ/ZIP全対応)ファイルを見るためのアプリ。\nその他機能充実版。",
+    "description": "3D CAD用 (STEP/STL/3MF/OBJ/ZIP全対応)ファイルを見るためのアプリ。PCではD&Dに対応。\nその他機能充実版。",
     "platform": "WEB",
     "tags": [
       "3D cad"
     ],
-    "image": "images/ultimate_cad_viewer-1784689969045.png"
+    "image": "images/ultimate_cad_viewer-1784689969045.png",
+    "updatedAt": "2026-07-28T08:13:26.176Z"
   },
   {
     "name": "ペット健康管理手帳",
