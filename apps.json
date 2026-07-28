@@ -43,12 +43,13 @@
   {
     "name": "ペット健康管理手帳",
     "url": "https://pet-health-book-528168758805.asia-east1.run.app/",
-    "description": "ペットたちの健康管理記録手帳 Cursor作成",
+    "description": "ペットたちの健康管理記録手帳 Cursor作成\n試作のため更新予定なし。",
     "platform": "WEB",
     "tags": [
       "ペット"
     ],
-    "image": "images/ペット健康管理手帳-1784690115145.png"
+    "image": "images/ペット健康管理手帳-1784690115145.png",
+    "updatedAt": "2026-07-28T08:15:03.933Z"
   },
   {
     "name": "stl-catalog",
