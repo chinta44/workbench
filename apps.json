@@ -117,13 +117,13 @@
   },
   {
     "name": "AI自動命名カメラ",
-    "url": "https://neon-trifle-1ae7d8.netlify.app/",
+    "url": "https://auto-photo-namer.onrender.com/",
     "description": "写真を撮ると自動で名前をつけてくれるカメラアプリ",
     "platform": "WEB",
     "tags": [
       "カメラ"
     ],
     "image": "images/ai自動命名カメラ-1785395654376.png",
-    "updatedAt": "2026-07-30T07:14:16.625Z"
+    "updatedAt": "2026-07-30T07:46:26.523Z"
   }
 ]
