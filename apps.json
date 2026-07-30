@@ -125,5 +125,16 @@
     ],
     "image": "images/ai自動命名カメラ-1785395654376.png",
     "updatedAt": "2026-07-30T07:46:26.523Z"
+  },
+  {
+    "name": "SmartName AI",
+    "url": "https://chinta44.github.io/smart-name-ai/",
+    "description": "写真を撮ると Gemini Vision AI が内容（領収書 / ペット / 商品 / 書類）を判別し、 わかりやすいファイル名を自動生成して整理してくれるカメラアプリです。\n\nこのバージョンは サーバー(Express)を使わず、ブラウザから直接 Gemini API を呼び出す 構成になっています。GitHub Pages のような静的ホスティングだけで完結します。",
+    "platform": "WEB",
+    "tags": [
+      "カメラ"
+    ],
+    "image": "images/smartname-ai-1785409558293.png",
+    "updatedAt": "2026-07-30T11:06:00.335Z"
   }
 ]
