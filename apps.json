@@ -118,13 +118,13 @@
   {
     "name": "AI自動命名カメラ",
     "url": "https://auto-photo-namer.onrender.com/",
-    "description": "写真を撮ると自動で名前をつけてくれるカメラアプリ\n(google AI Studio作成版）",
+    "description": "写真を撮ると自動で名前をつけてくれるカメラアプリ\n(google AI Studio作成版）Gemini3.6",
     "platform": "WEB",
     "tags": [
       "カメラ"
     ],
     "image": "images/ai自動命名カメラ-1785395654376.png",
-    "updatedAt": "2026-07-30T11:10:17.815Z"
+    "updatedAt": "2026-07-30T11:46:08.242Z"
   },
   {
     "name": "SmartName AI",
