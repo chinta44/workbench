@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WORKBENCH — 開発ポータル</title>
-<link rel="icon" href="favicon.ico">  
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -262,6 +261,24 @@
       <input type="password" id="cfgToken" placeholder="ghp_... または github_pat_...">
     </div>
 
+    <div class="settings-note">
+      以下は「トピックを付けたリポジトリを自動で一覧に表示する」ための設定です(任意)。両方のGitHubアカウントのユーザー名を入れてください。
+    </div>
+
+    <div class="field">
+      <label>自動検出アカウント1(ユーザー名)</label>
+      <input type="text" id="cfgUser1" placeholder="例: chinta44">
+    </div>
+    <div class="field">
+      <label>自動検出アカウント2(ユーザー名・任意)</label>
+      <input type="text" id="cfgUser2" placeholder="例: another-account">
+    </div>
+    <div class="field">
+      <label>検出用トピック名</label>
+      <input type="text" id="cfgTopic" placeholder="workbench-app" value="workbench-app">
+      <div class="hint">このトピックを付けたリポジトリだけが自動表示されます</div>
+    </div>
+
     <div class="btn-row">
       <button class="btn primary" id="cfgSave">保存する</button>
       <button class="btn" id="cfgClear">保存内容を削除</button>
@@ -346,13 +363,57 @@ function appKey(app){
   return `${app.name}||${app.url}`;
 }
 
+// トピックを付けたリポジトリを自動検出して、アプリカード形式に変換する
+async function fetchAutoRepos(){
+  const cfg = getCfg();
+  const users = [cfg.user1, cfg.user2].map(u => (u || '').trim()).filter(Boolean);
+  const topic = (cfg.topic || 'workbench-app').trim();
+  if(users.length === 0) return [];
+
+  const headers = { 'Accept': 'application/vnd.github+json' };
+  if(cfg.token) headers['Authorization'] = `Bearer ${cfg.token}`;
+
+  const results = [];
+  for(const user of users){
+    try{
+      const res = await fetch(`https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100`, { headers });
+      if(!res.ok) continue;
+      const repos = await res.json();
+      repos.forEach(repo => {
+        const topics = repo.topics || [];
+        if(!topics.includes(topic)) return;
+        results.push({
+          name: repo.name,
+          url: repo.homepage || repo.html_url,
+          description: repo.description || '',
+          platform: topics.includes('android') ? 'ANDROID' : (topics.includes('windows') ? 'WINDOWS' : 'WEB'),
+          tags: topics.filter(t => t !== topic),
+          image: '',
+          updatedAt: repo.pushed_at,
+          source: 'auto',
+          repoUrl: repo.html_url
+        });
+      });
+    }catch(e){ /* 1アカウント分の取得失敗は無視して続行 */ }
+  }
+  return results;
+}
+
 async function loadApps(){
+  let manual = [];
   try{
     const res = await fetch('apps.json?t=' + Date.now());
-    APPS = await res.json();
+    manual = await res.json();
   }catch(e){
-    APPS = [];
+    manual = [];
   }
+
+  const auto = await fetchAutoRepos();
+  const manualUrls = new Set(manual.map(a => a.url));
+  const autoFiltered = auto.filter(a => !manualUrls.has(a.url)); // 手動登録済みと重複するものは除外
+
+  APPS = manual.concat(autoFiltered);
+
   // 更新日時の新しい順に自動並べ替え(未設定のものは一番古い扱い)
   APPS.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
 
@@ -404,11 +465,19 @@ function render(){
     const card = document.createElement('div');
     card.className = 'card';
     const key = appKey(app);
+    const isAuto = app.source === 'auto';
     card.setAttribute('data-id', '#' + pad(APPS.indexOf(app) + 1));
 
     const thumbContent = app.image
       ? `<img src="${app.image}" alt="${app.name}">`
       : (app.platform || 'WEB');
+
+    const actionsHtml = isAuto
+      ? `<span class="tag" title="トピック検出により自動表示">AUTO</span>`
+      : `<div class="card-actions">
+          <button class="edit-btn" title="編集" aria-label="編集">✎</button>
+          <button class="delete-btn" title="削除" aria-label="削除">🗑</button>
+        </div>`;
 
     card.innerHTML = `
       <div class="thumb">${thumbContent}</div>
@@ -421,14 +490,13 @@ function render(){
       <div class="card-updated">更新: ${formatDate(app.updatedAt)}</div>
       <div class="card-footer">
         <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
-        <div class="card-actions">
-          <button class="edit-btn" title="編集" aria-label="編集">✎</button>
-          <button class="delete-btn" title="削除" aria-label="削除">🗑</button>
-        </div>
+        ${actionsHtml}
       </div>
     `;
-    card.querySelector('.edit-btn').onclick = () => openAddModal(key);
-    card.querySelector('.delete-btn').onclick = () => deleteApp(key);
+    if(!isAuto){
+      card.querySelector('.edit-btn').onclick = () => openAddModal(key);
+      card.querySelector('.delete-btn').onclick = () => deleteApp(key);
+    }
     grid.appendChild(card);
   });
 }
@@ -452,6 +520,9 @@ function openSettings(){
   document.getElementById('cfgRepo').value = cfg.repo || '';
   document.getElementById('cfgBranch').value = cfg.branch || 'main';
   document.getElementById('cfgToken').value = cfg.token || '';
+  document.getElementById('cfgUser1').value = cfg.user1 || '';
+  document.getElementById('cfgUser2').value = cfg.user2 || '';
+  document.getElementById('cfgTopic').value = cfg.topic || 'workbench-app';
   cfgStatus.className = 'status';
   settingsOverlay.classList.add('show');
 }
@@ -464,11 +535,15 @@ document.getElementById('cfgSave').onclick = () => {
     owner: document.getElementById('cfgOwner').value.trim(),
     repo: document.getElementById('cfgRepo').value.trim(),
     branch: document.getElementById('cfgBranch').value.trim() || 'main',
-    token: document.getElementById('cfgToken').value.trim()
+    token: document.getElementById('cfgToken').value.trim(),
+    user1: document.getElementById('cfgUser1').value.trim(),
+    user2: document.getElementById('cfgUser2').value.trim(),
+    topic: document.getElementById('cfgTopic').value.trim() || 'workbench-app'
   };
   setCfg(cfg);
   cfgStatus.textContent = '保存しました。';
   cfgStatus.className = 'status show ok';
+  loadApps();
 };
 document.getElementById('cfgClear').onclick = () => {
   localStorage.removeItem(CFG_KEY);
@@ -476,8 +551,12 @@ document.getElementById('cfgClear').onclick = () => {
   document.getElementById('cfgRepo').value = '';
   document.getElementById('cfgBranch').value = 'main';
   document.getElementById('cfgToken').value = '';
+  document.getElementById('cfgUser1').value = '';
+  document.getElementById('cfgUser2').value = '';
+  document.getElementById('cfgTopic').value = 'workbench-app';
   cfgStatus.textContent = '削除しました。';
   cfgStatus.className = 'status show ok';
+  loadApps();
 };
 
 function utf8ToBase64(str){
