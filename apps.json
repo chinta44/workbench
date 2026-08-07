@@ -109,11 +109,12 @@
     "url": "https://npb-standings-44.streamlit.app/",
     "description": "プロ野球の順位表示 未完成",
     "platform": "WEB",
+    "status": "paused",
     "tags": [
       "野球"
     ],
     "image": "images/プロ野球の順位表示-1785393162313.png",
-    "updatedAt": "2026-07-30T06:32:44.480Z"
+    "updatedAt": "2026-08-07T11:16:51.528Z"
   },
   {
     "name": "いちいち面倒なカメラアプリ",
