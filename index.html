@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORKBENCH — 開発ポータル</title>
+<link rel="icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #eef1f0;
+    --bg-line: #c9d2d0;
+    --ink: #16232b;
+    --ink-soft: #4a5a60;
+    --teal: #1f7a7c;
+    --teal-deep: #14565a;
+    --amber: #e2a73e;
+    --danger: #b3452f;
+    --card-bg: #ffffff;
+    --radius: 2px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--bg-line) 39px, var(--bg-line) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, var(--bg-line) 39px, var(--bg-line) 40px),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--amber); color: var(--ink); }
+  a{ color: inherit; }
+
+  .wrap{ max-width: 1080px; margin: 0 auto; padding: 56px 24px 140px; }
+
+  header{
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 24px; border-bottom: 3px solid var(--ink);
+    padding-bottom: 20px; margin-bottom: 36px; flex-wrap: wrap;
+  }
+  .title-block h1{
+    font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
+    font-size: clamp(2.2rem, 5vw, 3.4rem); margin: 0 0 6px;
+    letter-spacing: 0.02em; line-height: 1.05;
+  }
+  .title-block p{ margin: 0; color: var(--ink-soft); font-size: 0.95rem; }
+  .header-right{ display: flex; align-items: flex-end; gap: 18px; }
+  .counter{
+    font-family: 'JetBrains Mono', monospace; text-align: right;
+    font-size: 0.8rem; color: var(--ink-soft); line-height: 1.6; white-space: nowrap;
+  }
+  .counter strong{ display: block; font-size: 2rem; color: var(--teal-deep); font-weight: 700; }
+  .last-updated{ display: block; font-size: 0.68rem; margin-top: 2px; color: var(--ink-soft); }
+
+  .card-updated{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--ink-soft);
+    margin: 0 20px;
+  }
+
+  .icon-btn{
+    width: 40px; height: 40px; border: 1.5px solid var(--ink); background: transparent;
+    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; color: var(--ink); transition: background .15s, color .15s;
+  }
+  .icon-btn:hover{ background: var(--ink); color: var(--bg); }
+
+  .filters{ display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; align-items: center; }
+  .filters .label{ font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--ink-soft); margin-right: 6px; }
+  .chip{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 6px 14px;
+    border: 1.5px solid var(--ink); border-radius: 999px; background: transparent;
+    cursor: pointer; color: var(--ink); transition: background .15s, color .15s;
+  }
+  .chip:hover{ background: var(--ink); color: var(--bg); }
+  .chip.active{ background: var(--teal); border-color: var(--teal); color: #fff; }
+
+  .grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+
+  .card{
+    background: var(--card-bg); border: 1.5px solid var(--ink); border-radius: var(--radius);
+    position: relative; padding: 0 0 18px; display: flex; flex-direction: column;
+    gap: 10px; transition: transform .18s ease, box-shadow .18s ease; overflow: hidden;
+  }
+  .card:hover{ transform: translateY(-4px); box-shadow: 6px 6px 0 var(--ink); }
+  .card::before{
+    content: attr(data-id); position: absolute; top: -1px; right: -1px;
+    background: var(--ink); color: var(--bg); font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; padding: 3px 8px; letter-spacing: 0.05em; z-index: 2;
+  }
+  .thumb{
+    width: 100%; aspect-ratio: 16/9; background: var(--bg);
+    border-bottom: 1.5px solid var(--ink); display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); font-size: 0.75rem; overflow: hidden;
+  }
+  .thumb img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-body{ padding: 16px 20px 0; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
+  .platform{
+    display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: var(--teal-deep);
+  }
+  .platform::before{ content: ''; width: 8px; height: 8px; background: var(--teal); border-radius: 50%; display: inline-block; }
+
+  .status-badge{
+    display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; padding: 3px 9px;
+    border-radius: 999px; border: 1px solid transparent;
+  }
+  .status-badge.active{ background: #e3f0ea; color: #1f6b45; border-color: #1f6b45; }
+  .status-badge.paused{ background: #f2ece0; color: #8a6a1f; border-color: #8a6a1f; }
+
+  .card.paused{ opacity: 0.6; }
+  .card.paused .thumb{ filter: grayscale(0.5); }
+  .card.paused:hover{ opacity: 0.85; }
+  .card h2{ font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.25rem; margin: 0; font-weight: 700; line-height: 1.3; }
+  .card p{ margin: 0; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; flex-grow: 1; }
+  .tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .tag{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--ink-soft);
+    border: 1px solid var(--bg-line); background: var(--bg); padding: 2px 8px; border-radius: 999px;
+  }
+  .card-footer{
+    margin: 8px 20px 0; display: flex; align-items: center; justify-content: space-between;
+    padding-top: 10px; border-top: 1px dashed var(--bg-line);
+  }
+  .card .open{
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
+    text-decoration: none; color: var(--ink);
+  }
+  .card .open::after{ content: '→'; transition: transform .15s; }
+  .card .open:hover::after{ transform: translateX(4px); }
+  .card .open:hover{ color: var(--teal-deep); }
+
+  .card-actions{ display: flex; gap: 4px; }
+  .card-actions button{
+    width: 30px; height: 30px; border: 1.5px solid var(--bg-line); background: transparent;
+    border-radius: 50%; cursor: pointer; font-size: 0.85rem; color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s, border-color .15s;
+  }
+  .card-actions .edit-btn:hover{ background: var(--teal); border-color: var(--teal); color: #fff; }
+  .card-actions .delete-btn:hover{ background: var(--danger); border-color: var(--danger); color: #fff; }
+
+  .empty{ font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); padding: 60px 0; text-align: center; font-size: 0.9rem; grid-column: 1 / -1; }
+
+  footer{
+    margin-top: 70px; padding-top: 20px; border-top: 1px solid var(--bg-line);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--ink-soft);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+
+  .fab{
+    position: fixed; right: 28px; bottom: 28px; width: 58px; height: 58px;
+    border-radius: 50%; background: var(--ink); color: var(--bg); border: none;
+    font-size: 1.8rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    display: flex; align-items: center; justify-content: center; transition: transform .15s, background .15s;
+    z-index: 50;
+  }
+  .fab:hover{ transform: scale(1.06); background: var(--teal-deep); }
+
+  .overlay{
+    position: fixed; inset: 0; background: rgba(22,35,43,0.55); display: none;
+    align-items: center; justify-content: center; z-index: 100; padding: 20px;
+  }
+  .overlay.show{ display: flex; }
+  .modal{
+    background: var(--card-bg); border: 1.5px solid var(--ink); max-width: 480px; width: 100%;
+    max-height: 90vh; overflow-y: auto; padding: 28px; position: relative;
+  }
+  .modal h3{ font-family: 'Zen Kaku Gothic New', sans-serif; margin: 0 0 4px; font-size: 1.3rem; }
+  .modal .sub{ font-size: 0.8rem; color: var(--ink-soft); margin: 0 0 18px; line-height: 1.6; }
+  .modal .close{
+    position: absolute; top: 20px; right: 20px; background: none; border: none;
+    font-size: 1.3rem; cursor: pointer; color: var(--ink-soft);
+  }
+  .field{ margin-bottom: 14px; }
+  .field label{
+    display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    color: var(--ink-soft); margin-bottom: 5px; letter-spacing: 0.03em;
+  }
+  .field input[type=text], .field input[type=url], .field textarea, .field select, .field input[type=password], .field input[type=file]{
+    width: 100%; border: 1.5px solid var(--bg-line); background: var(--bg); padding: 9px 10px;
+    font-family: 'Noto Sans JP', sans-serif; font-size: 0.9rem; color: var(--ink); border-radius: 2px;
+  }
+  .field textarea{ resize: vertical; min-height: 64px; font-family: 'Noto Sans JP', sans-serif; }
+  .field input:focus, .field textarea:focus, .field select:focus{ outline: 2px solid var(--teal); outline-offset: 1px; }
+  .field .hint{ font-size: 0.7rem; color: var(--ink-soft); margin-top: 4px; }
+
+  .btn-row{ display: flex; gap: 10px; margin-top: 20px; }
+  .btn{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
+    padding: 10px 18px; border: 1.5px solid var(--ink); background: transparent; cursor: pointer;
+    border-radius: 2px; color: var(--ink); transition: background .15s, color .15s;
+  }
+  .btn.primary{ background: var(--ink); color: var(--bg); }
+  .btn.primary:hover{ background: var(--teal-deep); border-color: var(--teal-deep); }
+  .btn:not(.primary):hover{ background: var(--bg-line); }
+  .btn:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+  .status{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; margin-top: 12px;
+    padding: 8px 10px; border-radius: 2px; display: none;
+  }
+  .status.show{ display: block; }
+  .status.ok{ background: #e3f0ea; color: #1f6b45; border: 1px solid #1f6b45; }
+  .status.err{ background: #f5e4df; color: var(--danger); border: 1px solid var(--danger); }
+  .status.loading{ background: var(--bg); color: var(--ink-soft); border: 1px solid var(--bg-line); }
+
+  .settings-note{
+    font-size: 0.72rem; color: var(--ink-soft); background: var(--bg); border: 1px solid var(--bg-line);
+    padding: 10px 12px; border-radius: 2px; line-height: 1.6; margin-bottom: 16px;
+  }
+
+  @media (prefers-reduced-motion: reduce){ .card, .card .open::after, .fab{ transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="title-block">
+      <h1>WORKBENCH</h1>
+      <p>個人開発Webアプリ・カタログ ─ 作ったものを、ここから開く。</p>
+    </div>
+    <div class="header-right">
+      <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED<span class="last-updated" id="lastUpdated"></span></div>
+      <button class="icon-btn" id="settingsBtn" title="設定" aria-label="設定">⚙</button>
+    </div>
+  </header>
+
+  <div class="filters" id="statusFilters">
+    <span class="label">STATUS:</span>
+    <button class="chip active" data-status="all">すべて</button>
+    <button class="chip" data-status="active">稼働中</button>
+    <button class="chip" data-status="paused">保留中</button>
+  </div>
+
+  <div class="filters" id="filters">
+    <span class="label">FILTER:</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <span id="versionLabel">WORKBENCH</span>
+    <span>右下の + からアプリを追加できます</span>
+  </footer>
+
+</div>
+
+<button class="fab" id="fabBtn" title="アプリを追加" aria-label="アプリを追加">＋</button>
+
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <button class="close" id="settingsClose">✕</button>
+    <h3>設定</h3>
+    <p class="sub">このリポジトリ情報とGitHubトークンを入力してください。入力内容はこのブラウザにのみ保存されます。</p>
+
+    <div class="settings-note">
+      トークンは Settings → Developer settings → Fine-grained tokens で発行し、対象リポジトリのみ / Contents: Read and write の権限にしてください。
+    </div>
+
+    <div class="field">
+      <label>GitHubユーザー名 / Organization名</label>
+      <input type="text" id="cfgOwner" placeholder="例: your-username">
+    </div>
+    <div class="field">
+      <label>リポジトリ名</label>
+      <input type="text" id="cfgRepo" placeholder="例: workbench">
+    </div>
+    <div class="field">
+      <label>ブランチ名</label>
+      <input type="text" id="cfgBranch" placeholder="main" value="main">
+    </div>
+    <div class="field">
+      <label>Personal Access Token</label>
+      <input type="password" id="cfgToken" placeholder="ghp_... または github_pat_...">
+    </div>
+
+    <div class="settings-note">
+      以下は「トピックを付けたリポジトリを自動で一覧に表示する」ための設定です(任意)。両方のGitHubアカウントのユーザー名を入れてください。
+    </div>
+
+    <div class="field">
+      <label>自動検出アカウント1(ユーザー名)</label>
+      <input type="text" id="cfgUser1" placeholder="例: chinta44">
+    </div>
+    <div class="field">
+      <label>自動検出アカウント2(ユーザー名・任意)</label>
+      <input type="text" id="cfgUser2" placeholder="例: another-account">
+    </div>
+    <div class="field">
+      <label>検出用トピック名</label>
+      <input type="text" id="cfgTopic" placeholder="workbench-app" value="workbench-app">
+      <div class="hint">このトピックを付けたリポジトリだけが自動表示されます</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary" id="cfgSave">保存する</button>
+      <button class="btn" id="cfgClear">保存内容を削除</button>
+    </div>
+    <div class="status" id="cfgStatus"></div>
+  </div>
+</div>
+
+<div class="overlay" id="addOverlay">
+  <div class="modal">
+    <button class="close" id="addClose">✕</button>
+    <h3 id="addModalTitle">アプリを追加</h3>
+    <p class="sub" id="addModalSub">入力すると、このリポジトリに直接コミットされます。</p>
+
+    <div class="field">
+      <label>アプリ名</label>
+      <input type="text" id="appName" placeholder="天気比較アプリ">
+    </div>
+    <div class="field">
+      <label>URL</label>
+      <input type="url" id="appUrl" placeholder="https://...">
+    </div>
+    <div class="field">
+      <label>説明文</label>
+      <textarea id="appDesc" placeholder="どんなアプリか、簡単に説明してください"></textarea>
+    </div>
+    <div class="field">
+      <label>プラットフォーム</label>
+      <select id="appPlatform">
+        <option value="WEB">WEB</option>
+        <option value="ANDROID">ANDROID</option>
+        <option value="WINDOWS">WINDOWS</option>
+        <option value="OTHER">OTHER</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>稼働状況</label>
+      <select id="appStatus">
+        <option value="active">稼働中</option>
+        <option value="paused">保留中</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>タグ(カンマ区切り)</label>
+      <input type="text" id="appTags" placeholder="データ可視化, 天気, vanilla JS">
+    </div>
+    <div class="field">
+      <label>起動画面のスクリーンショット(任意)</label>
+      <input type="file" id="appImage" accept="image/*">
+      <div class="hint">画像は images/ フォルダに自動アップロードされます</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary" id="addSubmit">追加する</button>
+      <button class="btn" id="addCancel">キャンセル</button>
+      <button class="btn" id="addDelete" style="display:none; border-color: var(--danger); color: var(--danger);">このアプリを削除</button>
+    </div>
+    <div class="status" id="addStatus"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   WORKBENCH自体のバージョン。番号を上げたい時はここだけ書き換える
+   ============================================================ */
+const WORKBENCH_VERSION = 'v2.2';
+
+let APPS = [];
+let activeTag = null;
+let activeStatus = 'all';
+
+const grid = document.getElementById('grid');
+const filtersEl = document.getElementById('filters');
+const countNum = document.getElementById('countNum');
+const lastUpdatedEl = document.getElementById('lastUpdated');
+
+document.getElementById('versionLabel').textContent = `WORKBENCH ${WORKBENCH_VERSION}`;
+
+function pad(n){ return String(n).padStart(3, '0'); }
+
+function formatDate(iso){
+  if(!iso) return '-';
+  const d = new Date(iso);
+  if(isNaN(d)) return '-';
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+// 名前+URLでアプリを一意に識別する(並べ替えで順序が変わっても編集/削除がずれないように)
+function appKey(app){
+  return `${app.name}||${app.url}`;
+}
+
+// トピックを付けたリポジトリを自動検出して、アプリカード形式に変換する
+async function fetchAutoRepos(){
+  const cfg = getCfg();
+  const users = [cfg.user1, cfg.user2].map(u => (u || '').trim()).filter(Boolean);
+  const topic = (cfg.topic || 'workbench-app').trim();
+  if(users.length === 0) return [];
+
+  const headers = { 'Accept': 'application/vnd.github+json' };
+  if(cfg.token) headers['Authorization'] = `Bearer ${cfg.token}`;
+
+  const results = [];
+  for(const user of users){
+    try{
+      const res = await fetch(`https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100`, { headers });
+      if(!res.ok) continue;
+      const repos = await res.json();
+      repos.forEach(repo => {
+        const topics = repo.topics || [];
+        if(!topics.includes(topic)) return;
+        results.push({
+          name: repo.name,
+          url: repo.homepage || repo.html_url,
+          description: repo.description || '',
+          platform: topics.includes('android') ? 'ANDROID' : (topics.includes('windows') ? 'WINDOWS' : 'WEB'),
+          tags: topics.filter(t => t !== topic),
+          image: '',
+          updatedAt: repo.pushed_at,
+          source: 'auto',
+          repoUrl: repo.html_url
+        });
+      });
+    }catch(e){ /* 1アカウント分の取得失敗は無視して続行 */ }
+  }
+  return results;
+}
+
+async function loadApps(){
+  let manual = [];
+  try{
+    const res = await fetch('apps.json?t=' + Date.now());
+    manual = await res.json();
+  }catch(e){
+    manual = [];
+  }
+
+  const auto = await fetchAutoRepos();
+  const manualUrls = new Set(manual.map(a => a.url));
+  const autoFiltered = auto.filter(a => !manualUrls.has(a.url)); // 手動登録済みと重複するものは除外
+
+  APPS = manual.concat(autoFiltered);
+
+  // 更新日時の新しい順に自動並べ替え(未設定のものは一番古い扱い)
+  APPS.sort((a, b) => {
+    const statusA = (a.status || 'active') === 'paused' ? 1 : 0;
+    const statusB = (b.status || 'active') === 'paused' ? 1 : 0;
+    if(statusA !== statusB) return statusA - statusB; // 稼働中(0)が先、保留中(1)が後
+    return new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0);
+  });
+
+  const latest = APPS.reduce((max, a) => {
+    const t = new Date(a.updatedAt || 0).getTime();
+    return t > max ? t : max;
+  }, 0);
+  lastUpdatedEl.textContent = latest > 0 ? `最終更新: ${formatDate(new Date(latest).toISOString())}` : '';
+
+  filtersEl.dataset.built = "";
+  filtersEl.querySelectorAll('.chip').forEach(c => c.remove());
+  render();
+}
+
+function allTags(){
+  const s = new Set();
+  APPS.forEach(a => (a.tags || []).forEach(t => s.add(t)));
+  return Array.from(s);
+}
+
+function render(){
+  countNum.textContent = pad(APPS.length);
+
+  if(!filtersEl.dataset.built){
+    allTags().forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.textContent = tag;
+      btn.onclick = () => {
+        activeTag = (activeTag === tag) ? null : tag;
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        if(activeTag) btn.classList.add('active');
+        render();
+      };
+      filtersEl.appendChild(btn);
+    });
+    filtersEl.dataset.built = "1";
+  }
+
+  let list = APPS;
+  if(activeTag) list = list.filter(a => (a.tags || []).includes(activeTag));
+  if(activeStatus !== 'all') list = list.filter(a => (a.status || 'active') === activeStatus);
+  grid.innerHTML = '';
+
+  if(list.length === 0){
+    grid.innerHTML = '<div class="empty">該当するアプリがありません</div>';
+    return;
+  }
+
+  list.forEach((app) => {
+    const card = document.createElement('div');
+    const status = app.status || 'active';
+    card.className = 'card' + (status === 'paused' ? ' paused' : '');
+    const key = appKey(app);
+    const isAuto = app.source === 'auto';
+    card.setAttribute('data-id', '#' + pad(APPS.indexOf(app) + 1));
+
+    const thumbContent = app.image
+      ? `<img src="${app.image}" alt="${app.name}">`
+      : (app.platform || 'WEB');
+
+    const actionsHtml = isAuto
+      ? `<div class="card-actions">
+          <span class="tag" title="トピック検出により自動表示" style="margin-right:6px;">AUTO</span>
+          <button class="edit-btn" title="編集(上書き保存)" aria-label="編集">✎</button>
+        </div>`
+      : `<div class="card-actions">
+          <button class="edit-btn" title="編集" aria-label="編集">✎</button>
+          <button class="delete-btn" title="削除" aria-label="削除">🗑</button>
+        </div>`;
+
+    const statusBadge = status === 'paused'
+      ? `<span class="status-badge paused">保留中</span>`
+      : `<span class="status-badge active">稼働中</span>`;
+
+    card.innerHTML = `
+      <div class="thumb">${thumbContent}</div>
+      <div class="card-body">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="platform">${app.platform || 'WEB'}</span>
+          ${statusBadge}
+        </div>
+        <h2>${app.name}</h2>
+        <p>${app.description || ''}</p>
+        <div class="tags">${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="card-updated">更新: ${formatDate(app.updatedAt)}</div>
+      <div class="card-footer">
+        <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
+        ${actionsHtml}
+      </div>
+    `;
+    card.querySelector('.edit-btn').onclick = () => openAddModal(key);
+    if(!isAuto){
+      card.querySelector('.delete-btn').onclick = () => deleteApp(key);
+    }
+    grid.appendChild(card);
+  });
+}
+
+const CFG_KEY = 'workbench_cfg';
+
+function getCfg(){
+  try{ return JSON.parse(localStorage.getItem(CFG_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function setCfg(cfg){ localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }
+
+const settingsOverlay = document.getElementById('settingsOverlay');
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsClose = document.getElementById('settingsClose');
+const cfgStatus = document.getElementById('cfgStatus');
+
+function openSettings(){
+  const cfg = getCfg();
+  document.getElementById('cfgOwner').value = cfg.owner || '';
+  document.getElementById('cfgRepo').value = cfg.repo || '';
+  document.getElementById('cfgBranch').value = cfg.branch || 'main';
+  document.getElementById('cfgToken').value = cfg.token || '';
+  document.getElementById('cfgUser1').value = cfg.user1 || '';
+  document.getElementById('cfgUser2').value = cfg.user2 || '';
+  document.getElementById('cfgTopic').value = cfg.topic || 'workbench-app';
+  cfgStatus.className = 'status';
+  settingsOverlay.classList.add('show');
+}
+settingsBtn.onclick = openSettings;
+settingsClose.onclick = () => settingsOverlay.classList.remove('show');
+settingsOverlay.onclick = (e) => { if(e.target === settingsOverlay) settingsOverlay.classList.remove('show'); };
+
+document.getElementById('cfgSave').onclick = () => {
+  const cfg = {
+    owner: document.getElementById('cfgOwner').value.trim(),
+    repo: document.getElementById('cfgRepo').value.trim(),
+    branch: document.getElementById('cfgBranch').value.trim() || 'main',
+    token: document.getElementById('cfgToken').value.trim(),
+    user1: document.getElementById('cfgUser1').value.trim(),
+    user2: document.getElementById('cfgUser2').value.trim(),
+    topic: document.getElementById('cfgTopic').value.trim() || 'workbench-app'
+  };
+  setCfg(cfg);
+  cfgStatus.textContent = '保存しました。';
+  cfgStatus.className = 'status show ok';
+  loadApps();
+};
+document.getElementById('cfgClear').onclick = () => {
+  localStorage.removeItem(CFG_KEY);
+  document.getElementById('cfgOwner').value = '';
+  document.getElementById('cfgRepo').value = '';
+  document.getElementById('cfgBranch').value = 'main';
+  document.getElementById('cfgToken').value = '';
+  document.getElementById('cfgUser1').value = '';
+  document.getElementById('cfgUser2').value = '';
+  document.getElementById('cfgTopic').value = 'workbench-app';
+  cfgStatus.textContent = '削除しました。';
+  cfgStatus.className = 'status show ok';
+  loadApps();
+};
+
+function utf8ToBase64(str){
+  return btoa(unescape(encodeURIComponent(str)));
+}
+function base64ToUtf8(b64){
+  return decodeURIComponent(escape(atob(b64)));
+}
+
+async function ghGetFile(cfg, path){
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}`;
+  const res = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${cfg.token}`, 'Accept': 'application/vnd.github+json' }
+  });
+  if(res.status === 404) return null;
+  if(!res.ok) throw new Error(`取得失敗 (${res.status})`);
+  return await res.json();
+}
+
+async function ghPutFile(cfg, path, base64Content, message, sha){
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+  const body = { message, content: base64Content, branch: cfg.branch };
+  if(sha) body.sha = sha;
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${cfg.token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.message || `保存失敗 (${res.status})`);
+  }
+  return await res.json();
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function slugify(str){
+  return str
+    .toLowerCase()
+    .replace(/[^\w\u3040-\u30ff\u3400-\u9fff]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'app';
+}
+
+const addOverlay = document.getElementById('addOverlay');
+const addClose = document.getElementById('addClose');
+const addCancel = document.getElementById('addCancel');
+const addStatus = document.getElementById('addStatus');
+const addSubmit = document.getElementById('addSubmit');
+const addDelete = document.getElementById('addDelete');
+const addModalTitle = document.getElementById('addModalTitle');
+const addModalSub = document.getElementById('addModalSub');
+const fabBtn = document.getElementById('fabBtn');
+
+let editingKey = null; // null = 新規追加, 文字列 = そのキーのアプリを編集中
+
+function clearAddForm(){
+  document.getElementById('appName').value = '';
+  document.getElementById('appUrl').value = '';
+  document.getElementById('appDesc').value = '';
+  document.getElementById('appPlatform').value = 'WEB';
+  document.getElementById('appStatus').value = 'active';
+  document.getElementById('appTags').value = '';
+  document.getElementById('appImage').value = '';
+  addStatus.className = 'status';
+}
+
+function requireCfgOrOpenSettings(){
+  const cfg = getCfg();
+  if(!cfg.owner || !cfg.repo || !cfg.token){
+    openSettings();
+    cfgStatus.textContent = '先にリポジトリ情報とトークンを入力してください。';
+    cfgStatus.className = 'status show err';
+    return null;
+  }
+  return cfg;
+}
+
+function openAddModal(key){
+  if(!requireCfgOrOpenSettings()) return;
+
+  editingKey = (typeof key === 'string') ? key : null;
+  clearAddForm();
+
+  if(editingKey !== null){
+    const app = APPS.find(a => appKey(a) === editingKey);
+    if(!app){ editingKey = null; return; }
+    document.getElementById('appName').value = app.name || '';
+    document.getElementById('appUrl').value = app.url || '';
+    document.getElementById('appDesc').value = app.description || '';
+    document.getElementById('appPlatform').value = app.platform || 'WEB';
+    document.getElementById('appStatus').value = app.status || 'active';
+    document.getElementById('appTags').value = (app.tags || []).join(', ');
+
+    if(app.source === 'auto'){
+      addModalTitle.textContent = 'アプリを編集(自動検出データの上書き)';
+      addModalSub.textContent = 'これは自動検出されたリポジトリです。ここで保存すると、この内容が自動検出データより優先して表示されます(URLは変更しないでください)。';
+      addDelete.style.display = 'none';
+    }else{
+      addModalTitle.textContent = 'アプリを編集';
+      addModalSub.textContent = '内容を変更すると、このリポジトリに直接コミットされます。';
+      addDelete.style.display = 'inline-block';
+    }
+    addSubmit.textContent = '更新する';
+  }else{
+    addModalTitle.textContent = 'アプリを追加';
+    addModalSub.textContent = '入力すると、このリポジトリに直接コミットされます。';
+    addSubmit.textContent = '追加する';
+    addDelete.style.display = 'none';
+  }
+
+  addOverlay.classList.add('show');
+}
+
+fabBtn.onclick = () => openAddModal(null);
+addClose.onclick = addCancel.onclick = () => addOverlay.classList.remove('show');
+addOverlay.onclick = (e) => { if(e.target === addOverlay) addOverlay.classList.remove('show'); };
+
+addSubmit.onclick = async () => {
+  const cfg = getCfg();
+  const name = document.getElementById('appName').value.trim();
+  const url = document.getElementById('appUrl').value.trim();
+  const description = document.getElementById('appDesc').value.trim();
+  const platform = document.getElementById('appPlatform').value;
+  const status = document.getElementById('appStatus').value;
+  const tags = document.getElementById('appTags').value.split(',').map(t => t.trim()).filter(Boolean);
+  const imageFile = document.getElementById('appImage').files[0];
+
+  if(!name || !url){
+    addStatus.textContent = 'アプリ名とURLは必須です。';
+    addStatus.className = 'status show err';
+    return;
+  }
+
+  addSubmit.disabled = true;
+  addStatus.textContent = '保存中...';
+  addStatus.className = 'status show loading';
+
+  try{
+    const existing = await ghGetFile(cfg, 'apps.json');
+    let list = [];
+    let sha = null;
+    if(existing){
+      list = JSON.parse(base64ToUtf8(existing.content));
+      sha = existing.sha;
+    }
+
+    const targetIdx = (editingKey !== null) ? list.findIndex(a => appKey(a) === editingKey) : -1;
+
+    // 既存の画像パスを保持しつつ、新しい画像があれば差し替える
+    let imagePath = (targetIdx !== -1) ? (list[targetIdx].image || '') : '';
+    if(imageFile){
+      const ext = (imageFile.name.split('.').pop() || 'jpg').toLowerCase();
+      imagePath = `images/${slugify(name)}-${Date.now()}.${ext}`;
+      const base64 = await fileToBase64(imageFile);
+      await ghPutFile(cfg, imagePath, base64, `Add screenshot for ${name}`, null);
+    }
+
+    const entry = { name, url, description, platform, status, tags, image: imagePath, updatedAt: new Date().toISOString() };
+
+    if(targetIdx !== -1){
+      list[targetIdx] = entry;
+    }else{
+      list.push(entry);
+    }
+
+    const newContent = utf8ToBase64(JSON.stringify(list, null, 2) + '\n');
+    const message = (targetIdx !== -1) ? `Update app: ${name}` : `Add app: ${name}`;
+    await ghPutFile(cfg, 'apps.json', newContent, message, sha);
+
+    addStatus.textContent = (targetIdx !== -1 ? '更新しました。' : '追加しました。') + ' 反映まで数十秒かかる場合があります。';
+    addStatus.className = 'status show ok';
+
+    await loadApps();
+    setTimeout(() => { addOverlay.classList.remove('show'); }, 1200);
+
+  }catch(e){
+    addStatus.textContent = 'エラー: ' + e.message;
+    addStatus.className = 'status show err';
+  }finally{
+    addSubmit.disabled = false;
+  }
+};
+
+async function deleteApp(key){
+  const cfg = requireCfgOrOpenSettings();
+  if(!cfg) return;
+
+  const app = APPS.find(a => appKey(a) === key);
+  if(!app) return;
+
+  const ok = confirm(`「${app.name}」を削除します。この操作は取り消せません。よろしいですか?`);
+  if(!ok) return;
+
+  addStatus.textContent = '削除中...';
+  addStatus.className = 'status show loading';
+  addSubmit.disabled = true;
+
+  try{
+    const existing = await ghGetFile(cfg, 'apps.json');
+    if(!existing) throw new Error('apps.json が見つかりません');
+
+    let list = JSON.parse(base64ToUtf8(existing.content));
+    const idx = list.findIndex(a => appKey(a) === key);
+    if(idx === -1) throw new Error('対象のアプリが見つかりませんでした');
+    const target = list[idx];
+    list.splice(idx, 1);
+
+    const newContent = utf8ToBase64(JSON.stringify(list, null, 2) + '\n');
+    await ghPutFile(cfg, 'apps.json', newContent, `Delete app: ${app.name}`, existing.sha);
+
+    // 関連するスクリーンショット画像も削除(失敗しても無視)
+    if(target && target.image){
+      try{
+        const imgFile = await ghGetFile(cfg, target.image);
+        if(imgFile){
+          await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${target.image}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${cfg.token}`,
+              'Accept': 'application/vnd.github+json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: `Delete screenshot for ${app.name}`, sha: imgFile.sha, branch: cfg.branch })
+          });
+        }
+      }catch(e){ /* 画像削除の失敗は無視 */ }
+    }
+
+    addStatus.textContent = '削除しました。';
+    addStatus.className = 'status show ok';
+    await loadApps();
+    setTimeout(() => { addOverlay.classList.remove('show'); }, 1000);
+
+  }catch(e){
+    addStatus.textContent = 'エラー: ' + e.message;
+    addStatus.className = 'status show err';
+  }finally{
+    addSubmit.disabled = false;
+  }
+}
+
+addDelete.onclick = () => { if(editingKey !== null) deleteApp(editingKey); };
+
+document.querySelectorAll('#statusFilters .chip').forEach(btn => {
+  btn.onclick = () => {
+    activeStatus = btn.dataset.status;
+    document.querySelectorAll('#statusFilters .chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  };
+});
+
+loadApps();
+</script>
+</body>
+</html>
