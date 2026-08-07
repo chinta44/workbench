@@ -3,872 +3,1249 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WORKBENCH — 開発ポータル</title>
-<link rel="icon" href="favicon.ico">
+<title>NPB 2026 — 順位トラッカー</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  :root{
-    --bg: #eef1f0;
-    --bg-line: #c9d2d0;
-    --ink: #16232b;
-    --ink-soft: #4a5a60;
-    --teal: #1f7a7c;
-    --teal-deep: #14565a;
-    --amber: #e2a73e;
-    --danger: #b3452f;
-    --card-bg: #ffffff;
-    --radius: 2px;
-  }
-  *{ box-sizing: border-box; }
-  html{ scroll-behavior: smooth; }
-  body{
-    margin:0;
-    background:
-      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--bg-line) 39px, var(--bg-line) 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, var(--bg-line) 39px, var(--bg-line) 40px),
-      var(--bg);
-    background-attachment: fixed;
-    color: var(--ink);
-    font-family: 'Noto Sans JP', sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  ::selection{ background: var(--amber); color: var(--ink); }
-  a{ color: inherit; }
+:root {
+  --bg: #0a0d12;
+  --bg2: #111520;
+  --bg3: #1a1f2e;
+  --bg4: #222840;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f2f8;
+  --text2: #8b91a8;
+  --text3: #525870;
+  --accent: #4f8ef7;
+  --accent2: #6ea8ff;
+  --gold: #f5c842;
+  --green: #3ecf8e;
+  --red: #f55d5d;
+  --font-ja: 'Noto Sans JP', sans-serif;
+  --font-en: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
 
-  .wrap{ max-width: 1080px; margin: 0 auto; padding: 56px 24px 140px; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-  header{
-    display: flex; justify-content: space-between; align-items: flex-end;
-    gap: 24px; border-bottom: 3px solid var(--ink);
-    padding-bottom: 20px; margin-bottom: 36px; flex-wrap: wrap;
-  }
-  .title-block h1{
-    font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900;
-    font-size: clamp(2.2rem, 5vw, 3.4rem); margin: 0 0 6px;
-    letter-spacing: 0.02em; line-height: 1.05;
-  }
-  .title-block p{ margin: 0; color: var(--ink-soft); font-size: 0.95rem; }
-  .header-right{ display: flex; align-items: flex-end; gap: 18px; }
-  .counter{
-    font-family: 'JetBrains Mono', monospace; text-align: right;
-    font-size: 0.8rem; color: var(--ink-soft); line-height: 1.6; white-space: nowrap;
-  }
-  .counter strong{ display: block; font-size: 2rem; color: var(--teal-deep); font-weight: 700; }
-  .last-updated{ display: block; font-size: 0.68rem; margin-top: 2px; color: var(--ink-soft); }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ja);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
 
-  .card-updated{
-    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--ink-soft);
-    margin: 0 20px;
-  }
+/* ── HEADER ── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 13, 18, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  .icon-btn{
-    width: 40px; height: 40px; border: 1.5px solid var(--ink); background: transparent;
-    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; color: var(--ink); transition: background .15s, color .15s;
-  }
-  .icon-btn:hover{ background: var(--ink); color: var(--bg); }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  .filters{ display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; align-items: center; }
-  .filters .label{ font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--ink-soft); margin-right: 6px; }
-  .chip{
-    font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 6px 14px;
-    border: 1.5px solid var(--ink); border-radius: 999px; background: transparent;
-    cursor: pointer; color: var(--ink); transition: background .15s, color .15s;
-  }
-  .chip:hover{ background: var(--ink); color: var(--bg); }
-  .chip.active{ background: var(--teal); border-color: var(--teal); color: #fff; }
+.logo-mark {
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 11px;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
 
-  .grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+.logo-text {
+  font-family: var(--font-en);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  letter-spacing: 0.3px;
+}
 
-  .card{
-    background: var(--card-bg); border: 1.5px solid var(--ink); border-radius: var(--radius);
-    position: relative; padding: 0 0 18px; display: flex; flex-direction: column;
-    gap: 10px; transition: transform .18s ease, box-shadow .18s ease; overflow: hidden;
-  }
-  .card:hover{ transform: translateY(-4px); box-shadow: 6px 6px 0 var(--ink); }
-  .card::before{
-    content: attr(data-id); position: absolute; top: -1px; right: -1px;
-    background: var(--ink); color: var(--bg); font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem; padding: 3px 8px; letter-spacing: 0.05em; z-index: 2;
-  }
-  .thumb{
-    width: 100%; aspect-ratio: 16/9; background: var(--bg);
-    border-bottom: 1.5px solid var(--ink); display: flex; align-items: center; justify-content: center;
-    font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); font-size: 0.75rem; overflow: hidden;
-  }
-  .thumb img{ width: 100%; height: 100%; object-fit: cover; display: block; }
-  .card-body{ padding: 16px 20px 0; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
-  .platform{
-    display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: var(--teal-deep);
-  }
-  .platform::before{ content: ''; width: 8px; height: 8px; background: var(--teal); border-radius: 50%; display: inline-block; }
+.logo-year {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text3);
+  margin-left: 2px;
+}
 
-  .status-badge{
-    display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; padding: 3px 9px;
-    border-radius: 999px; border: 1px solid transparent;
-  }
-  .status-badge.active{ background: #e3f0ea; color: #1f6b45; border-color: #1f6b45; }
-  .status-badge.paused{ background: #f2ece0; color: #8a6a1f; border-color: #8a6a1f; }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  .card.paused{ opacity: 0.6; }
-  .card.paused .thumb{ filter: grayscale(0.5); }
-  .card.paused:hover{ opacity: 0.85; }
-  .card h2{ font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.25rem; margin: 0; font-weight: 700; line-height: 1.3; }
-  .card p{ margin: 0; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; flex-grow: 1; }
-  .tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-  .tag{
-    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--ink-soft);
-    border: 1px solid var(--bg-line); background: var(--bg); padding: 2px 8px; border-radius: 999px;
-  }
-  .card-footer{
-    margin: 8px 20px 0; display: flex; align-items: center; justify-content: space-between;
-    padding-top: 10px; border-top: 1px dashed var(--bg-line);
-  }
-  .card .open{
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
-    text-decoration: none; color: var(--ink);
-  }
-  .card .open::after{ content: '→'; transition: transform .15s; }
-  .card .open:hover::after{ transform: translateX(4px); }
-  .card .open:hover{ color: var(--teal-deep); }
+.league-toggle {
+  display: flex;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
 
-  .card-actions{ display: flex; gap: 4px; }
-  .card-actions button{
-    width: 30px; height: 30px; border: 1.5px solid var(--bg-line); background: transparent;
-    border-radius: 50%; cursor: pointer; font-size: 0.85rem; color: var(--ink-soft);
-    display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s, border-color .15s;
-  }
-  .card-actions .edit-btn:hover{ background: var(--teal); border-color: var(--teal); color: #fff; }
-  .card-actions .delete-btn:hover{ background: var(--danger); border-color: var(--danger); color: #fff; }
+.league-btn {
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  transition: all 0.15s;
+  font-family: var(--font-ja);
+}
 
-  .empty{ font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); padding: 60px 0; text-align: center; font-size: 0.9rem; grid-column: 1 / -1; }
+.league-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
 
-  footer{
-    margin-top: 70px; padding-top: 20px; border-top: 1px solid var(--bg-line);
-    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--ink-soft);
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-  }
+.refresh-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+  font-family: var(--font-ja);
+}
 
-  .fab{
-    position: fixed; right: 28px; bottom: 28px; width: 58px; height: 58px;
-    border-radius: 50%; background: var(--ink); color: var(--bg); border: none;
-    font-size: 1.8rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.25);
-    display: flex; align-items: center; justify-content: center; transition: transform .15s, background .15s;
-    z-index: 50;
-  }
-  .fab:hover{ transform: scale(1.06); background: var(--teal-deep); }
+.refresh-btn:hover { border-color: var(--border2); color: var(--text); }
+.refresh-btn.loading svg { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  .overlay{
-    position: fixed; inset: 0; background: rgba(22,35,43,0.55); display: none;
-    align-items: center; justify-content: center; z-index: 100; padding: 20px;
-  }
-  .overlay.show{ display: flex; }
-  .modal{
-    background: var(--card-bg); border: 1.5px solid var(--ink); max-width: 480px; width: 100%;
-    max-height: 90vh; overflow-y: auto; padding: 28px; position: relative;
-  }
-  .modal h3{ font-family: 'Zen Kaku Gothic New', sans-serif; margin: 0 0 4px; font-size: 1.3rem; }
-  .modal .sub{ font-size: 0.8rem; color: var(--ink-soft); margin: 0 0 18px; line-height: 1.6; }
-  .modal .close{
-    position: absolute; top: 20px; right: 20px; background: none; border: none;
-    font-size: 1.3rem; cursor: pointer; color: var(--ink-soft);
-  }
-  .field{ margin-bottom: 14px; }
-  .field label{
-    display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
-    color: var(--ink-soft); margin-bottom: 5px; letter-spacing: 0.03em;
-  }
-  .field input[type=text], .field input[type=url], .field textarea, .field select, .field input[type=password], .field input[type=file]{
-    width: 100%; border: 1.5px solid var(--bg-line); background: var(--bg); padding: 9px 10px;
-    font-family: 'Noto Sans JP', sans-serif; font-size: 0.9rem; color: var(--ink); border-radius: 2px;
-  }
-  .field textarea{ resize: vertical; min-height: 64px; font-family: 'Noto Sans JP', sans-serif; }
-  .field input:focus, .field textarea:focus, .field select:focus{ outline: 2px solid var(--teal); outline-offset: 1px; }
-  .field .hint{ font-size: 0.7rem; color: var(--ink-soft); margin-top: 4px; }
+.update-time {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+}
 
-  .btn-row{ display: flex; gap: 10px; margin-top: 20px; }
-  .btn{
-    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
-    padding: 10px 18px; border: 1.5px solid var(--ink); background: transparent; cursor: pointer;
-    border-radius: 2px; color: var(--ink); transition: background .15s, color .15s;
-  }
-  .btn.primary{ background: var(--ink); color: var(--bg); }
-  .btn.primary:hover{ background: var(--teal-deep); border-color: var(--teal-deep); }
-  .btn:not(.primary):hover{ background: var(--bg-line); }
-  .btn:disabled{ opacity: 0.5; cursor: not-allowed; }
+/* ── LAYOUT ── */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
 
-  .status{
-    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; margin-top: 12px;
-    padding: 8px 10px; border-radius: 2px; display: none;
-  }
-  .status.show{ display: block; }
-  .status.ok{ background: #e3f0ea; color: #1f6b45; border: 1px solid #1f6b45; }
-  .status.err{ background: #f5e4df; color: var(--danger); border: 1px solid var(--danger); }
-  .status.loading{ background: var(--bg); color: var(--ink-soft); border: 1px solid var(--bg-line); }
+/* ── TODAY GAMES BAR ── */
+.today-section {
+  margin-bottom: 28px;
+}
 
-  .settings-note{
-    font-size: 0.72rem; color: var(--ink-soft); background: var(--bg); border: 1px solid var(--bg-line);
-    padding: 10px 12px; border-radius: 2px; line-height: 1.6; margin-bottom: 16px;
-  }
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
 
-  @media (prefers-reduced-motion: reduce){ .card, .card .open::after, .fab{ transition: none; } }
+.games-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg4) transparent;
+}
+
+.games-scroll::-webkit-scrollbar { height: 4px; }
+.games-scroll::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+
+.game-card {
+  flex-shrink: 0;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  min-width: 160px;
+  transition: border-color 0.15s;
+}
+
+.game-card:hover { border-color: var(--border2); }
+
+.game-matchup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.game-team {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.game-team.winner { color: var(--green); }
+
+.game-score-area {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.game-score { color: var(--text); }
+.game-score.winner { color: var(--green); }
+.score-sep { color: var(--text3); font-size: 11px; }
+
+.game-status {
+  font-size: 10px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+}
+
+.live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  margin-right: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── NAV TABS ── */
+.nav-bar {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.nav-tab {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text2);
+  transition: all 0.15s;
+  margin-bottom: -1px;
+  font-family: var(--font-ja);
+}
+
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
+
+/* ── CONTENT PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── CHART ── */
+.chart-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.metric-tabs {
+  display: flex;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.metric-tab {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  transition: all 0.15s;
+  font-family: var(--font-ja);
+}
+
+.metric-tab.active { background: var(--bg4); color: var(--text); }
+
+.chart-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text2);
+  cursor: pointer;
+  transition: opacity 0.15s;
+  user-select: none;
+}
+
+.legend-item.dimmed { opacity: 0.3; }
+
+.legend-pip {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.events-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.event-chip {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid;
+  letter-spacing: 0.3px;
+}
+
+/* ── STANDINGS TABLE ── */
+.standings-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.standings-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.standings-wrap thead th {
+  background: var(--bg3);
+  color: var(--text3);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  padding: 10px 14px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.standings-wrap thead th:first-child,
+.standings-wrap thead th:nth-child(2) { text-align: left; }
+
+.standings-wrap tbody td {
+  padding: 11px 14px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.standings-wrap tbody td:first-child,
+.standings-wrap tbody td:nth-child(2) { text-align: left; }
+.standings-wrap tbody tr:last-child td { border-bottom: none; }
+.standings-wrap tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+.rank-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.rank-1 { background: rgba(245,200,66,0.15); color: var(--gold); }
+.rank-2 { background: rgba(200,210,230,0.12); color: #c8d2e6; }
+.rank-3 { background: rgba(200,140,90,0.15); color: #d4956a; }
+.rank-other { background: var(--bg4); color: var(--text3); }
+
+.team-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.team-label { font-weight: 500; font-size: 13px; }
+
+.wr-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wr-bar {
+  width: 44px;
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.wr-fill {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.pos-val { color: var(--green); }
+.neg-val { color: var(--red); }
+
+.magic-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 20px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(79,142,247,0.15);
+  color: var(--accent2);
+  padding: 0 5px;
+}
+
+.cs-zone {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--green);
+  opacity: 0.6;
+}
+
+/* ── MATRIX ── */
+.matrix-legend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+}
+
+.ml-box {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.matrix-scroll { overflow-x: auto; margin-bottom: 12px; }
+
+.matrix-scroll table {
+  border-collapse: collapse;
+  min-width: 460px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.matrix-scroll th {
+  padding: 8px 10px;
+  background: var(--bg3);
+  color: var(--text3);
+  border: 1px solid var(--border);
+  font-weight: 500;
+  font-size: 11px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.matrix-scroll td {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  text-align: center;
+  min-width: 52px;
+}
+
+.m-self { background: var(--bg3); color: var(--text3); }
+.m-win { background: rgba(62,207,142,0.12); color: #3ecf8e; }
+.m-lose { background: rgba(245,93,93,0.10); color: #f55d5d; }
+.m-even { background: var(--bg2); color: var(--text3); }
+
+/* ── LOADING / ERROR ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--text2);
+  z-index: 999;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.toast.show { display: flex; }
+.toast.error { border-color: rgba(245,93,93,0.3); color: var(--red); }
+
+/* ── GRID FOR STATS CARDS ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-family: var(--font-en);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 3px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .site-header { padding: 0 14px; }
+  .main { padding: 16px 14px 48px; }
+  .update-time { display: none; }
+  .standings-wrap thead th:nth-child(n+8) { display: none; }
+  .standings-wrap tbody td:nth-child(n+8) { display: none; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header>
-    <div class="title-block">
-      <h1>WORKBENCH</h1>
-      <p>個人開発Webアプリ・カタログ ─ 作ったものを、ここから開く。</p>
+<header class="site-header">
+  <div class="logo">
+    <div class="logo-mark">NPB</div>
+    <span class="logo-text">順位トラッカー <span class="logo-year">2026</span></span>
+  </div>
+  <div class="header-right">
+    <div class="league-toggle">
+      <button class="league-btn active" onclick="switchLeague('c')">セ・リーグ</button>
+      <button class="league-btn" onclick="switchLeague('p')">パ・リーグ</button>
     </div>
-    <div class="header-right">
-      <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED<span class="last-updated" id="lastUpdated"></span></div>
-      <button class="icon-btn" id="settingsBtn" title="設定" aria-label="設定">⚙</button>
-    </div>
-  </header>
+    <button class="refresh-btn" id="refreshBtn" onclick="fetchAll()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+      </svg>
+      更新
+    </button>
+    <button class="refresh-btn" onclick="showApiKeyModal()" title="APIキー設定" style="padding:5px 9px">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-4px">
+        <path d="M12 2a5 5 0 0 1 5 5c0 1.9-.7 3.5-1.8 4.7L19 20H5l3.8-8.3A5 5 0 0 1 7 7a5 5 0 0 1 5-5z"/>
+      </svg>
+    </button>
+    <span class="update-time" id="updateTime">8/6 内蔵データ</span>
+  </div>
+</header>
 
-  <div class="filters" id="statusFilters">
-    <span class="label">STATUS:</span>
-    <button class="chip active" data-status="all">すべて</button>
-    <button class="chip" data-status="active">稼働中</button>
-    <button class="chip" data-status="paused">保留中</button>
+<main class="main">
+
+  <!-- today games -->
+  <div class="today-section">
+    <div class="section-eyebrow" id="todayEyebrow">今日の試合</div>
+    <div class="games-scroll" id="gamesScroll">
+      <div style="font-size:12px;color:var(--text3);padding:12px 0">読み込み中...</div>
+    </div>
   </div>
 
-  <div class="filters" id="filters">
-    <span class="label">FILTER:</span>
+  <!-- summary stats -->
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <!-- nav -->
+  <nav class="nav-bar">
+    <button class="nav-tab active" onclick="showPane('graph')">📈 順位推移</button>
+    <button class="nav-tab" onclick="showPane('standings')">📋 順位表</button>
+    <button class="nav-tab" onclick="showPane('matrix')">⚔️ 対戦成績</button>
+  </nav>
+
+  <!-- GRAPH -->
+  <div class="panel active" id="panel-graph">
+    <div class="chart-controls">
+      <div class="legend-row" id="legendRow"></div>
+      <div class="metric-tabs">
+        <button class="metric-tab active" onclick="switchMetric('wr')">勝率</button>
+        <button class="metric-tab" onclick="switchMetric('gb')">ゲーム差</button>
+        <button class="metric-tab" onclick="switchMetric('sv')">貯金</button>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="canvas-wrap">
+        <canvas id="mainChart" role="img" aria-label="2026年プロ野球順位推移グラフ">各球団の勝率推移チャート</canvas>
+      </div>
+      <div class="events-row" id="eventsRow"></div>
+    </div>
   </div>
 
-  <div class="grid" id="grid"></div>
-
-  <footer>
-    <span id="versionLabel">WORKBENCH</span>
-    <span>右下の + からアプリを追加できます</span>
-  </footer>
-
-</div>
-
-<button class="fab" id="fabBtn" title="アプリを追加" aria-label="アプリを追加">＋</button>
-
-<div class="overlay" id="settingsOverlay">
-  <div class="modal">
-    <button class="close" id="settingsClose">✕</button>
-    <h3>設定</h3>
-    <p class="sub">このリポジトリ情報とGitHubトークンを入力してください。入力内容はこのブラウザにのみ保存されます。</p>
-
-    <div class="settings-note">
-      トークンは Settings → Developer settings → Fine-grained tokens で発行し、対象リポジトリのみ / Contents: Read and write の権限にしてください。
+  <!-- STANDINGS -->
+  <div class="panel" id="panel-standings">
+    <div class="standings-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>球団</th>
+            <th>試合</th>
+            <th>勝</th>
+            <th>負</th>
+            <th>分</th>
+            <th>勝率</th>
+            <th>勝差</th>
+            <th>貯金</th>
+            <th>M</th>
+          </tr>
+        </thead>
+        <tbody id="standingsBody"></tbody>
+      </table>
     </div>
-
-    <div class="field">
-      <label>GitHubユーザー名 / Organization名</label>
-      <input type="text" id="cfgOwner" placeholder="例: your-username">
-    </div>
-    <div class="field">
-      <label>リポジトリ名</label>
-      <input type="text" id="cfgRepo" placeholder="例: workbench">
-    </div>
-    <div class="field">
-      <label>ブランチ名</label>
-      <input type="text" id="cfgBranch" placeholder="main" value="main">
-    </div>
-    <div class="field">
-      <label>Personal Access Token</label>
-      <input type="password" id="cfgToken" placeholder="ghp_... または github_pat_...">
-    </div>
-
-    <div class="settings-note">
-      以下は「トピックを付けたリポジトリを自動で一覧に表示する」ための設定です(任意)。両方のGitHubアカウントのユーザー名を入れてください。
-    </div>
-
-    <div class="field">
-      <label>自動検出アカウント1(ユーザー名)</label>
-      <input type="text" id="cfgUser1" placeholder="例: chinta44">
-    </div>
-    <div class="field">
-      <label>自動検出アカウント2(ユーザー名・任意)</label>
-      <input type="text" id="cfgUser2" placeholder="例: another-account">
-    </div>
-    <div class="field">
-      <label>検出用トピック名</label>
-      <input type="text" id="cfgTopic" placeholder="workbench-app" value="workbench-app">
-      <div class="hint">このトピックを付けたリポジトリだけが自動表示されます</div>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn primary" id="cfgSave">保存する</button>
-      <button class="btn" id="cfgClear">保存内容を削除</button>
-    </div>
-    <div class="status" id="cfgStatus"></div>
+    <p style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">M = 優勝マジック。消灯時は —</p>
   </div>
-</div>
 
-<div class="overlay" id="addOverlay">
-  <div class="modal">
-    <button class="close" id="addClose">✕</button>
-    <h3 id="addModalTitle">アプリを追加</h3>
-    <p class="sub" id="addModalSub">入力すると、このリポジトリに直接コミットされます。</p>
+  <!-- MATRIX -->
+  <div class="panel" id="panel-matrix">
+    <div class="matrix-legend">
+      <span><span class="ml-box" style="background:rgba(62,207,142,0.2);border:1px solid rgba(62,207,142,0.4)"></span>勝ち越し</span>
+      <span><span class="ml-box" style="background:rgba(245,93,93,0.15);border:1px solid rgba(245,93,93,0.3)"></span>負け越し</span>
+      <span><span class="ml-box" style="background:var(--bg3);border:1px solid var(--border)"></span>五分</span>
+    </div>
+    <div class="matrix-scroll">
+      <table id="matrixTable"></table>
+    </div>
+    <p style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">縦（行）チームが横（列）チームに対しての「勝－負」。交流戦含む。</p>
+  </div>
 
-    <div class="field">
-      <label>アプリ名</label>
-      <input type="text" id="appName" placeholder="天気比較アプリ">
-    </div>
-    <div class="field">
-      <label>URL</label>
-      <input type="url" id="appUrl" placeholder="https://...">
-    </div>
-    <div class="field">
-      <label>説明文</label>
-      <textarea id="appDesc" placeholder="どんなアプリか、簡単に説明してください"></textarea>
-    </div>
-    <div class="field">
-      <label>プラットフォーム</label>
-      <select id="appPlatform">
-        <option value="WEB">WEB</option>
-        <option value="ANDROID">ANDROID</option>
-        <option value="WINDOWS">WINDOWS</option>
-        <option value="OTHER">OTHER</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>稼働状況</label>
-      <select id="appStatus">
-        <option value="active">稼働中</option>
-        <option value="paused">保留中</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>タグ(カンマ区切り)</label>
-      <input type="text" id="appTags" placeholder="データ可視化, 天気, vanilla JS">
-    </div>
-    <div class="field">
-      <label>起動画面のスクリーンショット(任意)</label>
-      <input type="file" id="appImage" accept="image/*">
-      <div class="hint">画像は images/ フォルダに自動アップロードされます</div>
-    </div>
+</main>
 
-    <div class="btn-row">
-      <button class="btn primary" id="addSubmit">追加する</button>
-      <button class="btn" id="addCancel">キャンセル</button>
-      <button class="btn" id="addDelete" style="display:none; border-color: var(--danger); color: var(--danger);">このアプリを削除</button>
+<div class="toast" id="toast"></div>
+
+<!-- API Key Modal -->
+<div id="apiModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:28px 28px 24px;max-width:420px;width:100%">
+    <div style="font-family:var(--font-en);font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">Anthropic APIキーを設定</div>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:4px;line-height:1.7">
+      順位の自動更新にはAnthropicのAPIキーが必要です。<br>
+      <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--accent2)">console.anthropic.com</a> で取得できます（無料枠あり）。<br>
+      キーはこのブラウザにのみ保存され、外部には送信されません。
+    </p>
+    <div style="margin:16px 0 6px">
+      <input id="apiKeyInput" type="password" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false"
+        style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-family:var(--font-mono);font-size:12px;outline:none"
+        onkeydown="if(event.key==='Enter')submitApiKey()">
     </div>
-    <div class="status" id="addStatus"></div>
+    <div id="apiKeyError" style="font-size:11px;color:var(--red);min-height:16px;margin-bottom:12px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button onclick="closeApiKeyModal()" style="padding:7px 16px;font-size:12px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;font-family:var(--font-ja)">キャンセル</button>
+      <button onclick="submitApiKey()" style="padding:7px 16px;font-size:12px;background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-weight:500;font-family:var(--font-ja)">保存して更新</button>
+    </div>
   </div>
 </div>
 
 <script>
-/* ============================================================
-   WORKBENCH自体のバージョン。番号を上げたい時はここだけ書き換える
-   ============================================================ */
-const WORKBENCH_VERSION = 'v2.3';
-
-let APPS = [];
-let activeTag = null;
-let activeStatus = 'all';
-
-const grid = document.getElementById('grid');
-const filtersEl = document.getElementById('filters');
-const countNum = document.getElementById('countNum');
-const lastUpdatedEl = document.getElementById('lastUpdated');
-
-document.getElementById('versionLabel').textContent = `WORKBENCH ${WORKBENCH_VERSION}`;
-
-function pad(n){ return String(n).padStart(3, '0'); }
-
-function formatDate(iso){
-  if(!iso) return '-';
-  const d = new Date(iso);
-  if(isNaN(d)) return '-';
-  const p = n => String(n).padStart(2, '0');
-  return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
-}
-
-// 名前+URLでアプリを一意に識別する(並べ替えで順序が変わっても編集/削除がずれないように)
-function appKey(app){
-  return `${app.name}||${app.url}`;
-}
-
-// トピックを付けたリポジトリを自動検出して、アプリカード形式に変換する
-async function fetchAutoRepos(){
-  const cfg = getCfg();
-  const users = [cfg.user1, cfg.user2].map(u => (u || '').trim()).filter(Boolean);
-  const topic = (cfg.topic || 'workbench-app').trim();
-  if(users.length === 0) return [];
-
-  const headers = { 'Accept': 'application/vnd.github+json' };
-  if(cfg.token) headers['Authorization'] = `Bearer ${cfg.token}`;
-
-  const results = [];
-  for(const user of users){
-    try{
-      const res = await fetch(`https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100`, { headers });
-      if(!res.ok) continue;
-      const repos = await res.json();
-      repos.forEach(repo => {
-        const topics = repo.topics || [];
-        if(!topics.includes(topic)) return;
-        results.push({
-          name: repo.name,
-          url: repo.homepage || repo.html_url,
-          description: repo.description || '',
-          platform: topics.includes('android') ? 'ANDROID' : (topics.includes('windows') ? 'WINDOWS' : 'WEB'),
-          tags: topics.filter(t => t !== topic),
-          image: '',
-          updatedAt: repo.pushed_at,
-          source: 'auto',
-          repoUrl: repo.html_url
-        });
-      });
-    }catch(e){ /* 1アカウント分の取得失敗は無視して続行 */ }
-  }
-  return results;
-}
-
-async function loadApps(){
-  let manual = [];
-  try{
-    const res = await fetch('apps.json?t=' + Date.now());
-    manual = await res.json();
-  }catch(e){
-    manual = [];
-  }
-
-  const auto = await fetchAutoRepos();
-  const manualUrls = new Set(manual.map(a => a.url));
-  const autoFiltered = auto.filter(a => !manualUrls.has(a.url)); // 手動登録済みと重複するものは除外
-
-  APPS = manual.concat(autoFiltered);
-
-  // 更新日時の新しい順に自動並べ替え(未設定のものは一番古い扱い)
-  APPS.sort((a, b) => {
-    const statusA = (a.status || 'active') === 'paused' ? 1 : 0;
-    const statusB = (b.status || 'active') === 'paused' ? 1 : 0;
-    if(statusA !== statusB) return statusA - statusB; // 稼働中(0)が先、保留中(1)が後
-    return new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0);
-  });
-
-  const latest = APPS.reduce((max, a) => {
-    const t = new Date(a.updatedAt || 0).getTime();
-    return t > max ? t : max;
-  }, 0);
-  lastUpdatedEl.textContent = latest > 0 ? `最終更新: ${formatDate(new Date(latest).toISOString())}` : '';
-
-  filtersEl.dataset.built = "";
-  filtersEl.querySelectorAll('.chip').forEach(c => c.remove());
-  render();
-}
-
-function allTags(){
-  const s = new Set();
-  APPS.forEach(a => (a.tags || []).forEach(t => s.add(t)));
-  return Array.from(s);
-}
-
-function render(){
-  countNum.textContent = pad(APPS.length);
-
-  if(!filtersEl.dataset.built){
-    allTags().forEach(tag => {
-      const btn = document.createElement('button');
-      btn.className = 'chip';
-      btn.textContent = tag;
-      btn.onclick = () => {
-        activeTag = (activeTag === tag) ? null : tag;
-        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        if(activeTag) btn.classList.add('active');
-        render();
-      };
-      filtersEl.appendChild(btn);
-    });
-    filtersEl.dataset.built = "1";
-  }
-
-  let list = APPS;
-  if(activeTag) list = list.filter(a => (a.tags || []).includes(activeTag));
-  if(activeStatus !== 'all') list = list.filter(a => (a.status || 'active') === activeStatus);
-  grid.innerHTML = '';
-
-  if(list.length === 0){
-    grid.innerHTML = '<div class="empty">該当するアプリがありません</div>';
-    return;
-  }
-
-  list.forEach((app) => {
-    const card = document.createElement('div');
-    const status = app.status || 'active';
-    card.className = 'card' + (status === 'paused' ? ' paused' : '');
-    const key = appKey(app);
-    const isAuto = app.source === 'auto';
-    card.setAttribute('data-id', '#' + pad(APPS.indexOf(app) + 1));
-
-    const thumbContent = app.image
-      ? `<img src="${app.image}" alt="${app.name}">`
-      : (app.platform || 'WEB');
-
-    const actionsHtml = isAuto
-      ? `<div class="card-actions">
-          <span class="tag" title="トピック検出により自動表示" style="margin-right:6px;">AUTO</span>
-          <button class="edit-btn" title="編集(上書き保存)" aria-label="編集">✎</button>
-        </div>`
-      : `<div class="card-actions">
-          <button class="edit-btn" title="編集" aria-label="編集">✎</button>
-          <button class="delete-btn" title="削除" aria-label="削除">🗑</button>
-        </div>`;
-
-    const statusBadge = status === 'paused'
-      ? `<span class="status-badge paused">保留中</span>`
-      : `<span class="status-badge active">稼働中</span>`;
-
-    card.innerHTML = `
-      <div class="thumb">${thumbContent}</div>
-      <div class="card-body">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span class="platform">${app.platform || 'WEB'}</span>
-          ${statusBadge}
-        </div>
-        <h2>${app.name}</h2>
-        <p>${app.description || ''}</p>
-        <div class="tags">${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
-      </div>
-      <div class="card-updated">更新: ${formatDate(app.updatedAt)}</div>
-      <div class="card-footer">
-        <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
-        ${actionsHtml}
-      </div>
-    `;
-    card.querySelector('.edit-btn').onclick = () => openAddModal(key);
-    if(!isAuto){
-      card.querySelector('.delete-btn').onclick = () => deleteApp(key);
-    }
-    grid.appendChild(card);
-  });
-}
-
-const CFG_KEY = 'workbench_cfg';
-
-function getCfg(){
-  try{ return JSON.parse(localStorage.getItem(CFG_KEY)) || {}; }
-  catch(e){ return {}; }
-}
-function setCfg(cfg){ localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }
-
-const settingsOverlay = document.getElementById('settingsOverlay');
-const settingsBtn = document.getElementById('settingsBtn');
-const settingsClose = document.getElementById('settingsClose');
-const cfgStatus = document.getElementById('cfgStatus');
-
-function openSettings(){
-  const cfg = getCfg();
-  document.getElementById('cfgOwner').value = cfg.owner || '';
-  document.getElementById('cfgRepo').value = cfg.repo || '';
-  document.getElementById('cfgBranch').value = cfg.branch || 'main';
-  document.getElementById('cfgToken').value = cfg.token || '';
-  document.getElementById('cfgUser1').value = cfg.user1 || '';
-  document.getElementById('cfgUser2').value = cfg.user2 || '';
-  document.getElementById('cfgTopic').value = cfg.topic || 'workbench-app';
-  cfgStatus.className = 'status';
-  settingsOverlay.classList.add('show');
-}
-settingsBtn.onclick = openSettings;
-settingsClose.onclick = () => settingsOverlay.classList.remove('show');
-settingsOverlay.onclick = (e) => { if(e.target === settingsOverlay) settingsOverlay.classList.remove('show'); };
-
-document.getElementById('cfgSave').onclick = () => {
-  const cfg = {
-    owner: document.getElementById('cfgOwner').value.trim(),
-    repo: document.getElementById('cfgRepo').value.trim(),
-    branch: document.getElementById('cfgBranch').value.trim() || 'main',
-    token: document.getElementById('cfgToken').value.trim(),
-    user1: document.getElementById('cfgUser1').value.trim(),
-    user2: document.getElementById('cfgUser2').value.trim(),
-    topic: document.getElementById('cfgTopic').value.trim() || 'workbench-app'
-  };
-  setCfg(cfg);
-  cfgStatus.textContent = '保存しました。';
-  cfgStatus.className = 'status show ok';
-  loadApps();
-};
-document.getElementById('cfgClear').onclick = () => {
-  localStorage.removeItem(CFG_KEY);
-  document.getElementById('cfgOwner').value = '';
-  document.getElementById('cfgRepo').value = '';
-  document.getElementById('cfgBranch').value = 'main';
-  document.getElementById('cfgToken').value = '';
-  document.getElementById('cfgUser1').value = '';
-  document.getElementById('cfgUser2').value = '';
-  document.getElementById('cfgTopic').value = 'workbench-app';
-  cfgStatus.textContent = '削除しました。';
-  cfgStatus.className = 'status show ok';
-  loadApps();
+const COLORS = {
+  '巨人':'#f04830','阪神':'#e6b800','ヤクルト':'#2db87a','DeNA':'#4488dd',
+  '広島':'#e83030','中日':'#2266cc','ソフトバンク':'#f09000','日本ハム':'#3080d0',
+  'オリックス':'#2255bb','楽天':'#cc2222','西武':'#1a4fa0','ロッテ':'#888899'
 };
 
-function utf8ToBase64(str){
-  return btoa(unescape(encodeURIComponent(str)));
-}
-function base64ToUtf8(b64){
-  return decodeURIComponent(escape(atob(b64)));
-}
-
-async function ghGetFile(cfg, path){
-  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}`;
-  const res = await fetch(url, {
-    headers: { 'Authorization': `Bearer ${cfg.token}`, 'Accept': 'application/vnd.github+json' }
-  });
-  if(res.status === 404) return null;
-  if(!res.ok) throw new Error(`取得失敗 (${res.status})`);
-  return await res.json();
-}
-
-async function ghPutFile(cfg, path, base64Content, message, sha){
-  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
-  const body = { message, content: base64Content, branch: cfg.branch };
-  if(sha) body.sha = sha;
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${cfg.token}`,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json'
+const LEAGUES = {
+  c:{
+    name:'セ・リーグ',
+    teams:['阪神','巨人','ヤクルト','DeNA','中日','広島'],
+    current:[
+      {team:'阪神',g:97,w:54,l:42,d:1,wr:0.562,gb:'-',sv:12,magic:null},
+      {team:'巨人',g:98,w:53,l:43,d:2,wr:0.552,gb:'1',sv:10,magic:null},
+      {team:'ヤクルト',g:98,w:44,l:53,d:1,wr:0.454,gb:'9.5',sv:-9,magic:null},
+      {team:'DeNA',g:98,w:43,l:52,d:3,wr:0.453,gb:'0',sv:-9,magic:null},
+      {team:'中日',g:100,w:42,l:57,d:1,wr:0.424,gb:'3',sv:-15,magic:null},
+      {team:'広島',g:95,w:38,l:53,d:4,wr:0.418,gb:'0',sv:-15,magic:null},
+    ],
+    history:{
+      // 開幕〜8/6 実データ（約2週間おき）
+      labels:['3/27\n開幕','4/10','4/24','5/8','5/22\n交流戦前','6/18\n交流戦後','7/10','7/24','8/6'],
+      wr:{
+        '阪神': [0.500,0.524,0.529,0.535,0.543,0.540,0.548,0.555,0.562],
+        '巨人': [0.500,0.514,0.533,0.540,0.551,0.548,0.551,0.552,0.552],
+        'ヤクルト':[0.500,0.510,0.520,0.545,0.538,0.540,0.510,0.468,0.454],
+        'DeNA':  [0.500,0.505,0.513,0.500,0.490,0.419,0.435,0.448,0.453],
+        '中日':  [0.500,0.457,0.432,0.408,0.378,0.349,0.370,0.400,0.424],
+        '広島':  [0.500,0.490,0.471,0.455,0.420,0.390,0.405,0.415,0.418],
+      },
+      sv:{
+        '阪神': [0,3,4,5,7,5,7,10,12],
+        '巨人': [0,2,4,5,7,6,7,9,10],
+        'ヤクルト':[0,1,3,6,5,5,1,-5,-9],
+        'DeNA':  [0,1,2,0,-2,-10,-8,-7,-9],
+        '中日':  [0,-4,-7,-10,-13,-19,-14,-10,-15],
+        '広島':  [0,-1,-3,-5,-8,-13,-11,-12,-15],
+      }
     },
-    body: JSON.stringify(body)
-  });
-  if(!res.ok){
-    const errBody = await res.json().catch(() => ({}));
-    throw new Error(errBody.message || `保存失敗 (${res.status})`);
-  }
-  return await res.json();
-}
-
-function fileToBase64(file){
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-function slugify(str){
-  return str
-    .toLowerCase()
-    .replace(/[^\w\u3040-\u30ff\u3400-\u9fff]+/g, '-')
-    .replace(/^-+|-+$/g, '') || 'app';
-}
-
-const addOverlay = document.getElementById('addOverlay');
-const addClose = document.getElementById('addClose');
-const addCancel = document.getElementById('addCancel');
-const addStatus = document.getElementById('addStatus');
-const addSubmit = document.getElementById('addSubmit');
-const addDelete = document.getElementById('addDelete');
-const addModalTitle = document.getElementById('addModalTitle');
-const addModalSub = document.getElementById('addModalSub');
-const fabBtn = document.getElementById('fabBtn');
-
-let editingKey = null; // null = 新規追加, 文字列 = そのキーのアプリを編集中
-
-function clearAddForm(){
-  document.getElementById('appName').value = '';
-  document.getElementById('appUrl').value = '';
-  document.getElementById('appDesc').value = '';
-  document.getElementById('appPlatform').value = 'WEB';
-  document.getElementById('appStatus').value = 'active';
-  document.getElementById('appTags').value = '';
-  document.getElementById('appImage').value = '';
-  addStatus.className = 'status';
-}
-
-function requireCfgOrOpenSettings(){
-  const cfg = getCfg();
-  if(!cfg.owner || !cfg.repo || !cfg.token){
-    openSettings();
-    cfgStatus.textContent = '先にリポジトリ情報とトークンを入力してください。';
-    cfgStatus.className = 'status show err';
-    return null;
-  }
-  return cfg;
-}
-
-function openAddModal(key){
-  if(!requireCfgOrOpenSettings()) return;
-
-  editingKey = (typeof key === 'string') ? key : null;
-  clearAddForm();
-
-  if(editingKey !== null){
-    const app = APPS.find(a => appKey(a) === editingKey);
-    if(!app){ editingKey = null; return; }
-    document.getElementById('appName').value = app.name || '';
-    document.getElementById('appUrl').value = app.url || '';
-    document.getElementById('appDesc').value = app.description || '';
-    document.getElementById('appPlatform').value = app.platform || 'WEB';
-    document.getElementById('appStatus').value = app.status || 'active';
-    document.getElementById('appTags').value = (app.tags || []).join(', ');
-
-    if(app.source === 'auto'){
-      addModalTitle.textContent = 'アプリを編集(自動検出データの上書き)';
-      addModalSub.textContent = 'これは自動検出されたリポジトリです。ここで保存すると、この内容が自動検出データより優先して表示されます(URLは変更しないでください)。';
-      addDelete.style.display = 'none';
-    }else{
-      addModalTitle.textContent = 'アプリを編集';
-      addModalSub.textContent = '内容を変更すると、このリポジトリに直接コミットされます。';
-      addDelete.style.display = 'inline-block';
-    }
-    addSubmit.textContent = '更新する';
-  }else{
-    addModalTitle.textContent = 'アプリを追加';
-    addModalSub.textContent = '入力すると、このリポジトリに直接コミットされます。';
-    addSubmit.textContent = '追加する';
-    addDelete.style.display = 'none';
-  }
-
-  addOverlay.classList.add('show');
-}
-
-fabBtn.onclick = () => openAddModal(null);
-addClose.onclick = addCancel.onclick = () => addOverlay.classList.remove('show');
-addOverlay.onclick = (e) => { if(e.target === addOverlay) addOverlay.classList.remove('show'); };
-
-addSubmit.onclick = async () => {
-  const cfg = getCfg();
-  const name = document.getElementById('appName').value.trim();
-  const url = document.getElementById('appUrl').value.trim();
-  const description = document.getElementById('appDesc').value.trim();
-  const platform = document.getElementById('appPlatform').value;
-  const status = document.getElementById('appStatus').value;
-  const tags = document.getElementById('appTags').value.split(',').map(t => t.trim()).filter(Boolean);
-  const imageFile = document.getElementById('appImage').files[0];
-
-  if(!name || !url){
-    addStatus.textContent = 'アプリ名とURLは必須です。';
-    addStatus.className = 'status show err';
-    return;
-  }
-
-  addSubmit.disabled = true;
-  addStatus.textContent = '保存中...';
-  addStatus.className = 'status show loading';
-
-  try{
-    const existing = await ghGetFile(cfg, 'apps.json');
-    let list = [];
-    let sha = null;
-    if(existing){
-      list = JSON.parse(base64ToUtf8(existing.content));
-      sha = existing.sha;
-    }
-
-    const targetIdx = (editingKey !== null) ? list.findIndex(a => appKey(a) === editingKey) : -1;
-
-    // 既存の画像パスを保持しつつ、新しい画像があれば差し替える
-    let imagePath = (targetIdx !== -1) ? (list[targetIdx].image || '') : '';
-    if(imageFile){
-      const ext = (imageFile.name.split('.').pop() || 'jpg').toLowerCase();
-      imagePath = `images/${slugify(name)}-${Date.now()}.${ext}`;
-      const base64 = await fileToBase64(imageFile);
-      await ghPutFile(cfg, imagePath, base64, `Add screenshot for ${name}`, null);
-    }
-
-    const entry = { name, url, description, platform, status, tags, image: imagePath, updatedAt: new Date().toISOString() };
-
-    if(targetIdx !== -1){
-      list[targetIdx] = entry;
-    }else{
-      list.push(entry);
-    }
-
-    const newContent = utf8ToBase64(JSON.stringify(list, null, 2) + '\n');
-    const message = (targetIdx !== -1) ? `Update app: ${name}` : `Add app: ${name}`;
-    await ghPutFile(cfg, 'apps.json', newContent, message, sha);
-
-    addStatus.textContent = (targetIdx !== -1 ? '更新しました。' : '追加しました。') + ' 反映まで数十秒かかる場合があります。';
-    addStatus.className = 'status show ok';
-
-    await loadApps();
-    setTimeout(() => { addOverlay.classList.remove('show'); }, 1200);
-
-  }catch(e){
-    addStatus.textContent = 'エラー: ' + e.message;
-    addStatus.className = 'status show err';
-  }finally{
-    addSubmit.disabled = false;
+    matrix:{
+      teams:['阪神','巨人','ヤクルト','DeNA','中日','広島'],
+      data:{
+        '阪神':{'巨人':[10,7],'ヤクルト':[10,5],'DeNA':[8,8],'中日':[12,4],'広島':[8,6]},
+        '巨人':{'阪神':[7,10],'ヤクルト':[7,9],'DeNA':[11,5],'中日':[9,8],'広島':[9,5]},
+        'ヤクルト':{'阪神':[5,10],'巨人':[9,7],'DeNA':[8,8],'中日':[6,10],'広島':[10,7]},
+        'DeNA':{'阪神':[8,8],'巨人':[5,11],'ヤクルト':[8,8],'中日':[9,7],'広島':[8,5]},
+        '中日':{'阪神':[4,12],'巨人':[8,9],'ヤクルト':[10,6],'DeNA':[7,9],'広島':[6,10]},
+        '広島':{'阪神':[6,8],'巨人':[5,9],'ヤクルト':[7,10],'DeNA':[5,8],'中日':[10,6]},
+      }
+    },
+    events:[
+      {idx:1,label:'4/5 巨人5連勝',color:'#f04830'},
+      {idx:2,label:'4/18 阪神首位',color:'#e6b800'},
+      {idx:4,label:'5/26 交流戦開始',color:'#4f8ef7'},
+      {idx:5,label:'6/18 交流戦終了・阪神首位',color:'#e6b800'},
+      {idx:7,label:'7/24 阪神首位固める',color:'#e6b800'},
+    ]
+  },
+  p:{
+    name:'パ・リーグ',
+    teams:['ソフトバンク','西武','日本ハム','オリックス','ロッテ','楽天'],
+    current:[
+      {team:'ソフトバンク',g:98,w:62,l:35,d:1,wr:0.639,gb:'-',sv:27,magic:null},
+      {team:'西武',g:101,w:55,l:43,d:3,wr:0.561,gb:'8',sv:12,magic:null},
+      {team:'日本ハム',g:101,w:56,l:45,d:0,wr:0.554,gb:'0.5',sv:11,magic:null},
+      {team:'オリックス',g:99,w:49,l:48,d:2,wr:0.505,gb:'6',sv:1,magic:null},
+      {team:'ロッテ',g:95,w:44,l:48,d:3,wr:0.478,gb:'2.5',sv:-4,magic:null},
+      {team:'楽天',g:95,w:36,l:58,d:1,wr:0.383,gb:'9',sv:-22,magic:null},
+    ],
+    history:{
+      labels:['3/27\n開幕','4/10','4/24','5/8','5/22\n交流戦前','6/18\n交流戦後','7/10','7/24','8/6'],
+      wr:{
+        'ソフトバンク':[0.500,0.560,0.580,0.600,0.610,0.605,0.620,0.632,0.639],
+        '西武':        [0.500,0.545,0.573,0.597,0.618,0.641,0.620,0.575,0.561],
+        '日本ハム':    [0.500,0.509,0.516,0.530,0.540,0.552,0.558,0.554,0.554],
+        'オリックス':  [0.500,0.510,0.528,0.535,0.548,0.556,0.530,0.510,0.505],
+        'ロッテ':      [0.500,0.500,0.498,0.495,0.502,0.500,0.492,0.482,0.478],
+        '楽天':        [0.500,0.476,0.455,0.420,0.392,0.365,0.375,0.382,0.383],
+      },
+      sv:{
+        'ソフトバンク':[0,5,9,14,17,17,20,24,27],
+        '西武':        [0,4,8,12,15,18,16,12,12],
+        '日本ハム':    [0,1,2,4,6,7,9,10,11],
+        'オリックス':  [0,1,3,5,7,7,4,2,1],
+        'ロッテ':      [0,0,-1,-1,0,0,-2,-3,-4],
+        '楽天':        [0,-3,-6,-10,-13,-17,-16,-18,-22],
+      }
+    },
+    matrix:{
+      teams:['ソフトバンク','西武','日本ハム','オリックス','ロッテ','楽天'],
+      data:{
+        'ソフトバンク':{'西武':[8,9],'日本ハム':[14,2],'オリックス':[7,8],'ロッテ':[9,4],'楽天':[10,7]},
+        '西武':{'ソフトバンク':[9,8],'日本ハム':[9,8],'オリックス':[7,9],'ロッテ':[8,8],'楽天':[8,7]},
+        '日本ハム':{'ソフトバンク':[2,14],'西武':[8,9],'オリックス':[12,6],'ロッテ':[10,6],'楽天':[10,6]},
+        'オリックス':{'ソフトバンク':[8,7],'西武':[9,7],'日本ハム':[6,12],'ロッテ':[11,6],'楽天':[6,8]},
+        'ロッテ':{'ソフトバンク':[4,9],'西武':[8,8],'日本ハム':[6,10],'オリックス':[6,11],'楽天':[10,4]},
+        '楽天':{'ソフトバンク':[7,10],'西武':[7,8],'日本ハム':[6,10],'オリックス':[8,6],'ロッテ':[4,10]},
+      }
+    },
+    events:[
+      {idx:1,label:'4/10 ソフトバンク首位浮上',color:'#f09000'},
+      {idx:2,label:'4/20 西武猛追',color:'#1a4fa0'},
+      {idx:4,label:'5/26 交流戦開始',color:'#4f8ef7'},
+      {idx:5,label:'6/18 西武が一時首位',color:'#1a4fa0'},
+      {idx:6,label:'7/上 ソフトバンク首位奪還',color:'#f09000'},
+    ]
   }
 };
 
-async function deleteApp(key){
-  const cfg = requireCfgOrOpenSettings();
-  if(!cfg) return;
+const TODAY_GAMES = [
+  {away:'巨人',home:'ヤクルト',as:null,hs:null,status:'18:00〜 東京ドーム'},
+  {away:'DeNA',home:'広島',as:null,hs:null,status:'18:00〜 横浜スタジアム'},
+  {away:'阪神',home:'中日',as:null,hs:null,status:'18:00〜 京セラドーム'},
+  {away:'日本ハム',home:'楽天',as:null,hs:null,status:'18:00〜 エスコンF'},
+  {away:'西武',home:'ソフトバンク',as:null,hs:null,status:'18:00〜 ベルーナドーム'},
+  {away:'ロッテ',home:'オリックス',as:null,hs:null,status:'18:00〜 ZOZOマリン'},
+];
 
-  const app = APPS.find(a => appKey(a) === key);
-  if(!app) return;
+let curLeague = 'c';
+let curMetric = 'wr';
+let curPane = 'graph';
+let dimmed = new Set();
+let chart = null;
+let isLoading = false;
 
-  const ok = confirm(`「${app.name}」を削除します。この操作は取り消せません。よろしいですか?`);
-  if(!ok) return;
+function toast(msg, isErr) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (isErr?' error':'');
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.classList.remove('show'), 3000);
+}
 
-  addStatus.textContent = '削除中...';
-  addStatus.className = 'status show loading';
-  addSubmit.disabled = true;
+function switchLeague(l) {
+  curLeague = l;
+  dimmed.clear();
+  document.querySelectorAll('.league-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&l==='c')||(i===1&&l==='p')));
+  renderAll();
+}
 
-  try{
-    const existing = await ghGetFile(cfg, 'apps.json');
-    if(!existing) throw new Error('apps.json が見つかりません');
+function switchMetric(m) {
+  curMetric = m;
+  document.querySelectorAll('.metric-tab').forEach((b,i)=>b.classList.toggle('active',['wr','gb','sv'][i]===m));
+  renderChart();
+}
 
-    let list = JSON.parse(base64ToUtf8(existing.content));
-    const idx = list.findIndex(a => appKey(a) === key);
-    if(idx === -1) throw new Error('対象のアプリが見つかりませんでした');
-    const target = list[idx];
-    list.splice(idx, 1);
+function showPane(p) {
+  curPane = p;
+  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('active'));
+  document.getElementById('panel-'+p).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',['graph','standings','matrix'][i]===p));
+  if(p==='graph') renderChart();
+  if(p==='standings') renderStandings();
+  if(p==='matrix') renderMatrix();
+}
 
-    const newContent = utf8ToBase64(JSON.stringify(list, null, 2) + '\n');
-    await ghPutFile(cfg, 'apps.json', newContent, `Delete app: ${app.name}`, existing.sha);
+function toggleTeam(t) {
+  if(dimmed.has(t)) dimmed.delete(t); else dimmed.add(t);
+  renderChart();
+}
 
-    // 関連するスクリーンショット画像も削除(失敗しても無視)
-    if(target && target.image){
-      try{
-        const imgFile = await ghGetFile(cfg, target.image);
-        if(imgFile){
-          await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${target.image}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${cfg.token}`,
-              'Accept': 'application/vnd.github+json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message: `Delete screenshot for ${app.name}`, sha: imgFile.sha, branch: cfg.branch })
-          });
+function computeGB(wrs, teams, idx) {
+  const maxWR = Math.max(...teams.map(t=>wrs[t][idx]));
+  const games = [0,8,17,26,35,44,53][idx]||1;
+  return teams.map(t=>-((maxWR - wrs[t][idx])*games));
+}
+
+function renderChart() {
+  const L = LEAGUES[curLeague];
+  const hist = L.history;
+  const labels = hist.labels;
+
+  const datasets = L.teams.map(team=>{
+    let data;
+    if(curMetric==='wr') data = hist.wr[team];
+    else if(curMetric==='sv') data = hist.sv[team];
+    else {
+      const gbArr = labels.map((_,i)=>computeGB(hist.wr, L.teams, i));
+      const ti = L.teams.indexOf(team);
+      data = gbArr.map(arr=>+arr[ti].toFixed(1));
+    }
+    const color = COLORS[team]||'#888';
+    const isDim = dimmed.has(team);
+    return {
+      label:team, data,
+      borderColor: isDim ? color+'30' : color,
+      backgroundColor: isDim ? color+'10' : color+'22',
+      pointBackgroundColor: isDim ? color+'30' : color,
+      borderWidth: isDim ? 1 : 2,
+      pointRadius: isDim ? 2 : 4,
+      pointHoverRadius: 6,
+      tension: 0.35,
+      fill: false
+    };
+  });
+
+  const metricLabel = {wr:'勝率',gb:'ゲーム差（1位比）',sv:'貯金'}[curMetric];
+
+  if(chart) chart.destroy();
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  chart = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{
+          backgroundColor:'rgba(17,21,32,0.95)',
+          borderColor:'rgba(255,255,255,0.1)',
+          borderWidth:1,
+          titleColor:'#8b91a8',
+          bodyColor:'#f0f2f8',
+          padding:12,
+          callbacks:{
+            label:ctx=>{
+              const v=ctx.parsed.y;
+              if(curMetric==='wr') return ` ${ctx.dataset.label}  ${v.toFixed(3)}`;
+              if(curMetric==='sv') return ` ${ctx.dataset.label}  ${v>=0?'+':''}${v}`;
+              return ` ${ctx.dataset.label}  ${v>=0?'+':''}${v.toFixed(1)}`;
+            }
+          }
         }
-      }catch(e){ /* 画像削除の失敗は無視 */ }
+      },
+      scales:{
+        x:{
+          ticks:{ font:{size:10}, color:'#525870', maxRotation:0 },
+          grid:{ color:'rgba(255,255,255,0.04)' }
+        },
+        y:{
+          title:{ display:true, text:metricLabel, color:'#525870', font:{size:10} },
+          ticks:{ font:{size:10}, color:'#525870', callback:v=>curMetric==='wr'?v.toFixed(3):v },
+          grid:{ color:'rgba(255,255,255,0.04)' },
+          reverse: curMetric==='gb'
+        }
+      }
+    }
+  });
+
+  // legend
+  const lr = document.getElementById('legendRow');
+  lr.innerHTML = L.teams.map(team=>`
+    <div class="legend-item ${dimmed.has(team)?'dimmed':''}" onclick="toggleTeam('${team}')">
+      <span class="legend-pip" style="background:${COLORS[team]||'#888'}"></span>
+      <span>${team}</span>
+    </div>
+  `).join('');
+
+  // events
+  const er = document.getElementById('eventsRow');
+  er.innerHTML = L.events.map(ev=>`
+    <span class="event-chip" style="color:${ev.color};border-color:${ev.color}44;background:${ev.color}11">${ev.label}</span>
+  `).join('');
+}
+
+function renderStandings() {
+  const L = LEAGUES[curLeague];
+  const tbody = document.getElementById('standingsBody');
+  tbody.innerHTML = L.current.map((t,i)=>{
+    const rank = i+1;
+    const rc = rank<=3 ? 'rank-'+rank : 'rank-other';
+    const sv = t.sv;
+    const svStr = sv>0?`<span class="pos-val">+${sv}</span>`:sv<0?`<span class="neg-val">${sv}</span>`:`<span style="color:var(--text3)">0</span>`;
+    const mg = t.magic!=null ? `<span class="magic-pill">${t.magic}</span>` : `<span style="color:var(--text3)">—</span>`;
+    const bw = Math.max(4, t.wr*100);
+    const bc = COLORS[t.team]||'#888';
+    const csNote = rank<=3 ? `<span class="cs-zone"> CS圏</span>` : '';
+    return `<tr>
+      <td><span class="rank-num ${rc}">${rank}</span></td>
+      <td><div class="team-cell"><span class="team-dot" style="background:${bc}"></span><span class="team-label">${t.team}</span>${csNote}</div></td>
+      <td style="color:var(--text2)">${t.g}</td>
+      <td>${t.w}</td>
+      <td style="color:var(--text2)">${t.l}</td>
+      <td style="color:var(--text3)">${t.d}</td>
+      <td><div class="wr-bar-wrap"><div class="wr-bar"><div class="wr-fill" style="width:${bw}%;background:${bc}"></div></div><span>${t.wr.toFixed(3)}</span></div></td>
+      <td style="color:var(--text2)">${t.gb}</td>
+      <td>${svStr}</td>
+      <td>${mg}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderMatrix() {
+  const L = LEAGUES[curLeague];
+  const mat = L.matrix;
+  const teams = mat.teams;
+  const data = mat.data;
+  let html = '<tr><th></th>'+teams.map(t=>`<th style="color:${COLORS[t]||'#888'}">${t}</th>`).join('')+'</tr>';
+  teams.forEach(rowT=>{
+    html += `<tr><th style="color:${COLORS[rowT]||'#888'};text-align:left;padding-left:10px">${rowT}</th>`;
+    teams.forEach(colT=>{
+      if(rowT===colT){ html+='<td class="m-self">—</td>'; return; }
+      const v = data[rowT]?.[colT];
+      if(!v){ html+='<td class="m-even">-</td>'; return; }
+      const [w,l]=v;
+      const cls = w>l?'m-win':w<l?'m-lose':'m-even';
+      html+=`<td class="${cls}">${w}–${l}</td>`;
+    });
+    html+='</tr>';
+  });
+  document.getElementById('matrixTable').innerHTML = html;
+}
+
+function renderStats() {
+  const L = LEAGUES[curLeague];
+  const leader = L.current[0];
+  const lastPlace = L.current[L.current.length-1];
+  const totalGames = L.current.reduce((a,t)=>a+t.g,0)/L.current.length;
+  const magic = L.current.find(t=>t.magic!=null);
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">首位</div>
+      <div class="stat-value" style="color:${COLORS[leader.team]}">${leader.team}</div>
+      <div class="stat-sub">勝率 ${leader.wr.toFixed(3)} 貯金${leader.sv>=0?'+':''}${leader.sv}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">首位〜2位ゲーム差</div>
+      <div class="stat-value">${L.current[1].gb}</div>
+      <div class="stat-sub">${L.current[1].team} との差</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">最下位</div>
+      <div class="stat-value" style="color:${COLORS[lastPlace.team]}">${lastPlace.team}</div>
+      <div class="stat-sub">勝率 ${lastPlace.wr.toFixed(3)} 貯金${lastPlace.sv}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">優勝マジック</div>
+      <div class="stat-value" style="color:var(--accent2)">${magic ? magic.magic : '—'}</div>
+      <div class="stat-sub">${magic ? magic.team+'が点灯中' : 'まだ点灯なし'}</div>
+    </div>
+  `;
+}
+
+function renderTodayGames() {
+  const leagueTeams = new Set(LEAGUES[curLeague].teams);
+  const games = TODAY_GAMES.filter(g=>leagueTeams.has(g.away)||leagueTeams.has(g.home));
+  const el = document.getElementById('gamesScroll');
+  if(!games.length){ el.innerHTML='<span style="font-size:12px;color:var(--text3)">該当試合なし</span>'; return; }
+  el.innerHTML = games.map(g=>{
+    const ac = COLORS[g.away]||'#888';
+    const hc = COLORS[g.home]||'#888';
+    const hasScore = g.as!=null && g.hs!=null;
+    const awayWin = hasScore && g.as>g.hs;
+    const homeWin = hasScore && g.hs>g.as;
+    const isLive = g.status && g.status.includes('回');
+    return `<div class="game-card">
+      <div class="game-matchup">
+        <span class="game-team ${awayWin?'winner':''}" style="color:${ac}">${g.away}</span>
+        ${hasScore
+          ? `<div class="game-score-area"><span class="game-score ${awayWin?'winner':''}">${g.as}</span><span class="score-sep">–</span><span class="game-score ${homeWin?'winner':''}">${g.hs}</span></div>`
+          : `<span style="font-size:11px;color:var(--text3)">vs</span>`}
+        <span class="game-team ${homeWin?'winner':''}" style="color:${hc}">${g.home}</span>
+      </div>
+      <div class="game-status">${isLive?'<span class="live-dot"></span>':''}${g.status}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderAll() {
+  renderStats();
+  renderTodayGames();
+  if(curPane==='graph') renderChart();
+  if(curPane==='standings') renderStandings();
+  if(curPane==='matrix') renderMatrix();
+}
+
+function getApiKey() {
+  return localStorage.getItem('npb_apikey') || '';
+}
+
+function saveApiKey(key) {
+  localStorage.setItem('npb_apikey', key.trim());
+}
+
+function showApiKeyModal() {
+  document.getElementById('apiModal').style.display = 'flex';
+  document.getElementById('apiKeyInput').value = getApiKey();
+  document.getElementById('apiKeyInput').focus();
+}
+
+function closeApiKeyModal() {
+  document.getElementById('apiModal').style.display = 'none';
+}
+
+function submitApiKey() {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if(!val.startsWith('sk-ant-')) {
+    document.getElementById('apiKeyError').textContent = '「sk-ant-」で始まるキーを入力してください';
+    return;
+  }
+  document.getElementById('apiKeyError').textContent = '';
+  saveApiKey(val);
+  closeApiKeyModal();
+  fetchAll();
+}
+
+async function fetchAll() {
+  const apiKey = getApiKey();
+  if(!apiKey) {
+    showApiKeyModal();
+    return;
+  }
+
+  if(isLoading) return;
+  isLoading = true;
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  toast('データを更新中...');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        messages:[{ role:'user', content:`今日は${todayFull()}です。2026年NPBプロ野球の最新順位データをJSONのみで返してください。説明は一切不要です。
+
+{
+  "updated":"YYYY/MM/DD",
+  "central":[{"team":"巨人","g":64,"w":34,"l":28,"d":2,"wr":0.548,"gb":"-","sv":6,"magic":null},...全6チーム順位順...],
+  "pacific":[{"team":"西武","g":66,"w":41,"l":23,"d":2,"wr":0.641,"gb":"-","sv":18,"magic":51},...全6チーム順位順...],
+  "today":[{"away":"巨人","home":"中日","as":null,"hs":null,"status":"18:00〜 東京ドーム"},...本日の全試合（スコアがあれば数値、未試合はnull）...]
+}
+
+magicは優勝マジック数値またはnull。${todayFull()}終了時点の実際の最新データで返してください。`
+        }]
+      })
+    });
+
+    if(res.status === 401) {
+      saveApiKey('');
+      showApiKeyModal();
+      document.getElementById('apiKeyError').textContent = 'APIキーが無効です。再度入力してください';
+      throw new Error('401');
     }
 
-    addStatus.textContent = '削除しました。';
-    addStatus.className = 'status show ok';
-    await loadApps();
-    setTimeout(() => { addOverlay.classList.remove('show'); }, 1000);
-
-  }catch(e){
-    addStatus.textContent = 'エラー: ' + e.message;
-    addStatus.className = 'status show err';
-  }finally{
-    addSubmit.disabled = false;
+    const dat = await res.json();
+    const txt = dat.content?.find(c=>c.type==='text')?.text || '';
+    const clean = txt.replace(/```json|```/g,'').trim();
+    const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
+    if(s>=0 && e>s) {
+      const parsed = JSON.parse(clean.substring(s, e+1));
+      if(parsed.central) {
+        LEAGUES.c.current = parsed.central.map(t=>({...t,sv:t.sv??0}));
+        updateHistoryFromCurrent('c');
+      }
+      if(parsed.pacific) {
+        LEAGUES.p.current = parsed.pacific.map(t=>({...t,sv:t.sv??0}));
+        updateHistoryFromCurrent('p');
+      }
+      if(parsed.today && Array.isArray(parsed.today)) {
+        parsed.today.forEach((g,i)=>{ if(TODAY_GAMES[i]) Object.assign(TODAY_GAMES[i],g); });
+      }
+      const upd = parsed.updated || todayLabel();
+      document.getElementById('updateTime').textContent = upd + ' AI取得';
+      toast('更新しました ✓');
+    }
+  } catch(e) {
+    if(e.message !== '401') toast('更新に失敗しました', true);
+  } finally {
+    isLoading = false;
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    renderAll();
   }
 }
 
-addDelete.onclick = () => { if(editingKey !== null) deleteApp(editingKey); };
+// ── 今日の日付を動的にセット ──
+function todayLabel() {
+  const d = new Date();
+  return `${d.getMonth()+1}/${d.getDate()}`;
+}
 
-document.querySelectorAll('#statusFilters .chip').forEach(btn => {
-  btn.onclick = () => {
-    activeStatus = btn.dataset.status;
-    document.querySelectorAll('#statusFilters .chip').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    render();
-  };
-});
+function todayFull() {
+  const d = new Date();
+  const days = ['日','月','火','水','木','金','土'];
+  return `${d.getMonth()+1}月${d.getDate()}日（${days[d.getDay()]}）`;
+}
 
-loadApps();
+function initDates() {
+  // 眉毛テキスト
+  document.getElementById('todayEyebrow').textContent = `今日の試合 — ${todayFull()}`;
+  // グラフ履歴の最終ラベルを今日の日付に
+  const lbl = todayLabel() + '\n現在';
+  LEAGUES.c.history.labels[LEAGUES.c.history.labels.length-1] = lbl;
+  LEAGUES.p.history.labels[LEAGUES.p.history.labels.length-1] = lbl;
+}
+
+// ── 履歴末尾を最新データで更新 ──
+function updateHistoryFromCurrent(leagueKey) {
+  const L = LEAGUES[leagueKey];
+  L.current.forEach(t => {
+    const hist_wr = L.history.wr[t.team];
+    const hist_sv = L.history.sv[t.team];
+    if(hist_wr) hist_wr[hist_wr.length-1] = t.wr;
+    if(hist_sv) hist_sv[hist_sv.length-1] = t.sv;
+  });
+}
+
+initDates();
+renderAll();
+
+// 試合時間帯に自動更新
+setInterval(()=>{
+  const h = new Date().getHours();
+  if(h>=18 && h<=23) fetchAll();
+}, 30*60*1000);
 </script>
 </body>
 </html>
