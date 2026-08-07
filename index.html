@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WORKBENCH — 開発ポータル</title>
+<link rel="icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -103,6 +104,18 @@
     font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: var(--teal-deep);
   }
   .platform::before{ content: ''; width: 8px; height: 8px; background: var(--teal); border-radius: 50%; display: inline-block; }
+
+  .status-badge{
+    display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; padding: 3px 9px;
+    border-radius: 999px; border: 1px solid transparent;
+  }
+  .status-badge.active{ background: #e3f0ea; color: #1f6b45; border-color: #1f6b45; }
+  .status-badge.paused{ background: #f2ece0; color: #8a6a1f; border-color: #8a6a1f; }
+
+  .card.paused{ opacity: 0.6; }
+  .card.paused .thumb{ filter: grayscale(0.5); }
+  .card.paused:hover{ opacity: 0.85; }
   .card h2{ font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.25rem; margin: 0; font-weight: 700; line-height: 1.3; }
   .card p{ margin: 0; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; flex-grow: 1; }
   .tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
@@ -219,6 +232,13 @@
     </div>
   </header>
 
+  <div class="filters" id="statusFilters">
+    <span class="label">STATUS:</span>
+    <button class="chip active" data-status="all">すべて</button>
+    <button class="chip" data-status="active">稼働中</button>
+    <button class="chip" data-status="paused">保留中</button>
+  </div>
+
   <div class="filters" id="filters">
     <span class="label">FILTER:</span>
   </div>
@@ -310,7 +330,15 @@
       <select id="appPlatform">
         <option value="WEB">WEB</option>
         <option value="ANDROID">ANDROID</option>
+        <option value="WINDOWS">WINDOWS</option>
         <option value="OTHER">OTHER</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>稼働状況</label>
+      <select id="appStatus">
+        <option value="active">稼働中</option>
+        <option value="paused">保留中</option>
       </select>
     </div>
     <div class="field">
@@ -340,6 +368,7 @@ const WORKBENCH_VERSION = 'v2.2';
 
 let APPS = [];
 let activeTag = null;
+let activeStatus = 'all';
 
 const grid = document.getElementById('grid');
 const filtersEl = document.getElementById('filters');
@@ -453,7 +482,9 @@ function render(){
     filtersEl.dataset.built = "1";
   }
 
-  const list = activeTag ? APPS.filter(a => (a.tags || []).includes(activeTag)) : APPS;
+  let list = APPS;
+  if(activeTag) list = list.filter(a => (a.tags || []).includes(activeTag));
+  if(activeStatus !== 'all') list = list.filter(a => (a.status || 'active') === activeStatus);
   grid.innerHTML = '';
 
   if(list.length === 0){
@@ -463,7 +494,8 @@ function render(){
 
   list.forEach((app) => {
     const card = document.createElement('div');
-    card.className = 'card';
+    const status = app.status || 'active';
+    card.className = 'card' + (status === 'paused' ? ' paused' : '');
     const key = appKey(app);
     const isAuto = app.source === 'auto';
     card.setAttribute('data-id', '#' + pad(APPS.indexOf(app) + 1));
@@ -473,16 +505,26 @@ function render(){
       : (app.platform || 'WEB');
 
     const actionsHtml = isAuto
-      ? `<span class="tag" title="トピック検出により自動表示">AUTO</span>`
+      ? `<div class="card-actions">
+          <span class="tag" title="トピック検出により自動表示" style="margin-right:6px;">AUTO</span>
+          <button class="edit-btn" title="編集(上書き保存)" aria-label="編集">✎</button>
+        </div>`
       : `<div class="card-actions">
           <button class="edit-btn" title="編集" aria-label="編集">✎</button>
           <button class="delete-btn" title="削除" aria-label="削除">🗑</button>
         </div>`;
 
+    const statusBadge = status === 'paused'
+      ? `<span class="status-badge paused">保留中</span>`
+      : `<span class="status-badge active">稼働中</span>`;
+
     card.innerHTML = `
       <div class="thumb">${thumbContent}</div>
       <div class="card-body">
-        <span class="platform">${app.platform || 'WEB'}</span>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="platform">${app.platform || 'WEB'}</span>
+          ${statusBadge}
+        </div>
         <h2>${app.name}</h2>
         <p>${app.description || ''}</p>
         <div class="tags">${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
@@ -493,8 +535,8 @@ function render(){
         ${actionsHtml}
       </div>
     `;
+    card.querySelector('.edit-btn').onclick = () => openAddModal(key);
     if(!isAuto){
-      card.querySelector('.edit-btn').onclick = () => openAddModal(key);
       card.querySelector('.delete-btn').onclick = () => deleteApp(key);
     }
     grid.appendChild(card);
@@ -629,6 +671,7 @@ function clearAddForm(){
   document.getElementById('appUrl').value = '';
   document.getElementById('appDesc').value = '';
   document.getElementById('appPlatform').value = 'WEB';
+  document.getElementById('appStatus').value = 'active';
   document.getElementById('appTags').value = '';
   document.getElementById('appImage').value = '';
   addStatus.className = 'status';
@@ -658,11 +701,19 @@ function openAddModal(key){
     document.getElementById('appUrl').value = app.url || '';
     document.getElementById('appDesc').value = app.description || '';
     document.getElementById('appPlatform').value = app.platform || 'WEB';
+    document.getElementById('appStatus').value = app.status || 'active';
     document.getElementById('appTags').value = (app.tags || []).join(', ');
-    addModalTitle.textContent = 'アプリを編集';
-    addModalSub.textContent = '内容を変更すると、このリポジトリに直接コミットされます。';
+
+    if(app.source === 'auto'){
+      addModalTitle.textContent = 'アプリを編集(自動検出データの上書き)';
+      addModalSub.textContent = 'これは自動検出されたリポジトリです。ここで保存すると、この内容が自動検出データより優先して表示されます(URLは変更しないでください)。';
+      addDelete.style.display = 'none';
+    }else{
+      addModalTitle.textContent = 'アプリを編集';
+      addModalSub.textContent = '内容を変更すると、このリポジトリに直接コミットされます。';
+      addDelete.style.display = 'inline-block';
+    }
     addSubmit.textContent = '更新する';
-    addDelete.style.display = 'inline-block';
   }else{
     addModalTitle.textContent = 'アプリを追加';
     addModalSub.textContent = '入力すると、このリポジトリに直接コミットされます。';
@@ -683,6 +734,7 @@ addSubmit.onclick = async () => {
   const url = document.getElementById('appUrl').value.trim();
   const description = document.getElementById('appDesc').value.trim();
   const platform = document.getElementById('appPlatform').value;
+  const status = document.getElementById('appStatus').value;
   const tags = document.getElementById('appTags').value.split(',').map(t => t.trim()).filter(Boolean);
   const imageFile = document.getElementById('appImage').files[0];
 
@@ -716,7 +768,7 @@ addSubmit.onclick = async () => {
       await ghPutFile(cfg, imagePath, base64, `Add screenshot for ${name}`, null);
     }
 
-    const entry = { name, url, description, platform, tags, image: imagePath, updatedAt: new Date().toISOString() };
+    const entry = { name, url, description, platform, status, tags, image: imagePath, updatedAt: new Date().toISOString() };
 
     if(targetIdx !== -1){
       list[targetIdx] = entry;
@@ -801,6 +853,15 @@ async function deleteApp(key){
 }
 
 addDelete.onclick = () => { if(editingKey !== null) deleteApp(editingKey); };
+
+document.querySelectorAll('#statusFilters .chip').forEach(btn => {
+  btn.onclick = () => {
+    activeStatus = btn.dataset.status;
+    document.querySelectorAll('#statusFilters .chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  };
+});
 
 loadApps();
 </script>
