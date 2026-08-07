@@ -444,7 +444,12 @@ async function loadApps(){
   APPS = manual.concat(autoFiltered);
 
   // 更新日時の新しい順に自動並べ替え(未設定のものは一番古い扱い)
-  APPS.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+  APPS.sort((a, b) => {
+    const statusA = (a.status || 'active') === 'paused' ? 1 : 0;
+    const statusB = (b.status || 'active') === 'paused' ? 1 : 0;
+    if(statusA !== statusB) return statusA - statusB; // 稼働中(0)が先、保留中(1)が後
+    return new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0);
+  });
 
   const latest = APPS.reduce((max, a) => {
     const t = new Date(a.updatedAt || 0).getTime();
