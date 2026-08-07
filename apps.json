@@ -67,10 +67,12 @@
     "url": "https://github.com/chinta44/BluetoothMonitor",
     "description": "Bluetoothデバイスの接続/切断をログに記録し、切断時に通知するAndroidアプリの最小構成です。",
     "platform": "ANDROID",
+    "status": "paused",
     "tags": [
       "スマホ Bluetooth"
     ],
-    "image": "images/bluetoothmonitor-1784714548258.webp"
+    "image": "images/bluetoothmonitor-1784714548258.webp",
+    "updatedAt": "2026-08-07T11:21:21.049Z"
   },
   {
     "name": "ピカッとコレクション",
