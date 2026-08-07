@@ -136,5 +136,16 @@
     ],
     "image": "images/smartname-ai-1785409558293.png",
     "updatedAt": "2026-07-30T11:09:06.909Z"
+  },
+  {
+    "name": "プロ野球順位トラッカー",
+    "url": "https://chinta44.github.io/npb-tracker_Claude/",
+    "description": "Claud版",
+    "platform": "WEB",
+    "tags": [
+      "野球"
+    ],
+    "image": "images/プロ野球順位トラッカー-1786099655276.jpg",
+    "updatedAt": "2026-08-07T10:47:36.670Z"
   }
 ]
