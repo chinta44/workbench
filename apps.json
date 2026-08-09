@@ -152,5 +152,15 @@
     ],
     "image": "images/プロ野球順位トラッカー-1786099655276.jpg",
     "updatedAt": "2026-08-07T10:47:36.670Z"
+  },
+  {
+    "name": "App-Lab.",
+    "url": "https://github.com/chinta44/App-Lab.",
+    "description": "開発中のアプリ一覧",
+    "platform": "WEB",
+    "status": "paused",
+    "tags": [],
+    "image": "",
+    "updatedAt": "2026-08-09T13:48:52.493Z"
   }
 ]
