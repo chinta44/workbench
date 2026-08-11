@@ -122,14 +122,14 @@
   {
     "name": "いちいち面倒なカメラアプリ",
     "url": "https://auto-photo-namer.onrender.com/",
-    "description": "写真を撮ると自動で名前をつけてくれるカメラアプリ\n(google AI Studio作成版）Gemini3.6\nAndroid版もリリース",
+    "description": "写真を撮ると自動で名前をつけてくれるカメラアプリ\n(google AI Studio作成版）Gemini3.6\nAndroid版もリリース\nNotebookLMによる動画解説\nhttps://youtu.be/dlMnY3WBLsg",
     "platform": "WEB",
     "status": "active",
     "tags": [
       "カメラ"
     ],
     "image": "images/いちいち面倒なカメラアプリ-1786278508996.png",
-    "updatedAt": "2026-08-09T12:28:31.303Z"
+    "updatedAt": "2026-08-11T11:15:02.555Z"
   },
   {
     "name": "SmartName AI",
