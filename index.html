@@ -350,6 +350,10 @@
       <input type="file" id="appImage" accept="image/*">
       <div class="hint">画像は images/ フォルダに自動アップロードされます</div>
     </div>
+    <div class="field">
+      <label>解説動画URL(YouTube・任意)</label>
+      <input type="url" id="appVideo" placeholder="https://youtube.com/watch?v=...">
+    </div>
 
     <div class="btn-row">
       <button class="btn primary" id="addSubmit">追加する</button>
@@ -536,7 +540,10 @@ function render(){
       </div>
       <div class="card-updated">更新: ${formatDate(app.updatedAt)}</div>
       <div class="card-footer">
-        <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
+        <div style="display:flex; gap:14px; align-items:center;">
+          <a class="open" href="${app.url}" target="_blank" rel="noopener">開く</a>
+          ${app.videoUrl ? `<a class="open" href="${app.videoUrl}" target="_blank" rel="noopener" style="color: var(--danger);">▶ 解説動画</a>` : ''}
+        </div>
         ${actionsHtml}
       </div>
     `;
@@ -679,6 +686,7 @@ function clearAddForm(){
   document.getElementById('appStatus').value = 'active';
   document.getElementById('appTags').value = '';
   document.getElementById('appImage').value = '';
+  document.getElementById('appVideo').value = '';
   addStatus.className = 'status';
 }
 
@@ -708,6 +716,7 @@ function openAddModal(key){
     document.getElementById('appPlatform').value = app.platform || 'WEB';
     document.getElementById('appStatus').value = app.status || 'active';
     document.getElementById('appTags').value = (app.tags || []).join(', ');
+    document.getElementById('appVideo').value = app.videoUrl || '';
 
     if(app.source === 'auto'){
       addModalTitle.textContent = 'アプリを編集(自動検出データの上書き)';
@@ -742,6 +751,7 @@ addSubmit.onclick = async () => {
   const status = document.getElementById('appStatus').value;
   const tags = document.getElementById('appTags').value.split(',').map(t => t.trim()).filter(Boolean);
   const imageFile = document.getElementById('appImage').files[0];
+  const videoUrl = document.getElementById('appVideo').value.trim();
 
   if(!name || !url){
     addStatus.textContent = 'アプリ名とURLは必須です。';
@@ -773,7 +783,7 @@ addSubmit.onclick = async () => {
       await ghPutFile(cfg, imagePath, base64, `Add screenshot for ${name}`, null);
     }
 
-    const entry = { name, url, description, platform, status, tags, image: imagePath, updatedAt: new Date().toISOString() };
+    const entry = { name, url, description, platform, status, tags, image: imagePath, videoUrl, updatedAt: new Date().toISOString() };
 
     if(targetIdx !== -1){
       list[targetIdx] = entry;
