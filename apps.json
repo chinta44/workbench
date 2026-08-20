@@ -165,5 +165,18 @@
     "tags": [],
     "image": "",
     "updatedAt": "2026-08-09T13:48:52.493Z"
+  },
+  {
+    "name": "閃光採集機",
+    "url": "https://glittering-pastelito-e50926.netlify.app/",
+    "description": "sakana ai による 稲妻撮影カメラアプリ",
+    "platform": "WEB",
+    "status": "active",
+    "tags": [
+      "カメラ"
+    ],
+    "image": "images/閃光採集機-1787226458360.png",
+    "videoUrl": "",
+    "updatedAt": "2026-08-20T11:47:41.114Z"
   }
 ]
