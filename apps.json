@@ -178,5 +178,18 @@
     "image": "images/閃光採集機-1787226458360.png",
     "videoUrl": "",
     "updatedAt": "2026-08-20T11:47:41.114Z"
+  },
+  {
+    "name": "Auto Photo Namer",
+    "url": "https://auto-photo-namer-sakana.onrender.com/",
+    "description": "自動で名前を付けてくれるカメラアプリ　google AI Studio&Cloude版のSakura AI版 作成中\nsakana AI API Key(有料のため使用していない）",
+    "platform": "WEB",
+    "status": "active",
+    "tags": [
+      "カメラ"
+    ],
+    "image": "images/auto-photo-namer-1787314672233.jpg",
+    "videoUrl": "",
+    "updatedAt": "2026-08-21T12:17:53.796Z"
   }
 ]
