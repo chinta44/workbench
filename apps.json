@@ -146,15 +146,15 @@
   {
     "name": "プロ野球順位トラッカー",
     "url": "https://chinta44.github.io/npb-tracker_Claude/",
-    "description": "Claud版\n20260820自動更新できていなかったので修正。",
+    "description": "Claud版\n20260820自動更新できていなかったので修正。\nどうしても自動更新できないので諦めました。",
     "platform": "WEB",
-    "status": "active",
+    "status": "paused",
     "tags": [
       "野球"
     ],
     "image": "images/プロ野球順位トラッカー-1786099655276.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-08-20T10:07:27.502Z"
+    "updatedAt": "2026-08-22T09:59:23.803Z"
   },
   {
     "name": "App-Lab.",
