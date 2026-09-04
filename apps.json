@@ -208,12 +208,12 @@
   {
     "name": "7日前の予報 vs きょう届いた実況",
     "url": "https://prismatic-tanuki-2ba7e4.netlify.app/",
-    "description": "「1週間前に出ていた予報」と「実際の天気」のズレを一目で。",
+    "description": "「1週間前に出ていた予報」と「実際の天気」のズレを一目で。sakana chat fuguにて作成",
     "platform": "WEB",
     "status": "active",
     "tags": [],
     "image": "images/7日前の予報-vs-きょう届いた実況-1788508703402.png",
     "videoUrl": "",
-    "updatedAt": "2026-09-04T07:58:25.448Z"
+    "updatedAt": "2026-09-04T10:32:53.411Z"
   }
 ]
