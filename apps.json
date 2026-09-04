@@ -191,5 +191,18 @@
     "image": "images/auto-photo-namer-1787314672233.jpg",
     "videoUrl": "",
     "updatedAt": "2026-08-21T12:17:53.796Z"
+  },
+  {
+    "name": "weather-accuracy",
+    "url": "https://chinta44.github.io/weather-accuracy/",
+    "description": "",
+    "platform": "WEB",
+    "status": "paused",
+    "tags": [
+      "web"
+    ],
+    "image": "",
+    "videoUrl": "",
+    "updatedAt": "2026-09-04T07:23:55.812Z"
   }
 ]
