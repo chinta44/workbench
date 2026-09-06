@@ -215,5 +215,16 @@
     "image": "images/7日前の予報-vs-きょう届いた実況-1788508703402.png",
     "videoUrl": "",
     "updatedAt": "2026-09-04T10:32:53.411Z"
+  },
+  {
+    "name": "NPB シーズン トラッカー",
+    "url": "https://jazzy-sopapillas-7ec8ae.netlify.app/",
+    "description": "順位推移、詳細順位表、チーム別対戦成績をひとつの画面で確認。履歴データに対応し、セ・パ両リーグをまとめて更新します。",
+    "platform": "WEB",
+    "status": "active",
+    "tags": [],
+    "image": "images/npb-シーズン-トラッカー-1788668996751.jpg",
+    "videoUrl": "",
+    "updatedAt": "2026-09-06T04:29:58.340Z"
   }
 ]
