@@ -218,13 +218,13 @@
   },
   {
     "name": "NPB シーズン トラッカー",
-    "url": "https://jazzy-sopapillas-7ec8ae.netlify.app/",
+    "url": "https://npb-tracker-sakura.pages.dev/",
     "description": "順位推移、詳細順位表、チーム別対戦成績をひとつの画面で確認。履歴データに対応し、セ・パ両リーグをまとめて更新します。",
     "platform": "WEB",
     "status": "active",
     "tags": [],
     "image": "images/npb-シーズン-トラッカー-1788668996751.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-09-06T04:29:58.340Z"
+    "updatedAt": "2026-09-08T09:54:45.469Z"
   }
 ]
