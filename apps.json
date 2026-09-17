@@ -230,12 +230,12 @@
   {
     "name": "資源分別AIカメラ",
     "url": "https://github.com/chinta44/shigen-bunbetsu-ai-camera",
-    "description": "カメラで撮影した写真や商品のバーコードから、お住まいの自治体ルールに応じた正しいゴミ・資源の分別区分を瞬時に判定・案内する Android アプリケーションです。  \n自治体ごとの分別基準、収集カレンダー、指定ごみ袋・粗大ごみ処理シールの実物見本写真ガイドを搭載しています。\nAPK直リンクhttps://drive.google.com/file/d/1cFtt_AVQY607YHtzJreYfxAj81IEf2n3/view?usp=sharing",
+    "description": "カメラで撮影した写真や商品のバーコードから、お住まいの自治体ルールに応じた正しいゴミ・資源の分別区分を瞬時に判定・案内する Android アプリケーションです。  \n自治体ごとの分別基準、収集カレンダー、指定ごみ袋・粗大ごみ処理シールの実物見本写真ガイドを搭載しています。\nAPK直リンクhttps://drive.google.com/drive/folders/1MdYvQPIqWNWe1SFEytwg9qINQhTXP0B1",
     "platform": "ANDROID",
     "status": "active",
     "tags": [],
     "image": "images/資源分別aiカメラ-1789216956151.webp",
     "videoUrl": "",
-    "updatedAt": "2026-09-16T10:06:11.428Z"
+    "updatedAt": "2026-09-17T05:08:27.990Z"
   }
 ]
