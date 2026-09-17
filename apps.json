@@ -122,7 +122,7 @@
   {
     "name": "いちいち面倒なカメラアプリ",
     "url": "https://auto-photo-namer.onrender.com/",
-    "description": "写真を撮ると自動で名前をつけてくれるカメラアプリ\n(google AI Studio作成版）Gemini3.6\n高画質化による解析時間の伸びを若干修正\nAndroid版もリリース\nAPK直リンク→https://drive.google.com/file/d/10p6Ibs-xUVRMwiCbCp530nfCopjRFcWl/view?usp=sharing",
+    "description": "写真を撮ると自動で名前をつけてくれるカメラアプリ\n(google AI Studio作成版）Gemini3.6\n高画質化による解析時間の伸びを若干修正\nAndroid版もリリース\nAPK直リンク→https://drive.google.com/drive/folders/1MdYvQPIqWNWe1SFEytwg9qINQhTXP0B1",
     "platform": "WEB",
     "status": "active",
     "tags": [
@@ -130,7 +130,7 @@
     ],
     "image": "images/いちいち面倒なカメラアプリ-1786278508996.png",
     "videoUrl": "https://youtu.be/dlMnY3WBLsg",
-    "updatedAt": "2026-09-16T10:45:56.103Z"
+    "updatedAt": "2026-09-17T05:09:32.396Z"
   },
   {
     "name": "SmartName AI",
