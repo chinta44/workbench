@@ -118,6 +118,11 @@
   .card.paused:hover{ opacity: 0.85; }
   .card h2{ font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.25rem; margin: 0; font-weight: 700; line-height: 1.3; }
   .card p{ margin: 0; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; flex-grow: 1; }
+  .card p a{
+    color: var(--teal); text-decoration: underline; text-underline-offset: 2px;
+    word-break: break-all; transition: color .15s;
+  }
+  .card p a:hover{ color: var(--teal-deep); }
   .tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
   .tag{
     font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--ink-soft);
@@ -368,7 +373,7 @@
 /* ============================================================
    WORKBENCH自体のバージョン。番号を上げたい時はここだけ書き換える
    ============================================================ */
-const WORKBENCH_VERSION = 'v2.2';
+const WORKBENCH_VERSION = 'v2.3';
 
 let APPS = [];
 let activeTag = null;
@@ -389,6 +394,29 @@ function formatDate(iso){
   if(isNaN(d)) return '-';
   const p = n => String(n).padStart(2, '0');
   return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+// 説明文などに含まれるHTML特殊文字を無害化する
+function escapeHtml(str){
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// 説明文中のURL(http/https)を、クリックで開けるリンクに変換する。
+// 先にエスケープしてからURL部分だけをリンク化するので安全。
+function linkify(text){
+  const escaped = escapeHtml(text || '');
+  return escaped.replace(/(https?:\/\/[^\s<]+)/g, (url) => {
+    const trailing = url.match(/[.,;:!?)\]]+$/);  // 末尾の句読点や閉じ括弧はリンクに含めない
+    const clean = trailing ? url.slice(0, -trailing[0].length) : url;
+    const tail = trailing ? trailing[0] : '';
+    if(!clean) return url;
+    return `<a href="${clean}" target="_blank" rel="noopener noreferrer">${clean}</a>${tail}`;
+  });
 }
 
 // 名前+URLでアプリを一意に識別する(並べ替えで順序が変わっても編集/削除がずれないように)
@@ -535,7 +563,7 @@ function render(){
           ${statusBadge}
         </div>
         <h2>${app.name}</h2>
-        <p>${app.description || ''}</p>
+        <p>${linkify(app.description || '')}</p>
         <div class="tags">${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
       </div>
       <div class="card-updated">更新: ${formatDate(app.updatedAt)}</div>
