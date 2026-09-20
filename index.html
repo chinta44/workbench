@@ -20,6 +20,22 @@
     --card-bg: #ffffff;
     --radius: 2px;
   }
+  [data-theme="dark"]{
+    --bg: #0c141c;
+    --bg-line: #1c2b38;
+    --ink: #e1edf2;
+    --ink-soft: #7f97a3;
+    --teal: #2ea899;
+    --teal-deep: #47cbba;
+    --amber: #f0ad38;
+    --danger: #d9533f;
+    --card-bg: #131f2a;
+  }
+  [data-theme="dark"] .status-badge.active{ background: #102d23; color: #52c58e; border-color: #52c58e; }
+  [data-theme="dark"] .status-badge.paused{ background: #332715; color: #e5b958; border-color: #e5b958; }
+  [data-theme="dark"] .status.ok{ background: #102d23; color: #52c58e; border-color: #52c58e; }
+  [data-theme="dark"] .status.err{ background: #331916; color: #d9533f; border-color: #d9533f; }
+  [data-theme="dark"] .status.loading{ background: #131f2a; color: #7f97a3; border-color: #1c2b38; }
   *{ box-sizing: border-box; }
   html{ scroll-behavior: smooth; }
   body{
@@ -97,7 +113,14 @@
     border-bottom: 1.5px solid var(--ink); display: flex; align-items: center; justify-content: center;
     font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); font-size: 0.75rem; overflow: hidden;
   }
-  .thumb img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb.has-image{ cursor: zoom-in; position: relative; }
+  .thumb.has-image:hover::after{
+    content: '🔍 拡大'; position: absolute; bottom: 6px; right: 6px;
+    background: rgba(22, 35, 43, 0.85); color: #fff; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; padding: 2px 7px; border-radius: 2px; letter-spacing: 0.04em; pointer-events: none;
+  }
+  .thumb img{ width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .15s; }
+  .thumb.has-image:hover img{ opacity: 0.9; }
   .card-body{ padding: 16px 20px 0; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
   .platform{
     display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace;
@@ -117,7 +140,10 @@
   .card.paused .thumb{ filter: grayscale(0.5); }
   .card.paused:hover{ opacity: 0.85; }
   .card h2{ font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.25rem; margin: 0; font-weight: 700; line-height: 1.3; }
-  .card p{ margin: 0; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; flex-grow: 1; }
+  .card p{
+    margin: 0; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; flex-grow: 1;
+    white-space: pre-wrap; word-break: break-word;
+  }
   .card p a{
     color: var(--teal); text-decoration: underline; text-underline-offset: 2px;
     word-break: break-all; transition: color .15s;
@@ -215,9 +241,38 @@
   .status.err{ background: #f5e4df; color: var(--danger); border: 1px solid var(--danger); }
   .status.loading{ background: var(--bg); color: var(--ink-soft); border: 1px solid var(--bg-line); }
 
-  .settings-note{
-    font-size: 0.72rem; color: var(--ink-soft); background: var(--bg); border: 1px solid var(--bg-line);
-    padding: 10px 12px; border-radius: 2px; line-height: 1.6; margin-bottom: 16px;
+  .field-with-action{ display: flex; gap: 8px; }
+  .field-with-action input{ flex: 1; }
+  .action-btn{
+    padding: 0 12px; border: 1.5px solid var(--ink); background: var(--bg);
+    color: var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+    cursor: pointer; border-radius: 2px; white-space: nowrap; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px; transition: background .15s, color .15s;
+  }
+  .action-btn:hover{ background: var(--ink); color: var(--bg); }
+  .action-btn:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+  .image-preview-overlay{
+    position: fixed; inset: 0; background: rgba(10, 16, 22, 0.88); display: none;
+    align-items: center; justify-content: center; z-index: 200; padding: 20px;
+    cursor: zoom-out;
+  }
+  .image-preview-overlay.show{ display: flex; }
+  .image-preview-content{
+    position: relative; max-width: 90vw; max-height: 85vh; display: flex; flex-direction: column;
+    align-items: center; cursor: default;
+  }
+  .image-preview-content img{
+    max-width: 100%; max-height: 80vh; object-fit: contain; border: 2px solid var(--ink);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: var(--card-bg);
+  }
+  .image-preview-caption{
+    margin-top: 10px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1rem;
+    color: #ffffff; text-align: center; font-weight: 700;
+  }
+  .image-preview-close{
+    position: absolute; top: -38px; right: 0; background: none; border: none;
+    color: #ffffff; font-size: 1.8rem; cursor: pointer; line-height: 1;
   }
 
   @media (prefers-reduced-motion: reduce){ .card, .card .open::after, .fab{ transition: none; } }
@@ -233,6 +288,7 @@
     </div>
     <div class="header-right">
       <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED<span class="last-updated" id="lastUpdated"></span></div>
+      <button class="icon-btn" id="themeBtn" title="ダークモード切替" aria-label="ダークモード切替">☾</button>
       <button class="icon-btn" id="settingsBtn" title="設定" aria-label="設定">⚙</button>
     </div>
   </header>
@@ -244,8 +300,17 @@
     <button class="chip" data-status="paused">保留中</button>
   </div>
 
+  <div class="filters" id="platformFilters">
+    <span class="label">PLATFORM:</span>
+    <button class="chip active" data-platform="all">すべて</button>
+    <button class="chip" data-platform="WEB">WEB</button>
+    <button class="chip" data-platform="ANDROID">ANDROID</button>
+    <button class="chip" data-platform="WINDOWS">WINDOWS</button>
+    <button class="chip" data-platform="OTHER">OTHER</button>
+  </div>
+
   <div class="filters" id="filters">
-    <span class="label">FILTER:</span>
+    <span class="label">TAG:</span>
   </div>
 
   <div class="grid" id="grid"></div>
@@ -324,7 +389,11 @@
     </div>
     <div class="field">
       <label>URL</label>
-      <input type="url" id="appUrl" placeholder="https://...">
+      <div class="field-with-action">
+        <input type="url" id="appUrl" placeholder="https://...">
+        <button type="button" class="action-btn" id="ghAutoFillBtn" title="GitHubリポジトリから情報を自動取得">⚡ 自動取得</button>
+      </div>
+      <div class="hint" id="ghAutoFillHint">GitHubリポジトリのURLを入力して「自動取得」を押すと、名前・説明・タグ等を自動補完します</div>
     </div>
     <div class="field">
       <label>説明文</label>
@@ -369,15 +438,24 @@
   </div>
 </div>
 
+<div class="image-preview-overlay" id="imagePreviewOverlay">
+  <div class="image-preview-content">
+    <button class="image-preview-close" id="imagePreviewClose" title="閉じる">✕</button>
+    <img id="imagePreviewImg" src="" alt="">
+    <div class="image-preview-caption" id="imagePreviewCaption"></div>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    WORKBENCH自体のバージョン。番号を上げたい時はここだけ書き換える
    ============================================================ */
-const WORKBENCH_VERSION = 'v2.3';
+const WORKBENCH_VERSION = 'v2.4';
 
 let APPS = [];
 let activeTag = null;
 let activeStatus = 'all';
+let activePlatform = 'all';
 
 const grid = document.getElementById('grid');
 const filtersEl = document.getElementById('filters');
@@ -385,6 +463,67 @@ const countNum = document.getElementById('countNum');
 const lastUpdatedEl = document.getElementById('lastUpdated');
 
 document.getElementById('versionLabel').textContent = `WORKBENCH ${WORKBENCH_VERSION}`;
+
+/* --- テーマ（ダーク/ライトモード）管理 --- */
+const THEME_KEY = 'workbench_theme';
+const themeBtn = document.getElementById('themeBtn');
+
+function setTheme(theme){
+  if(theme === 'dark'){
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeBtn.textContent = '☼';
+    themeBtn.title = 'ライトモードに切替';
+  }else{
+    document.documentElement.removeAttribute('data-theme');
+    themeBtn.textContent = '☾';
+    themeBtn.title = 'ダークモードに切替';
+  }
+  localStorage.setItem(THEME_KEY, theme);
+}
+
+function initTheme(){
+  const saved = localStorage.getItem(THEME_KEY);
+  if(saved){
+    setTheme(saved);
+  }else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+    setTheme('dark');
+  }else{
+    setTheme('light');
+  }
+}
+themeBtn.onclick = () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  setTheme(isDark ? 'light' : 'dark');
+};
+initTheme();
+
+/* --- 画像拡大プレビュー（ライトボックス） --- */
+const imagePreviewOverlay = document.getElementById('imagePreviewOverlay');
+const imagePreviewImg = document.getElementById('imagePreviewImg');
+const imagePreviewCaption = document.getElementById('imagePreviewCaption');
+const imagePreviewClose = document.getElementById('imagePreviewClose');
+
+function openImagePreview(src, title){
+  imagePreviewImg.src = src;
+  imagePreviewImg.alt = title;
+  imagePreviewCaption.textContent = title;
+  imagePreviewOverlay.classList.add('show');
+}
+function closeImagePreview(){
+  imagePreviewOverlay.classList.remove('show');
+  imagePreviewImg.src = '';
+}
+imagePreviewClose.onclick = closeImagePreview;
+imagePreviewOverlay.onclick = (e) => {
+  if(e.target === imagePreviewOverlay || e.target === imagePreviewClose) closeImagePreview();
+};
+window.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){
+    if(imagePreviewOverlay.classList.contains('show')) closeImagePreview();
+    if(settingsOverlay.classList.contains('show')) settingsOverlay.classList.remove('show');
+    if(addOverlay.classList.contains('show')) addOverlay.classList.remove('show');
+  }
+});
 
 function pad(n){ return String(n).padStart(3, '0'); }
 
@@ -522,6 +661,7 @@ function render(){
   let list = APPS;
   if(activeTag) list = list.filter(a => (a.tags || []).includes(activeTag));
   if(activeStatus !== 'all') list = list.filter(a => (a.status || 'active') === activeStatus);
+  if(activePlatform !== 'all') list = list.filter(a => (a.platform || 'WEB').toUpperCase() === activePlatform);
   grid.innerHTML = '';
 
   if(list.length === 0){
@@ -537,8 +677,9 @@ function render(){
     const isAuto = app.source === 'auto';
     card.setAttribute('data-id', '#' + pad(APPS.indexOf(app) + 1));
 
-    const thumbContent = app.image
-      ? `<img src="${app.image}" alt="${app.name}">`
+    const hasImg = Boolean(app.image);
+    const thumbContent = hasImg
+      ? `<img src="${app.image}" alt="${escapeHtml(app.name)}">`
       : (app.platform || 'WEB');
 
     const actionsHtml = isAuto
@@ -562,9 +703,9 @@ function render(){
           <span class="platform">${app.platform || 'WEB'}</span>
           ${statusBadge}
         </div>
-        <h2>${app.name}</h2>
+        <h2>${escapeHtml(app.name)}</h2>
         <p>${linkify(app.description || '')}</p>
-        <div class="tags">${(app.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        <div class="tags">${(app.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
       </div>
       <div class="card-updated">更新: ${formatDate(app.updatedAt)}</div>
       <div class="card-footer">
@@ -575,6 +716,14 @@ function render(){
         ${actionsHtml}
       </div>
     `;
+
+    const thumbEl = card.querySelector('.thumb');
+    if(hasImg){
+      thumbEl.classList.add('has-image');
+      thumbEl.title = 'クリックして拡大';
+      thumbEl.onclick = () => openImagePreview(app.image, app.name);
+    }
+
     card.querySelector('.edit-btn').onclick = () => openAddModal(key);
     if(!isAuto){
       card.querySelector('.delete-btn').onclick = () => deleteApp(key);
@@ -905,6 +1054,94 @@ document.querySelectorAll('#statusFilters .chip').forEach(btn => {
     render();
   };
 });
+
+document.querySelectorAll('#platformFilters .chip').forEach(btn => {
+  btn.onclick = () => {
+    activePlatform = btn.dataset.platform;
+    document.querySelectorAll('#platformFilters .chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  };
+});
+
+/* --- GitHub URLからの自動入力（Auto-fill） --- */
+const ghAutoFillBtn = document.getElementById('ghAutoFillBtn');
+ghAutoFillBtn.onclick = async () => {
+  const urlVal = document.getElementById('appUrl').value.trim();
+  if(!urlVal){
+    addStatus.textContent = '先にGitHubリポジトリのURLを入力してください。';
+    addStatus.className = 'status show err';
+    return;
+  }
+  const match = urlVal.match(/github\.com\/([^\/]+)\/([^\/#?]+)/);
+  if(!match){
+    addStatus.textContent = '有効なGitHubリポジトリのURLではありません（例: https://github.com/user/repo）';
+    addStatus.className = 'status show err';
+    return;
+  }
+  const owner = match[1];
+  const repo = match[2].replace(/\.git$/, '');
+
+  ghAutoFillBtn.disabled = true;
+  const origBtnText = ghAutoFillBtn.textContent;
+  ghAutoFillBtn.textContent = '取得中...';
+  addStatus.textContent = 'GitHubからリポジトリ情報を取得しています...';
+  addStatus.className = 'status show loading';
+
+  try{
+    const cfg = getCfg();
+    const headers = { 'Accept': 'application/vnd.github+json' };
+    if(cfg.token) headers['Authorization'] = `Bearer ${cfg.token}`;
+
+    const res = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`, { headers });
+    if(!res.ok){
+      throw new Error(`リポジトリ取得失敗 (${res.status} ${res.statusText})`);
+    }
+    const data = await res.json();
+
+    const nameInput = document.getElementById('appName');
+    if(!nameInput.value.trim()){
+      nameInput.value = data.name || '';
+    }
+    const descInput = document.getElementById('appDesc');
+    if(!descInput.value.trim() && data.description){
+      descInput.value = data.description;
+    }
+    const tagsInput = document.getElementById('appTags');
+    const topics = data.topics || [];
+    if(!tagsInput.value.trim() && topics.length > 0){
+      tagsInput.value = topics.join(', ');
+    }
+    const platformSelect = document.getElementById('appPlatform');
+    const lang = (data.language || '').toLowerCase();
+    if(topics.includes('android') || ['kotlin', 'java'].includes(lang)){
+      platformSelect.value = 'ANDROID';
+    }else if(topics.includes('windows') || ['c#', 'c++'].includes(lang)){
+      platformSelect.value = 'WINDOWS';
+    }else{
+      platformSelect.value = 'WEB';
+    }
+
+    if(data.homepage && data.homepage.trim() !== '' && data.homepage !== data.html_url){
+      const useHomepage = confirm(`公開URL（${data.homepage}）が見つかりました。\nURL欄を公開URLに置き換えますか？\n（キャンセルすると現在のリポジトリURLのままにします）`);
+      if(useHomepage){
+        document.getElementById('appUrl').value = data.homepage;
+        if(!descInput.value.includes(data.html_url)){
+          descInput.value = (descInput.value ? descInput.value + '\n\n' : '') + `GitHub: ${data.html_url}`;
+        }
+      }
+    }
+
+    addStatus.textContent = `「${data.name}」の情報を自動取得しました。`;
+    addStatus.className = 'status show ok';
+  }catch(err){
+    addStatus.textContent = '自動取得エラー: ' + err.message;
+    addStatus.className = 'status show err';
+  }finally{
+    ghAutoFillBtn.disabled = false;
+    ghAutoFillBtn.textContent = origBtnText;
+  }
+};
 
 loadApps();
 </script>
