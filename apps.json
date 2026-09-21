@@ -12,12 +12,15 @@
   {
     "name": "ペット健康手帳",
     "url": "https://torao44.github.io/pet-health-book/",
-    "description": "ペットたちの健康管理",
+    "description": "ペットたちの健康管理\nフードの記録に写真を撮って記録する機能追加",
     "platform": "WEB",
+    "status": "active",
     "tags": [
       "ペット"
     ],
-    "image": "images/ペット健康手帳-1784689445559.png"
+    "image": "images/ペット健康手帳-1784689445559.png",
+    "videoUrl": "",
+    "updatedAt": "2026-09-21T14:37:32.997Z"
   },
   {
     "name": "天気くらべ帳",
