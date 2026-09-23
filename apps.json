@@ -240,5 +240,16 @@
     "image": "images/資源分別aiカメラ-1789216956151.webp",
     "videoUrl": "https://youtube.com/shorts/uc19f5CWYOE?feature=share",
     "updatedAt": "2026-09-21T14:32:36.555Z"
+  },
+  {
+    "name": "SpaceTracker-Pro",
+    "url": "https://spacetracker-pro.chinta44-npb.workers.dev/",
+    "description": "機能\n👨‍🚀 ISSクルー自動取得\n🚀 SpaceX・NASA・JAXA打上げ一覧\n🛰 Starlink可視予報\n🌌 オーロラ(Kp指数)\n☄️ 流星群カレンダー\n📱 スマホ最適化・PWA対応\n🌍 ISS現在位置（5秒更新）",
+    "platform": "WEB",
+    "status": "active",
+    "tags": [],
+    "image": "images/spacetracker-pro-1790144484507.jpg",
+    "videoUrl": "",
+    "updatedAt": "2026-09-23T06:21:25.866Z"
   }
 ]
