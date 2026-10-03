@@ -266,5 +266,16 @@
     "image": "images/動く動画壁紙-1791034227523.jpg",
     "videoUrl": "",
     "updatedAt": "2026-10-03T13:30:28.787Z"
+  },
+  {
+    "name": "CADStudio 3D Viewer",
+    "url": "https://cadviewer-omega.vercel.app/",
+    "description": "ブラウザ上で高速・高精度に動作する次世代 3D CAD & メッシュビューアー\nGLB / STEP / STL / 3MF / OBJ / ZIP に完全対応。高精度自動フィット、中心軸回転、断面切断、寸法計測、物性・重量試算を搭載。",
+    "platform": "WEB",
+    "status": "active",
+    "tags": [],
+    "image": "images/cadstudio-3d-viewer-1791035676521.jpg",
+    "videoUrl": "",
+    "updatedAt": "2026-10-03T13:54:38.282Z"
   }
 ]
