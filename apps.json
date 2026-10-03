@@ -255,5 +255,16 @@
     "image": "images/spacetracker-pro-1790144484507.jpg",
     "videoUrl": "",
     "updatedAt": "2026-09-27T09:30:03.008Z"
+  },
+  {
+    "name": "動く動画壁紙)",
+    "url": "https://github.com/chinta44/Android_Movie_Wallpaper/releases",
+    "description": "Android_Movie_Wallpaper は、スマートフォンの内部ストレージやSDカードにある動画（mp4等）を、ホーム画面の「動くライブ壁紙」として設定できるAndroidアプリです。",
+    "platform": "ANDROID",
+    "status": "active",
+    "tags": [],
+    "image": "images/動く動画壁紙-1791034227523.jpg",
+    "videoUrl": "",
+    "updatedAt": "2026-10-03T13:30:28.787Z"
   }
 ]
