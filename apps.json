@@ -604,19 +604,18 @@
     "tags": [],
     "image": "images/https-tripo3-d-stl-vercel-app-1791036964095.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-10-03T14:16:05.817Z",
+    "updatedAt": "2026-10-16T13:56:55.983Z",
     "devInfo": {
-      "githubAccount": "",
-      "repoUrl": "",
-      "aiTool": "",
-      "aiAccount": "",
-      "aiModel": "",
-      "hostingProvider": "Vercel",
-      "hostingAccount": "Vercel Personal",
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/Tripo3D-STL",
+      "aiTool": "Google AI Studio",
+      "aiAccount": "3021",
+      "hostingProvider": "その他",
+      "hostingAccount": "",
       "servicesAndApis": [
         "3D / CAD Engine"
       ],
-      "devNotes": ""
+      "devNotes": "純粋ai_studio"
     }
   },
   {
