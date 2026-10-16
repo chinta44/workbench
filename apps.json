@@ -288,5 +288,18 @@
     "image": "images/https-tripo3-d-stl-vercel-app-1791036964095.jpg",
     "videoUrl": "",
     "updatedAt": "2026-10-03T14:16:05.817Z"
+  },
+  {
+    "name": "holoforge_viewer",
+    "url": "https://torao44.github.io/holoforge_viewer/",
+    "description": "単一HTMLファイルの3D CADビューワー。Three.js r160 を搭載し、ブラウザだけで動作します。sakana_chat torao44 githubのみ",
+    "platform": "WEB",
+    "status": "active",
+    "tags": [
+      "3D cad"
+    ],
+    "image": "images/holoforge_viewer-1792150476547.jpg",
+    "videoUrl": "",
+    "updatedAt": "2026-10-16T11:34:38.284Z"
   }
 ]
