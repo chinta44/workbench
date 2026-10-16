@@ -4,10 +4,26 @@
     "url": "https://stalwart-sherbet-b53d75.netlify.app/",
     "description": "grockによって作られた雷撮影用アプリ",
     "platform": "WEB",
+    "status": "active",
     "tags": [
       "カメラ"
     ],
-    "image": "images/雷撮影用カメラ-1784681349310.png"
+    "image": "images/雷撮影用カメラ-1784681349310.png",
+    "videoUrl": "",
+    "updatedAt": "",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "Grok",
+      "aiAccount": "Account #1 (xAI)",
+      "aiModel": "",
+      "hostingProvider": "Netlify",
+      "hostingAccount": "Netlify (Free Tier)",
+      "servicesAndApis": [
+        "3D / CAD Engine"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "ペット健康手帳",
@@ -20,17 +36,44 @@
     ],
     "image": "images/ペット健康手帳-1784689445559.png",
     "videoUrl": "",
-    "updatedAt": "2026-09-21T14:37:32.997Z"
+    "updatedAt": "2026-09-21T14:37:32.997Z",
+    "devInfo": {
+      "githubAccount": "torao44",
+      "repoUrl": "https://github.com/torao44/pet-health-book",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "torao44",
+      "servicesAndApis": [],
+      "devNotes": ""
+    }
   },
   {
     "name": "天気くらべ帳",
     "url": "https://chinta44.github.io/weather-almanac/",
     "description": "気温くらべ帳 (Weather Almanac)\nカレンダーから日付をひとつ選ぶと、今年から過去5年・過去10年分の気温を比較できるシングルページのWebアプリです。ビルド不要・外部ライブラリ不要の1枚のHTMLファイルで動きます。",
     "platform": "WEB",
+    "status": "active",
     "tags": [
       "天気"
     ],
-    "image": "images/天気くらべ帳-1784689584128.png"
+    "image": "images/天気くらべ帳-1784689584128.png",
+    "videoUrl": "",
+    "updatedAt": "",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/weather-almanac",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [
+        "Weather API"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "ultimate_cad_viewer",
@@ -43,7 +86,20 @@
     ],
     "image": "images/ultimate_cad_viewer-1784689969045.png",
     "videoUrl": "",
-    "updatedAt": "2026-10-01T12:34:13.062Z"
+    "updatedAt": "2026-10-01T12:34:13.062Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/ultimate-cad-viewer",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [
+        "3D / CAD Engine"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "ペット健康管理手帳",
@@ -55,17 +111,45 @@
       "ペット"
     ],
     "image": "images/ペット健康管理手帳-1784690115145.png",
-    "updatedAt": "2026-08-07T11:18:15.102Z"
+    "videoUrl": "",
+    "updatedAt": "2026-08-07T11:18:15.102Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "Cursor",
+      "aiAccount": "Account #1 (Cursor)",
+      "aiModel": "",
+      "hostingProvider": "Google Cloud Run",
+      "hostingAccount": "GCP Project (528168758805)",
+      "servicesAndApis": [],
+      "devNotes": "試作・保留中"
+    }
   },
   {
     "name": "stl-catalog",
     "url": "https://github.com/torao44/stl-catalog",
     "description": "window用ソフト stlファイルを一覧表示（zip.rar対応)",
     "platform": "WINDOWS",
+    "status": "active",
     "tags": [
       "3D cad"
     ],
-    "image": "images/stl-catalog-1784715509902.jpg"
+    "image": "images/stl-catalog-1784715509902.jpg",
+    "videoUrl": "",
+    "updatedAt": "",
+    "devInfo": {
+      "githubAccount": "torao44",
+      "repoUrl": "https://github.com/torao44/stl-catalog",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Releases / Repo",
+      "hostingAccount": "torao44",
+      "servicesAndApis": [
+        "3D / CAD Engine"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "BluetoothMonitor",
@@ -77,29 +161,69 @@
       "スマホ Bluetooth"
     ],
     "image": "images/bluetoothmonitor-1784714548258.webp",
-    "updatedAt": "2026-08-07T11:21:21.049Z"
+    "videoUrl": "",
+    "updatedAt": "2026-08-07T11:21:21.049Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/BluetoothMonitor",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Releases / Repo",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [
+        "Android / APK"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "ピカッとコレクション",
     "url": "https://neon-trifle-1ae7d8.netlify.app/",
     "description": "Claudeによる雷撮影用アプリ 撮った写真のプレビュー機能を追加した",
     "platform": "WEB",
+    "status": "active",
     "tags": [
       "カメラ"
     ],
     "image": "images/ピカッとコレクション-1784717908088.png",
-    "updatedAt": "2026-07-28T07:02:32.808Z"
+    "videoUrl": "",
+    "updatedAt": "2026-07-28T07:02:32.808Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "Claude",
+      "aiAccount": "Claude Account #1",
+      "aiModel": "Claude 3.7 Sonnet",
+      "hostingProvider": "Netlify",
+      "hostingAccount": "Netlify (Free Tier)",
+      "servicesAndApis": [],
+      "devNotes": ""
+    }
   },
   {
     "name": "つながりモニター",
     "url": "https://github.com/chinta44/SimSwitcher",
     "description": "UI少し変更\n物理SIM／eSIMのデータ通信回線と、Bluetoothデバイスの接続/切断を1つのアプリでまとめて監視します。 BluetoothMonitor（雛形プロジェクト）をSIM Switcherに統合したものです。",
     "platform": "ANDROID",
+    "status": "active",
     "tags": [
       "スマホ Bluetooth sim"
     ],
     "image": "images/つながりモニター-1784887260775.webp",
-    "updatedAt": "2026-07-28T08:16:13.966Z"
+    "videoUrl": "",
+    "updatedAt": "2026-07-28T08:16:13.966Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/SimSwitcher",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Releases / Repo",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [],
+      "devNotes": ""
+    }
   },
   {
     "name": "github Trend Claude",
@@ -112,7 +236,20 @@
     ],
     "image": "images/github-trend-claude-1784936499689.png",
     "videoUrl": "",
-    "updatedAt": "2026-09-25T08:07:32.455Z"
+    "updatedAt": "2026-09-25T08:07:32.455Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/github-Trend-Claude",
+      "aiTool": "Claude",
+      "aiAccount": "Claude Account #1",
+      "aiModel": "Claude 3.7 Sonnet",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [
+        "Android / APK"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "プロ野球の順位表示",
@@ -124,7 +261,19 @@
       "野球"
     ],
     "image": "images/プロ野球の順位表示-1785393162313.png",
-    "updatedAt": "2026-08-07T11:16:51.528Z"
+    "videoUrl": "",
+    "updatedAt": "2026-08-07T11:16:51.528Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "Streamlit Cloud",
+      "hostingAccount": "Streamlit Account",
+      "servicesAndApis": [],
+      "devNotes": "試作・保留中"
+    }
   },
   {
     "name": "いちいち面倒なカメラアプリ",
@@ -137,18 +286,47 @@
     ],
     "image": "images/いちいち面倒なカメラアプリ-1786278508996.png",
     "videoUrl": "https://youtu.be/dlMnY3WBLsg",
-    "updatedAt": "2026-09-21T14:34:09.030Z"
+    "updatedAt": "2026-09-21T14:34:09.030Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/Auto-Photo-Namer",
+      "aiTool": "Google AI Studio",
+      "aiAccount": "Nagoya3021@gmail.com",
+      "aiModel": "Gemini 3.6",
+      "hostingProvider": "Render",
+      "hostingAccount": "Render Account #1",
+      "servicesAndApis": [
+        "Gemini API",
+        "Android / APK"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "SmartName AI",
     "url": "https://chinta44.github.io/smart-name-ai/",
     "description": "写真を撮ると Gemini Vision AI が内容（領収書 / ペット / 商品 / 書類）を判別し、 わかりやすいファイル名を自動生成して整理してくれるカメラアプリです。\n\nこのバージョンは サーバー(Express)を使わず、ブラウザから直接 Gemini API を呼び出す 構成になっています。GitHub Pages のような静的ホスティングだけで完結します。（Claudeでのブラッシュアップ版）",
     "platform": "WEB",
+    "status": "active",
     "tags": [
       "カメラ"
     ],
     "image": "images/smartname-ai-1785409558293.png",
-    "updatedAt": "2026-07-30T11:09:06.909Z"
+    "videoUrl": "",
+    "updatedAt": "2026-07-30T11:09:06.909Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/smart-name-ai",
+      "aiTool": "Google AI Studio",
+      "aiAccount": "Nagoya3021@gmail.com",
+      "aiModel": "Gemini Vision",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [
+        "Gemini API"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "プロ野球順位トラッカー",
@@ -161,7 +339,18 @@
     ],
     "image": "images/プロ野球順位トラッカー-1786099655276.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-08-22T09:59:23.803Z"
+    "updatedAt": "2026-08-22T09:59:23.803Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/npb-tracker_Claude",
+      "aiTool": "Claude",
+      "aiAccount": "Claude Account #1",
+      "aiModel": "Claude 3.7 Sonnet",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [],
+      "devNotes": "試作・保留中"
+    }
   },
   {
     "name": "App-Lab.",
@@ -171,7 +360,19 @@
     "status": "paused",
     "tags": [],
     "image": "",
-    "updatedAt": "2026-08-09T13:48:52.493Z"
+    "videoUrl": "",
+    "updatedAt": "2026-08-09T13:48:52.493Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/App-Lab.",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Releases / Repo",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [],
+      "devNotes": ""
+    }
   },
   {
     "name": "閃光採集機",
@@ -184,7 +385,20 @@
     ],
     "image": "images/閃光採集機-1787226458360.png",
     "videoUrl": "",
-    "updatedAt": "2026-08-20T11:47:41.114Z"
+    "updatedAt": "2026-08-20T11:47:41.114Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "Sakana AI",
+      "aiAccount": "Sakana Account #1",
+      "aiModel": "Sakana AI",
+      "hostingProvider": "Netlify",
+      "hostingAccount": "Netlify (Free Tier)",
+      "servicesAndApis": [
+        "Sakana AI API"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "Auto Photo Namer",
@@ -197,7 +411,20 @@
     ],
     "image": "images/auto-photo-namer-1787314672233.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-09-04T10:53:41.339Z"
+    "updatedAt": "2026-09-04T10:53:41.339Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "Google AI Studio",
+      "aiAccount": "Nagoya3021@gmail.com",
+      "aiModel": "Gemini Vision",
+      "hostingProvider": "Render",
+      "hostingAccount": "Render Account #1",
+      "servicesAndApis": [
+        "Sakana AI API"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "weather-accuracy",
@@ -210,7 +437,20 @@
     ],
     "image": "",
     "videoUrl": "",
-    "updatedAt": "2026-09-04T07:23:55.812Z"
+    "updatedAt": "2026-09-04T07:23:55.812Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/weather-accuracy",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [
+        "Weather API"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "7日前の予報 vs きょう届いた実況",
@@ -221,7 +461,21 @@
     "tags": [],
     "image": "images/7日前の予報-vs-きょう届いた実況-1788508703402.png",
     "videoUrl": "",
-    "updatedAt": "2026-09-04T10:32:53.411Z"
+    "updatedAt": "2026-09-04T10:32:53.411Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "Sakana AI",
+      "aiAccount": "Sakana Account #1",
+      "aiModel": "Sakana Chat Fugu",
+      "hostingProvider": "Netlify",
+      "hostingAccount": "Netlify (Free Tier)",
+      "servicesAndApis": [
+        "Sakana AI API",
+        "Weather API"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "NPB シーズン トラッカー",
@@ -232,7 +486,18 @@
     "tags": [],
     "image": "images/npb-シーズン-トラッカー-1788668996751.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-09-08T09:54:45.469Z"
+    "updatedAt": "2026-09-08T09:54:45.469Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "Sakana AI",
+      "aiAccount": "Sakana Account #1",
+      "aiModel": "Sakana AI",
+      "hostingProvider": "Cloudflare",
+      "hostingAccount": "chinta44-npb",
+      "servicesAndApis": [],
+      "devNotes": ""
+    }
   },
   {
     "name": "資源分別AIカメラ",
@@ -243,7 +508,20 @@
     "tags": [],
     "image": "images/資源分別aiカメラ-1789216956151.webp",
     "videoUrl": "https://youtube.com/shorts/uc19f5CWYOE?feature=share",
-    "updatedAt": "2026-09-21T14:32:36.555Z"
+    "updatedAt": "2026-09-21T14:32:36.555Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/shigen-bunbetsu-ai-camera",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Releases / Repo",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [
+        "Android / APK"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "SpaceTracker-Pro",
@@ -254,7 +532,20 @@
     "tags": [],
     "image": "images/spacetracker-pro-1790144484507.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-09-27T09:30:03.008Z"
+    "updatedAt": "2026-09-27T09:30:03.008Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "Cloudflare",
+      "hostingAccount": "chinta44-npb",
+      "servicesAndApis": [
+        "Space / NASA API"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "動く動画壁紙)",
@@ -265,7 +556,20 @@
     "tags": [],
     "image": "images/動く動画壁紙-1791034227523.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-10-03T13:30:28.787Z"
+    "updatedAt": "2026-10-03T13:30:28.787Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/Android_Movie_Wallpaper/releases",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "GitHub Releases / Repo",
+      "hostingAccount": "chinta44",
+      "servicesAndApis": [
+        "Android / APK"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "CADStudio 3D Viewer",
@@ -276,7 +580,20 @@
     "tags": [],
     "image": "images/cadstudio-3d-viewer-1791035676521.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-10-03T13:54:38.282Z"
+    "updatedAt": "2026-10-03T13:54:38.282Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "Vercel",
+      "hostingAccount": "Vercel Personal",
+      "servicesAndApis": [
+        "3D / CAD Engine"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "https://tripo3-d-stl.vercel.app/",
@@ -287,7 +604,20 @@
     "tags": [],
     "image": "images/https-tripo3-d-stl-vercel-app-1791036964095.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-10-03T14:16:05.817Z"
+    "updatedAt": "2026-10-03T14:16:05.817Z",
+    "devInfo": {
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "Vercel",
+      "hostingAccount": "Vercel Personal",
+      "servicesAndApis": [
+        "3D / CAD Engine"
+      ],
+      "devNotes": ""
+    }
   },
   {
     "name": "holoforge_viewer",
@@ -300,6 +630,21 @@
     ],
     "image": "images/holoforge_viewer-1792150476547.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-10-16T11:34:38.284Z"
+    "updatedAt": "2026-10-16T11:34:38.284Z",
+    "devInfo": {
+      "githubAccount": "torao44",
+      "repoUrl": "https://github.com/torao44/holoforge_viewer",
+      "aiTool": "Sakana AI",
+      "aiAccount": "Sakana Account #1",
+      "aiModel": "Sakana AI",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "torao44",
+      "servicesAndApis": [
+        "Sakana AI API",
+        "Three.js",
+        "3D / CAD Engine"
+      ],
+      "devNotes": ""
+    }
   }
 ]
