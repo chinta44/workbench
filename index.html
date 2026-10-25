@@ -173,8 +173,50 @@
     border-radius: 50%; cursor: pointer; font-size: 0.85rem; color: var(--ink-soft);
     display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s, border-color .15s;
   }
-  .card-actions .edit-btn:hover{ background: var(--teal); border-color: var(--teal); color: #fff; }
+  .card-actions .edit-btn{ color: var(--amber); border-color: var(--amber); }
+  .card-actions .edit-btn:hover{ background: var(--amber); border-color: var(--amber); color: var(--ink); }
   .card-actions .delete-btn:hover{ background: var(--danger); border-color: var(--danger); color: #fff; }
+
+  /* トークン期限カウントダウン */
+  .token-countdown{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    padding: 4px 10px; border-radius: 999px; border: 1.5px solid var(--bg-line);
+    background: var(--bg); color: var(--ink-soft); cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s; white-space: nowrap;
+  }
+  .token-countdown:hover{ border-color: var(--teal); color: var(--teal-deep); }
+  .token-countdown.warning{ border-color: var(--amber); color: var(--amber); background: rgba(226,167,62,0.10); }
+  .token-countdown.danger{ border-color: var(--danger); color: var(--danger); background: rgba(179,69,47,0.10); }
+
+  /* 動的GitHubアカウント追加 */
+  .account-row{ display: flex; gap: 8px; margin-bottom: 8px; }
+  .account-row input{ flex: 1; }
+  .account-row button{
+    padding: 0 10px; border: 1.5px solid var(--danger); background: transparent;
+    color: var(--danger); cursor: pointer; border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; transition: background .15s, color .15s;
+  }
+  .account-row button:hover{ background: var(--danger); color: #fff; }
+  .add-account-btn{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+    padding: 6px 12px; border: 1.5px solid var(--ink); background: transparent;
+    color: var(--ink); cursor: pointer; border-radius: 2px; transition: background .15s, color .15s;
+  }
+  .add-account-btn:hover{ background: var(--ink); color: var(--bg); }
+
+  /* トークン再取得ガイド */
+  .token-guide{
+    background: var(--bg); border: 1.5px solid var(--bg-line);
+    padding: 14px; margin-top: 14px; font-size: 0.85rem; line-height: 1.7;
+  }
+  .token-guide summary{
+    font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+    color: var(--teal-deep); cursor: pointer; font-weight: 700;
+  }
+  .token-guide ol{ margin: 10px 0 0; padding-left: 20px; color: var(--ink-soft); }
+  .token-guide li{ margin-bottom: 6px; }
+  .token-guide a{ color: var(--teal); text-decoration: underline; }
+  .token-guide a:hover{ color: var(--teal-deep); }
 
   .empty{ font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); padding: 60px 0; text-align: center; font-size: 0.9rem; grid-column: 1 / -1; }
 
@@ -289,7 +331,7 @@
     <div class="header-right">
       <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED<span class="last-updated" id="lastUpdated"></span></div>
       <button class="token-countdown" id="tokenCountdown" title="トークン期限を確認・再設定" style="display:none;"></button>
-      <button class="icon-btn" id="themeBtn" title="ダークード切替" aria-label="ダークモード切替">☾</button>
+      <button class="icon-btn" id="themeBtn" title="ダークモード切替" aria-label="ダークモード切替">☾</button>
       <button class="icon-btn" id="settingsBtn" title="設定" aria-label="設定">⚙</button>
     </div>
   </header>
@@ -362,12 +404,10 @@
     </div>
 
     <div class="field">
-      <label>自動検出アカウント1(ユーザー名)</label>
-      <input type="text" id="cfgUser1" placeholder="例: chinta44">
-    </div>
-    <div class="field">
-      <label>自動検出アカウント2(ユーザー名・任意)</label>
-      <input type="text" id="cfgUser2" placeholder="例: another-account">
+      <label>自動検出アカウント（GitHubユーザー名）</label>
+      <div id="accountList"></div>
+      <button type="button" class="add-account-btn" id="addAccountBtn">＋ アカウントを追加</button>
+      <div class="hint">トピック検出で使うGitHubアカウントを追加・削除できます</div>
     </div>
     <div class="field">
       <label>検出用トピック名</label>
@@ -392,7 +432,7 @@
 
     <div class="btn-row">
       <button class="btn primary" id="cfgSave">保存する</button>
-      <button class="btn" id="cfgClear">保存内容を削除</button>
+      <button class="btn" id="cfgClear">保内容を削除</button>
     </div>
     <div class="status" id="cfgStatus"></div>
   </div>
@@ -484,7 +524,7 @@ const countNum = document.getElementById('countNum');
 const lastUpdatedEl = document.getElementById('lastUpdated');
 
 document.getElementById('versionLabel').textContent = `WORKBENCH ${WORKBENCH_VERSION}`;
-/* --- トークン期限カウントダウン --- */
+/* --- トークン限カウントダウン --- */
 const TOKEN_DAYS = 90; // Fine-grained token の有効期限（日）
 
 function updateTokenCountdown(){
@@ -626,7 +666,7 @@ function appKey(app){
 // トピックを付けたリポジトリを自動検出して、アプリカード形式に変換する
 async function fetchAutoRepos(){
   const cfg = getCfg();
-  const users = [cfg.user1, cfg.user2].map(u => (u || '').trim()).filter(Boolean);
+  const users = (cfg.accounts || []).map(u => (u || '').trim()).filter(Boolean);
   const topic = (cfg.topic || 'workbench-app').trim();
   if(users.length === 0) return [];
 
@@ -797,7 +837,7 @@ const CFG_KEY = 'workbench_cfg';
 function getCfg(){
   try{
     const raw = JSON.parse(localStorage.getItem(CFG_KEY)) || {};
-    // 旧形式(cfgUser1, cfgUser2) → 新形式(accounts配列)の自動移行
+    // 旧形式(user1, user2) → 新形式(accounts配列)の自動移行
     if(!raw.accounts && (raw.user1 || raw.user2)){
       raw.accounts = [];
       if(raw.user1) raw.accounts.push(raw.user1.trim());
