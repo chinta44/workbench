@@ -28,7 +28,7 @@
   {
     "name": "ペット健康手帳",
     "url": "https://torao44.github.io/pet-health-book/",
-    "description": "ペットたちの健康管理\nフードの記録に写真を撮って記録する機能追加",
+    "description": "ペットたちの健康管理\nフードの記録に写真を撮って記録する機能追加\n診療明細書のAI解析導入",
     "platform": "WEB",
     "status": "active",
     "tags": [
@@ -36,13 +36,12 @@
     ],
     "image": "images/ペット健康手帳-1784689445559.png",
     "videoUrl": "",
-    "updatedAt": "2026-09-21T14:37:32.997Z",
+    "updatedAt": "2026-10-25T13:57:41.922Z",
     "devInfo": {
       "githubAccount": "torao44",
       "repoUrl": "https://github.com/torao44/pet-health-book",
-      "aiTool": "",
+      "aiTool": "Claude",
       "aiAccount": "",
-      "aiModel": "",
       "hostingProvider": "GitHub Pages",
       "hostingAccount": "torao44",
       "servicesAndApis": [],
