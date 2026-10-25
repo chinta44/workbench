@@ -331,57 +331,6 @@
   .dev-filter-group .label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--ink-soft); font-weight: 700; }
 
 
-  /* --- 開発インフラ系譜（普段は隠して、必要な時だけ展開） --- */
-  .card-dev-info {
-    display: none;
-    background: var(--bg);
-    border-top: 1px dashed var(--bg-line);
-    padding: 10px 14px;
-    margin: 8px 0 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    line-height: 1.6;
-    color: var(--ink);
-  }
-  body.show-dev .card-dev-info,
-  .card.dev-open .card-dev-info {
-    display: block;
-    animation: fadeIn .2s ease;
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
-  .dev-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
-  .dev-label { color: var(--ink-soft); font-size: 0.68rem; display: flex; align-items: center; gap: 4px; }
-  .dev-badge {
-    padding: 2px 7px; border-radius: 3px; font-weight: 700; font-size: 0.68rem;
-    border: 1px solid var(--bg-line); background: var(--card-bg);
-  }
-  .dev-badge.gh-badge { color: #0284c7; border-color: #38bdf8; background: rgba(56,189,248,0.1); }
-  .dev-badge.ai-claude { color: #d97706; border-color: #fbbf24; background: rgba(251,191,36,0.1); }
-  .dev-badge.ai-cursor { color: #0891b2; border-color: #22d3ee; background: rgba(34,211,238,0.1); }
-  .dev-badge.ai-google { color: #2563eb; border-color: #60a5fa; background: rgba(96,165,250,0.1); }
-  .dev-badge.ai-sakana { color: #e11d48; border-color: #fb7185; background: rgba(251,113,133,0.1); }
-  .dev-badge.ai-grok { color: #4f46e5; border-color: #818cf8; background: rgba(129,140,248,0.1); }
-  .dev-notes {
-    font-size: 0.68rem; color: var(--ink-soft); background: var(--card-bg);
-    padding: 4px 8px; border-radius: 2px; border: 1px solid var(--bg-line); margin-top: 6px;
-  }
-  .lens-toggle-btn {
-    font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 6px 12px;
-    border: 1.5px solid var(--ink); border-radius: 999px; background: transparent;
-    cursor: pointer; color: var(--ink); display: flex; align-items: center; gap: 5px;
-    transition: background .15s, color .15s; font-weight: 700;
-  }
-  .lens-toggle-btn:hover { background: var(--ink); color: var(--bg); }
-  body.show-dev .lens-toggle-btn { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
-  .card-actions .dev-btn { color: var(--teal-deep); border-color: var(--teal); }
-  .card-actions .dev-btn:hover { background: var(--teal); color: #fff; }
-  .dev-filter-group {
-    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
-    background: var(--card-bg); border: 1px solid var(--bg-line); padding: 8px 12px;
-    border-radius: var(--radius); margin-bottom: 12px; font-size: 0.75rem;
-  }
-  .dev-filter-group .label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--ink-soft); font-weight: 700; }
-  
   /* --- トークン有効期限バッジ & カウントダウン --- */
   .token-status-chip {
     font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; padding: 4px 10px;
@@ -406,6 +355,7 @@
     display: inline-flex; align-items: center; gap: 6px; font-weight: bold;
   }
   .account-pill .remove-acc-btn { color: var(--danger); cursor: pointer; background: none; border: none; font-weight: bold; padding: 0 2px; }
+  .dev-badge.gh-badge { color: #0284c7; border-color: #38bdf8; background: rgba(56,189,248,0.1); }
 
 </style>
 </head>
@@ -419,7 +369,6 @@
     </div>
     <div class="header-right">
       <div id="tokenStatusContainer"></div>
-      <button class="lens-toggle-btn" id="devLensBtn" title="普段は非表示の開発アカウント・インフラ情報を展開">🔍 開発レンズ</button>
       <button class="lens-toggle-btn" id="devLensBtn" title="普段は非表示の開発アカウント・インフラ情報を展開">🔍 開発レンズ</button>
       <div class="counter"><strong id="countNum">00</strong>APPS CATALOGED<span class="last-updated" id="lastUpdated"></span></div>
       <button class="icon-btn" id="themeBtn" title="ダークモード切替" aria-label="ダークモード切替">☾</button>
@@ -447,20 +396,6 @@
     <span class="label">TAG:</span>
   </div>
 
-  
-  <div class="dev-filter-group" id="devFilterGroup" style="display:none;">
-    <span class="label">🐙 GITHUB:</span>
-    <button class="chip active" data-gh="all">すべて</button>
-    <button class="chip" data-gh="chinta44">chinta44</button>
-    <button class="chip" data-gh="torao44">torao44</button>
-    <span class="label" style="margin-left:8px;">🤖 AI:</span>
-    <button class="chip active" data-ai="all">すべて</button>
-    <button class="chip" data-ai="Claude">Claude</button>
-    <button class="chip" data-ai="Cursor">Cursor</button>
-    <button class="chip" data-ai="Google">AI Studio</button>
-    <button class="chip" data-ai="Sakana">Sakana</button>
-    <button class="chip" data-ai="Grok">Grok</button>
-  </div>
   
   <div class="dev-filter-group" id="devFilterGroup" style="display:none;">
     <span class="label">🐙 GITHUB:</span>
@@ -510,7 +445,7 @@
       <label>Personal Access Token</label>
       <input type="password" id="cfgToken" placeholder="ghp_... または github_pat_...">
     </div>
-    
+
     <!-- トークン有効期限カウントダウン設定 -->
     <div style="background:var(--bg); border:1px solid var(--bg-line); padding:10px 12px; border-radius:var(--radius); margin-bottom:14px;">
       <div id="cfgTokenCountdownDisplay" style="margin-bottom:8px;"></div>
@@ -519,7 +454,7 @@
       </label>
       <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
         <input type="date" id="cfgTokenExpiresAt" style="font-family:'JetBrains Mono',monospace; font-size:0.8rem; padding:5px 8px; border:1px solid var(--bg-line); background:var(--card-bg); color:var(--ink); border-radius:2px;">
-        <button type="button" class="btn" id="btnSet90Days" style="padding:4px 10px; font-size:0.72rem; border-color:var(--teal); color:var(--teal-deep);">+90日(標準)</button>
+        <button type="button" class="btn" id="btnSet90Days" style="padding:4px 10px; font-size:0.72rem; border-color:var(--teal); color:var(--teal-deep); font-weight:bold;">+90日(標準)</button>
         <button type="button" class="btn" id="btnSet60Days" style="padding:4px 8px; font-size:0.72rem;">+60日</button>
         <button type="button" class="btn" id="btnSet30Days" style="padding:4px 8px; font-size:0.72rem;">+30日</button>
       </div>
@@ -531,7 +466,7 @@
         <span>📖 トークンが切れた時の再取得手順（90日間）</span>
       </div>
       <div style="font-size:0.7rem; color:var(--ink-soft); margin-bottom:8px;">
-        Fine-grained tokenは期限が切れるとコミットできなくなります。以下の手順で90日間の新しいトークンを発行してください。
+        Fine-grained tokenは期限が切れるとコミット・アプリ登録ができなくなります。以下の手順で90日間の新しいトークンを発行してください。
       </div>
       <ol style="margin:0 0 10px 18px; padding:0; font-size:0.72rem; line-height:1.5;">
         <li>下のボタンからGitHubのトークン設定を開き、<b>「Generate new token」</b>を押す</li>
@@ -693,65 +628,6 @@
         <textarea id="appDevNotes" placeholder="次回更新時のアカウントやプロンプトのヒントなど..."></textarea>
       </div>
     </div>
-    <!-- 開発系譜・アカウント情報 -->
-    <div style="border-top:1.5px solid var(--teal); padding-top:12px; margin-top:14px;">
-      <div style="font-family:'Zen Kaku Gothic New',sans-serif; font-weight:700; font-size:0.95rem; color:var(--teal-deep); margin-bottom:10px;">
-        🛠️ 開発系譜・インフラ情報 (普段は隠れる管理用)
-      </div>
-      <div class="field">
-        <label>🐙 GitHubアカウント</label>
-        <select id="appGhAccount">
-          <option value="chinta44">chinta44</option>
-          <option value="torao44">torao44</option>
-          <option value="">未設定</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>リポジトリURL</label>
-        <input type="text" id="appRepoUrl" placeholder="https://github.com/chinta44/...">
-      </div>
-      <div class="field">
-        <label>🤖 開発AIツール</label>
-        <select id="appAiTool">
-          <option value="Claude">Claude</option>
-          <option value="Cursor">Cursor</option>
-          <option value="Google AI Studio">Google AI Studio (Gemini)</option>
-          <option value="Sakana AI">Sakana AI</option>
-          <option value="Grok">Grok (xAI)</option>
-          <option value="その他">その他</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>AI利用アカウント名</label>
-        <input type="text" id="appAiAccount" placeholder="例: 個人用A, 仕事用B, Nagoya3021...">
-      </div>
-      <div class="field">
-        <label>☁️ ホスティング / デプロイ先</label>
-        <select id="appHosting">
-          <option value="GitHub Pages">GitHub Pages</option>
-          <option value="Netlify">Netlify</option>
-          <option value="Vercel">Vercel</option>
-          <option value="Render">Render</option>
-          <option value="Google Cloud Run">Google Cloud Run</option>
-          <option value="Cloudflare">Cloudflare</option>
-          <option value="Streamlit Cloud">Streamlit Cloud</option>
-          <option value="GitHub Releases / Repo">GitHub Releases / Repo</option>
-          <option value="その他">その他</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>ホスティング利用アカウント</label>
-        <input type="text" id="appHostingAccount" placeholder="例: Netlify無料枠, GCP-5281...">
-      </div>
-      <div class="field">
-        <label>🔑 連携API / サービス (カンマ区切り)</label>
-        <input type="text" id="appServices" placeholder="Gemini Vision API, Weather API, Three.js">
-      </div>
-      <div class="field">
-        <label>📝 開発メモ・備忘録</label>
-        <textarea id="appDevNotes" placeholder="次回更新時のアカウントやプロンプトのヒントなど..."></textarea>
-      </div>
-    </div>
 
     <div class="btn-row">
       <button class="btn primary" id="addSubmit">追加する</button>
@@ -820,9 +696,6 @@ themeBtn.onclick = () => {
   setTheme(isDark ? 'light' : 'dark');
 };
 initTheme();
-updateHeaderTokenStatus();
-updateGhFilterChips();
-populateAppGhSelect();
 
 /* --- 画像拡大プレビュー（ライトボックス） --- */
 const imagePreviewOverlay = document.getElementById('imagePreviewOverlay');
@@ -955,6 +828,9 @@ async function loadApps(){
   }, 0);
   lastUpdatedEl.textContent = latest > 0 ? `最終更新: ${formatDate(new Date(latest).toISOString())}` : '';
 
+  updateHeaderTokenStatus();
+  updateGhFilterChips();
+  populateAppGhSelect();
   filtersEl.dataset.built = "";
   filtersEl.querySelectorAll('.chip').forEach(c => c.remove());
   render();
@@ -969,6 +845,137 @@ function allTags(){
 
 let activeGh = 'all';
 let activeAi = 'all';
+
+// トークン期限計算ヘルパー
+function calcDaysRemaining(expiresAt){
+  if(!expiresAt) return null;
+  const target = new Date(expiresAt).getTime();
+  if(isNaN(target)) return null;
+  const now = Date.now();
+  const diffMs = target - now;
+  const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  return {
+    days,
+    isExpired: days <= 0,
+    isNearExpiry: days > 0 && days <= 14
+  };
+}
+
+function addDays(n){
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  const p = x => String(x).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+}
+
+// ヘッダーのトークン状態バッジ更新
+function updateHeaderTokenStatus(){
+  const cfg = getCfg();
+  const container = document.getElementById('tokenStatusContainer');
+  if(!container) return;
+  if(!cfg.token){
+    container.innerHTML = '';
+    return;
+  }
+  const status = calcDaysRemaining(cfg.tokenExpiresAt);
+  if(!status){
+    container.innerHTML = `<button type="button" class="token-status-chip ok" id="headerTokenBtn" title="GitHubトークン設定済み (期限未設定)">🔑 PAT有効</button>`;
+  } else if(status.isExpired){
+    container.innerHTML = `<button type="button" class="token-status-chip expired" id="headerTokenBtn" title="GitHubトークンの有効期限が切れています！再発行が必要です">🚨 PAT期限切れ(0日)</button>`;
+  } else if(status.isNearExpiry){
+    container.innerHTML = `<button type="button" class="token-status-chip warn" id="headerTokenBtn" title="まもなくトークン期限切れ: ${cfg.tokenExpiresAt}まで">⚠️ PAT残り${status.days}日</button>`;
+  } else {
+    container.innerHTML = `<button type="button" class="token-status-chip ok" id="headerTokenBtn" title="トークン有効期限: ${cfg.tokenExpiresAt}まで">🔑 PAT残り${status.days}日</button>`;
+  }
+  const btn = document.getElementById('headerTokenBtn');
+  if(btn) btn.onclick = openSettings;
+}
+
+function getRegisteredGhAccounts(){
+  const cfg = getCfg();
+  return (cfg.githubAccounts && cfg.githubAccounts.length) ? cfg.githubAccounts : ['chinta44', 'torao44'];
+}
+
+function populateAppGhSelect(selectedVal){
+  const sel = document.getElementById('appGhAccount');
+  if(!sel) return;
+  const accounts = getRegisteredGhAccounts();
+  sel.innerHTML = '';
+  accounts.forEach(acc => {
+    const opt = document.createElement('option');
+    opt.value = acc;
+    opt.textContent = acc;
+    sel.appendChild(opt);
+  });
+  if(selectedVal && !accounts.includes(selectedVal) && selectedVal !== ''){
+    const opt = document.createElement('option');
+    opt.value = selectedVal;
+    opt.textContent = selectedVal;
+    sel.appendChild(opt);
+  }
+  const unsetOpt = document.createElement('option');
+  unsetOpt.value = '';
+  unsetOpt.textContent = '未設定';
+  sel.appendChild(unsetOpt);
+
+  if(selectedVal !== undefined){
+    sel.value = selectedVal || '';
+  }
+}
+
+function updateGhFilterChips(){
+  const accounts = getRegisteredGhAccounts();
+  const container = document.getElementById('ghFilterChips');
+  if(!container) return;
+  container.innerHTML = `<button class="chip ${activeGh === 'all' ? 'active' : ''}" data-gh="all">すべて</button>`;
+  accounts.forEach(acc => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (activeGh === acc ? ' active' : '');
+    btn.textContent = acc;
+    btn.dataset.gh = acc;
+    btn.onclick = () => {
+      container.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeGh = acc;
+      render();
+    };
+    container.appendChild(btn);
+  });
+  const allBtn = container.querySelector('[data-gh="all"]');
+  if(allBtn){
+    allBtn.onclick = () => {
+      container.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+      allBtn.classList.add('active');
+      activeGh = 'all';
+      render();
+    };
+  }
+}
+
+function renderGhAccountPills(){
+  const list = document.getElementById('cfgGhAccountPillList');
+  if(!list) return;
+  const cfg = getCfg();
+  const accounts = getRegisteredGhAccounts();
+  list.innerHTML = '';
+  accounts.forEach(acc => {
+    const pill = document.createElement('span');
+    pill.className = 'account-pill';
+    pill.innerHTML = `<span>@${escapeHtml(acc)}</span><button type="button" class="remove-acc-btn" title="${escapeHtml(acc)}を削除">✕</button>`;
+    pill.querySelector('.remove-acc-btn').onclick = () => {
+      if(accounts.length <= 1){
+        alert('最低1つのアカウントが必要です。');
+        return;
+      }
+      cfg.githubAccounts = accounts.filter(a => a !== acc);
+      setCfg(cfg);
+      renderGhAccountPills();
+      updateGhFilterChips();
+      populateAppGhSelect();
+    };
+    list.appendChild(pill);
+  });
+}
 
 function getGhBadgeClass(gh){
   if(gh === 'chinta44') return 'dev-badge gh-chinta';
@@ -1023,156 +1030,7 @@ if(devLensBtn){
   };
 }
 
-// 開発フィルター操作
-document.querySelectorAll('#devFilterGroup [data-gh]').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('#devFilterGroup [data-gh]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeGh = btn.dataset.gh;
-    render();
-  };
-});
-document.querySelectorAll('#devFilterGroup [data-ai]').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('#devFilterGroup [data-ai]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeAi = btn.dataset.ai;
-    render();
-  };
-});
-
-
-let activeGh = 'all';
-let activeAi = 'all';
-
-// トークン期限計算ヘルパー
-function calcDaysRemaining(expiresAt){
-  if(!expiresAt) return null;
-  const target = new Date(expiresAt).getTime();
-  if(isNaN(target)) return null;
-  const now = Date.now();
-  const diffMs = target - now;
-  const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  return {
-    days,
-    isExpired: days <= 0,
-    isNearExpiry: days > 0 && days <= 14
-  };
-}
-
-function addDays(n){
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  const p = x => String(x).padStart(2, '0');
-  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
-}
-
-// ヘッダーのトークン状態バッジ更新
-function updateHeaderTokenStatus(){
-  const cfg = getCfg();
-  const container = document.getElementById('tokenStatusContainer');
-  if(!container) return;
-  if(!cfg.token){
-    container.innerHTML = '';
-    return;
-  }
-  const status = calcDaysRemaining(cfg.tokenExpiresAt);
-  if(!status){
-    container.innerHTML = `<button type="button" class="token-status-chip ok" id="headerTokenBtn" title="GitHubトークン設定済み">🔑 PAT有効</button>`;
-  } else if(status.isExpired){
-    container.innerHTML = `<button type="button" class="token-status-chip expired" id="headerTokenBtn" title="GitHubトークンの有効期限が切れています！再発行が必要です">🚨 PAT期限切れ(0日)</button>`;
-  } else if(status.isNearExpiry){
-    container.innerHTML = `<button type="button" class="token-status-chip warn" id="headerTokenBtn" title="まもなくトークン期限切れ: ${cfg.tokenExpiresAt}まで">⚠️ PAT残り${status.days}日</button>`;
-  } else {
-    container.innerHTML = `<button type="button" class="token-status-chip ok" id="headerTokenBtn" title="トークン有効期限: ${cfg.tokenExpiresAt}まで">🔑 PAT残り${status.days}日</button>`;
-  }
-  const btn = document.getElementById('headerTokenBtn');
-  if(btn) btn.onclick = () => openSettingsModal();
-}
-
-function getGhBadgeClass(gh){
-  return 'dev-badge gh-badge';
-}
-
-function getAiBadgeClass(ai){
-  if(!ai) return 'dev-badge';
-  if(ai.includes('Claude')) return 'dev-badge ai-claude';
-  if(ai.includes('Cursor')) return 'dev-badge ai-cursor';
-  if(ai.includes('Google') || ai.includes('Gemini')) return 'dev-badge ai-google';
-  if(ai.includes('Sakana') || ai.includes('Sakura')) return 'dev-badge ai-sakana';
-  if(ai.includes('Grok')) return 'dev-badge ai-grok';
-  return 'dev-badge';
-}
-
-function renderDevInfoHtml(app){
-  const dev = app.devInfo || {};
-  return `
-    <div class="card-dev-info">
-      <div class="dev-row">
-        <span class="dev-label">🐙 GitHub:</span>
-        <span class="${getGhBadgeClass(dev.githubAccount)}">@${escapeHtml(dev.githubAccount || '未設定')}</span>
-      </div>
-      <div class="dev-row">
-        <span class="dev-label">🤖 AI:</span>
-        <span class="${getAiBadgeClass(dev.aiTool)}">${escapeHtml(dev.aiTool || '未設定')} ${dev.aiAccount ? '(' + escapeHtml(dev.aiAccount) + ')' : ''}</span>
-      </div>
-      <div class="dev-row">
-        <span class="dev-label">☁️ Host:</span>
-        <span class="dev-badge">${escapeHtml(dev.hostingProvider || '未設定')}</span>
-      </div>
-      ${dev.servicesAndApis && dev.servicesAndApis.length ? `
-        <div class="dev-row" style="flex-wrap:wrap; gap:3px;">
-          <span class="dev-label">🔑 連携:</span>
-          ${dev.servicesAndApis.map(s => `<span class="dev-badge" style="font-size:0.65rem;">${escapeHtml(s)}</span>`).join('')}
-        </div>` : ''}
-      ${dev.devNotes ? `<div class="dev-notes">📝 ${escapeHtml(dev.devNotes)}</div>` : ''}
-    </div>
-  `;
-}
-
-// 開発レンズ切替ボタン
-const devLensBtn = document.getElementById('devLensBtn');
-if(devLensBtn){
-  devLensBtn.onclick = () => {
-    document.body.classList.toggle('show-dev');
-    const isShow = document.body.classList.contains('show-dev');
-    const group = document.getElementById('devFilterGroup');
-    if(group) group.style.display = isShow ? 'flex' : 'none';
-  };
-}
-
-// GitHubフィルターチップの動的構築
-function updateGhFilterChips(){
-  const cfg = getCfg();
-  const accounts = (cfg.githubAccounts && cfg.githubAccounts.length) ? cfg.githubAccounts : ['chinta44', 'torao44'];
-  const container = document.getElementById('ghFilterChips');
-  if(!container) return;
-  container.innerHTML = `<button class="chip ${activeGh === 'all' ? 'active' : ''}" data-gh="all">すべて</button>`;
-  accounts.forEach(acc => {
-    const btn = document.createElement('button');
-    btn.className = 'chip' + (activeGh === acc ? ' active' : '');
-    btn.textContent = acc;
-    btn.dataset.gh = acc;
-    btn.onclick = () => {
-      container.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeGh = acc;
-      render();
-    };
-    container.appendChild(btn);
-  });
-  const allBtn = container.querySelector('[data-gh="all"]');
-  if(allBtn){
-    allBtn.onclick = () => {
-      container.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
-      allBtn.classList.add('active');
-      activeGh = 'all';
-      render();
-    };
-  }
-}
-
-// 開発AIフィルター操作
+// 開発フィルター操作(動的構築)
 document.querySelectorAll('#devFilterGroup [data-ai]').forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll('#devFilterGroup [data-ai]').forEach(b => b.classList.remove('active'));
@@ -1205,8 +1063,6 @@ function render(){
   if(activeTag) list = list.filter(a => (a.tags || []).includes(activeTag));
   if(activeStatus !== 'all') list = list.filter(a => (a.status || 'active') === activeStatus);
   if(activePlatform !== 'all') list = list.filter(a => (a.platform || 'WEB').toUpperCase() === activePlatform);
-  if(activeGh !== 'all') list = list.filter(a => (a.devInfo?.githubAccount || '') === activeGh);
-  if(activeAi !== 'all') list = list.filter(a => (a.devInfo?.aiTool || '').includes(activeAi));
   if(activeGh !== 'all') list = list.filter(a => (a.devInfo?.githubAccount || '') === activeGh);
   if(activeAi !== 'all') list = list.filter(a => (a.devInfo?.aiTool || '').includes(activeAi));
   grid.innerHTML = '';
@@ -1273,6 +1129,10 @@ function render(){
       thumbEl.onclick = () => openImagePreview(app.image, app.name);
     }
 
+    const devBtn = card.querySelector('.dev-btn');
+    if(devBtn){
+      devBtn.onclick = () => card.classList.toggle('dev-open');
+    }
     card.querySelector('.edit-btn').onclick = () => openAddModal(key);
     if(!isAuto){
       card.querySelector('.delete-btn').onclick = () => deleteApp(key);
@@ -1300,9 +1160,25 @@ function openSettings(){
   document.getElementById('cfgRepo').value = cfg.repo || '';
   document.getElementById('cfgBranch').value = cfg.branch || 'main';
   document.getElementById('cfgToken').value = cfg.token || '';
+  document.getElementById('cfgTokenExpiresAt').value = cfg.tokenExpiresAt || '';
   document.getElementById('cfgUser1').value = cfg.user1 || '';
   document.getElementById('cfgUser2').value = cfg.user2 || '';
   document.getElementById('cfgTopic').value = cfg.topic || 'workbench-app';
+  
+  const disp = document.getElementById('cfgTokenCountdownDisplay');
+  if(disp){
+    const status = calcDaysRemaining(cfg.tokenExpiresAt);
+    if(!status){
+      disp.innerHTML = '<span style="font-family:\'JetBrains Mono\',monospace; font-size:0.75rem; color:var(--ink-soft);">期限設定なし (+90日ボタンで自動設定可能)</span>';
+    } else if(status.isExpired){
+      disp.innerHTML = '<span style="font-family:\'JetBrains Mono\',monospace; font-size:0.75rem; color:var(--danger); font-weight:bold;">🚨 トークン期限切れ (0日) - 再発行してください</span>';
+    } else if(status.isNearExpiry){
+      disp.innerHTML = `<span style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:#b45309; font-weight:bold;">⚠️ まもなく期限切れ (残り${status.days}日 / ${cfg.tokenExpiresAt}まで)</span>`;
+    } else {
+      disp.innerHTML = `<span style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--teal-deep); font-weight:bold;">✅ 残り${status.days}日 (有効期限: ${cfg.tokenExpiresAt})</span>`;
+    }
+  }
+  renderGhAccountPills();
   cfgStatus.className = 'status';
   settingsOverlay.classList.add('show');
 }
@@ -1311,20 +1187,87 @@ settingsClose.onclick = () => settingsOverlay.classList.remove('show');
 settingsOverlay.onclick = (e) => { if(e.target === settingsOverlay) settingsOverlay.classList.remove('show'); };
 
 document.getElementById('cfgSave').onclick = () => {
+  const prevCfg = getCfg();
   const cfg = {
+    ...prevCfg,
     owner: document.getElementById('cfgOwner').value.trim(),
     repo: document.getElementById('cfgRepo').value.trim(),
     branch: document.getElementById('cfgBranch').value.trim() || 'main',
     token: document.getElementById('cfgToken').value.trim(),
+    tokenExpiresAt: document.getElementById('cfgTokenExpiresAt').value.trim(),
     user1: document.getElementById('cfgUser1').value.trim(),
     user2: document.getElementById('cfgUser2').value.trim(),
-    topic: document.getElementById('cfgTopic').value.trim() || 'workbench-app'
+    topic: document.getElementById('cfgTopic').value.trim() || 'workbench-app',
+    githubAccounts: (prevCfg.githubAccounts && prevCfg.githubAccounts.length) ? prevCfg.githubAccounts : ['chinta44', 'torao44']
   };
   setCfg(cfg);
   cfgStatus.textContent = '保存しました。';
   cfgStatus.className = 'status show ok';
+  updateHeaderTokenStatus();
+  updateGhFilterChips();
+  populateAppGhSelect();
   loadApps();
 };
+
+const b90 = document.getElementById('btnSet90Days');
+if(b90) b90.onclick = () => {
+  const dStr = addDays(90);
+  document.getElementById('cfgTokenExpiresAt').value = dStr;
+  const disp = document.getElementById('cfgTokenCountdownDisplay');
+  if(disp) disp.innerHTML = `<span style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--teal-deep); font-weight:bold;">✅ 残り90日 (${dStr}まで) に設定しました</span>`;
+};
+const b60 = document.getElementById('btnSet60Days');
+if(b60) b60.onclick = () => {
+  const dStr = addDays(60);
+  document.getElementById('cfgTokenExpiresAt').value = dStr;
+  const disp = document.getElementById('cfgTokenCountdownDisplay');
+  if(disp) disp.innerHTML = `<span style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--teal-deep); font-weight:bold;">✅ 残り60日 (${dStr}まで) に設定しました</span>`;
+};
+const b30 = document.getElementById('btnSet30Days');
+if(b30) b30.onclick = () => {
+  const dStr = addDays(30);
+  document.getElementById('cfgTokenExpiresAt').value = dStr;
+  const disp = document.getElementById('cfgTokenCountdownDisplay');
+  if(disp) disp.innerHTML = `<span style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--teal-deep); font-weight:bold;">✅ 残り30日 (${dStr}まで) に設定しました</span>`;
+};
+
+const addGhBtn = document.getElementById('addGhAccountBtn');
+const newGhInput = document.getElementById('newGhAccountInput');
+if(addGhBtn && newGhInput){
+  addGhBtn.onclick = () => {
+    const val = newGhInput.value.trim();
+    if(!val) return;
+    const cfg = getCfg();
+    const accounts = getRegisteredGhAccounts();
+    if(!accounts.includes(val)){
+      accounts.push(val);
+      cfg.githubAccounts = accounts;
+      setCfg(cfg);
+      newGhInput.value = '';
+      renderGhAccountPills();
+      updateGhFilterChips();
+      populateAppGhSelect();
+    }
+  };
+}
+
+const btnQuickAddModal = document.getElementById('btnQuickAddGhModal');
+if(btnQuickAddModal){
+  btnQuickAddModal.onclick = () => {
+    const acc = prompt('新しいGitHubアカウント名を入力してください:');
+    if(!acc || !acc.trim()) return;
+    const name = acc.trim();
+    const cfg = getCfg();
+    const accounts = getRegisteredGhAccounts();
+    if(!accounts.includes(name)){
+      accounts.push(name);
+      cfg.githubAccounts = accounts;
+      setCfg(cfg);
+      updateGhFilterChips();
+    }
+    populateAppGhSelect(name);
+  };
+}
 document.getElementById('cfgClear').onclick = () => {
   localStorage.removeItem(CFG_KEY);
   document.getElementById('cfgOwner').value = '';
@@ -1421,14 +1364,6 @@ function clearAddForm(){
   document.getElementById('appHostingAccount').value = '';
   document.getElementById('appServices').value = '';
   document.getElementById('appDevNotes').value = '';
-  document.getElementById('appGhAccount').value = 'chinta44';
-  document.getElementById('appRepoUrl').value = '';
-  document.getElementById('appAiTool').value = 'Claude';
-  document.getElementById('appAiAccount').value = '';
-  document.getElementById('appHosting').value = 'GitHub Pages';
-  document.getElementById('appHostingAccount').value = '';
-  document.getElementById('appServices').value = '';
-  document.getElementById('appDevNotes').value = '';
   addStatus.className = 'status';
 }
 
@@ -1461,15 +1396,6 @@ function openAddModal(key){
     document.getElementById('appVideo').value = app.videoUrl || '';
     const dev = app.devInfo || {};
     populateAppGhSelect(dev.githubAccount || 'chinta44');
-    document.getElementById('appRepoUrl').value = dev.repoUrl || '';
-    document.getElementById('appAiTool').value = dev.aiTool || 'Claude';
-    document.getElementById('appAiAccount').value = dev.aiAccount || '';
-    document.getElementById('appHosting').value = dev.hostingProvider || 'GitHub Pages';
-    document.getElementById('appHostingAccount').value = dev.hostingAccount || '';
-    document.getElementById('appServices').value = (dev.servicesAndApis || []).join(', ');
-    document.getElementById('appDevNotes').value = dev.devNotes || '';
-    const dev = app.devInfo || {};
-    document.getElementById('appGhAccount').value = dev.githubAccount || 'chinta44';
     document.getElementById('appRepoUrl').value = dev.repoUrl || '';
     document.getElementById('appAiTool').value = dev.aiTool || 'Claude';
     document.getElementById('appAiAccount').value = dev.aiAccount || '';
