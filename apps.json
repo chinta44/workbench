@@ -604,18 +604,19 @@
     "tags": [],
     "image": "images/https-tripo3-d-stl-vercel-app-1791036964095.jpg",
     "videoUrl": "",
-    "updatedAt": "2026-10-16T13:56:55.983Z",
+    "updatedAt": "2026-10-03T14:16:05.817Z",
     "devInfo": {
-      "githubAccount": "chinta44",
-      "repoUrl": "https://github.com/chinta44/Tripo3D-STL",
-      "aiTool": "Google AI Studio",
-      "aiAccount": "3021",
-      "hostingProvider": "その他",
-      "hostingAccount": "",
+      "githubAccount": "",
+      "repoUrl": "",
+      "aiTool": "",
+      "aiAccount": "",
+      "aiModel": "",
+      "hostingProvider": "Vercel",
+      "hostingAccount": "Vercel Personal",
       "servicesAndApis": [
         "3D / CAD Engine"
       ],
-      "devNotes": "純粋ai_studio"
+      "devNotes": ""
     }
   },
   {
@@ -643,27 +644,6 @@
         "Three.js",
         "3D / CAD Engine"
       ],
-      "devNotes": ""
-    }
-  },
-  {
-    "name": "TV-EPG-Color-Customizer",
-    "url": "https://github.com/bom7torao-cyber/TV-EPG-Color-Customizer",
-    "description": "bangumi.org のテレビ番組表をカテゴリー別カラーで見やすくするユーザースクリプト",
-    "platform": "WEB",
-    "status": "active",
-    "tags": [],
-    "image": "images/tv-epg-color-customizer-1792927456674.png",
-    "videoUrl": "",
-    "updatedAt": "2026-10-25T11:24:18.754Z",
-    "devInfo": {
-      "githubAccount": "chinta44",
-      "repoUrl": "",
-      "aiTool": "Sakana AI",
-      "aiAccount": "bom7torao",
-      "hostingProvider": "GitHub Pages",
-      "hostingAccount": "bom7torao",
-      "servicesAndApis": [],
       "devNotes": ""
     }
   }
