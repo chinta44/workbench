@@ -645,5 +645,26 @@
       ],
       "devNotes": ""
     }
+  },
+  {
+    "name": "TV-EPG-Color-Customizer",
+    "url": "https://github.com/bom7torao-cyber/TV-EPG-Color-Customizer",
+    "description": "bangumi.org のテレビ番組表をカテゴリー別カラーで見やすくするユーザースクリプト",
+    "platform": "WEB",
+    "status": "active",
+    "tags": [],
+    "image": "images/tv-epg-color-customizer-1792927456674.png",
+    "videoUrl": "",
+    "updatedAt": "2026-10-25T11:24:18.754Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "",
+      "aiTool": "Sakana AI",
+      "aiAccount": "bom7torao",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "bom7torao",
+      "servicesAndApis": [],
+      "devNotes": ""
+    }
   }
 ]
