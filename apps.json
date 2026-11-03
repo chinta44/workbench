@@ -666,5 +666,28 @@
       "servicesAndApis": [],
       "devNotes": ""
     }
+  },
+  {
+    "name": "EndoView 内視鏡ビューア",
+    "url": "https://github.com/chinta44/EndoView/releases",
+    "description": "USB内視鏡 (UVC) 用の Android アプリ。見やすさ重視の自作用。\n\nプレビュー / 写真 / 動画 / 解像度切替 / 回転・反転\nUVC 画質調整スライダー + プリセット (暗所・配管 / 金属 / 基板・文字)\nフリーズ拡大、ピンチズーム、グリッド、音量ボタンシャッター\n権限はカメラのみ。位置情報・広告・ネット通信なし",
+    "platform": "ANDROID",
+    "status": "active",
+    "tags": [
+      "カメラ"
+    ],
+    "image": "images/endoview-内視鏡ビューア-1793695746764.jpg",
+    "videoUrl": "",
+    "updatedAt": "2026-11-03T08:49:08.585Z",
+    "devInfo": {
+      "githubAccount": "chinta44",
+      "repoUrl": "https://github.com/chinta44/EndoView",
+      "aiTool": "その他",
+      "aiAccount": "3040",
+      "hostingProvider": "GitHub Pages",
+      "hostingAccount": "",
+      "servicesAndApis": [],
+      "devNotes": "Muse開発第1号"
+    }
   }
 ]
